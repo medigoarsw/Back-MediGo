@@ -33,18 +33,18 @@ Descripción: Autentica un usuario con sus credenciales (username y password)
 
 Request:
 {
-  "username": "student",
+  "username": "user",
   "password": "123"
 }
 
 Response (200 OK):
 {
-  "access_token": "fake-jwt.1.student.1774978129358",
+  "access_token": "fake-jwt.1.user.1774978129358",
   "token_type": "Bearer",
-  "user_id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "user_id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "expires_in": 3600
 }
 
@@ -60,14 +60,14 @@ Status Codes:
 Descripción: Retorna la información de un usuario específico según su ID
 
 Parámetros:
-- id (path): ID del usuario (ejemplo: 1)
+- id (path): ID del usuario (ejemplo: 2)
 
 Response (200 OK):
 {
-  "user_id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "user_id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "active": true
 }
 
@@ -81,14 +81,14 @@ Status Codes:
 Descripción: Retorna la información de un usuario específico según su email
 
 Parámetros:
-- email (path): Email del usuario (ejemplo: student@medigo.com)
+- email (path): Email del usuario (ejemplo: user@medigo.com)
 
 Response (200 OK):
 {
-  "user_id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "user_id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "active": true
 }
 
@@ -102,14 +102,14 @@ Status Codes:
 Descripción: Retorna la información del usuario actualmente autenticado
 
 Parámetros:
-- user_id (query, requerido): ID del usuario (ejemplo: 1)
+- user_id (query, requerido): ID del usuario (ejemplo: 2)
 
 Response (200 OK):
 {
-  "user_id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "user_id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "active": true
 }
 
@@ -152,7 +152,7 @@ Haz clic en la sección para ver todos los endpoints.
 2. En el Request Body, ingresa:
    ```json
    {
-     "username": "student",
+     "username": "user",
      "password": "123"
    }
    ```
