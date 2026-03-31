@@ -52,12 +52,7 @@ jobs:
 
       - name: Ejecutar Tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/medigo_test
-          SPRING_DATASOURCE_USERNAME: medigo
-          SPRING_DATASOURCE_PASSWORD: medigo123
-          SPRING_DATA_REDIS_HOST: localhost
-          SPRING_DATA_REDIS_PORT: 6379
-          SPRING_PROFILES_ACTIVE: ci
+          SPRING_PROFILES_ACTIVE: test
         run: mvn test
 
       - name: Publicar reporte de tests
