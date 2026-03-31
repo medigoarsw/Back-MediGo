@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:_empty_/InvalidInputException#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 5053
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -138,7 +149,7 @@ public class AuthService implements AuthUseCase {
         // VALIDACIÓN 1: Campos no vacíos
         if (signUpRequest.getName() == null || signUpRequest.getName().strip().isEmpty()) {
             log.warn("SignUp failed: empty username");
-            throw InvalidInputException.emptyField("username");
+            throw @@InvalidInputException.emptyField("username");
         }
         
         if (signUpRequest.getEmail() == null || signUpRequest.getEmail().strip().isEmpty()) {
@@ -234,3 +245,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#

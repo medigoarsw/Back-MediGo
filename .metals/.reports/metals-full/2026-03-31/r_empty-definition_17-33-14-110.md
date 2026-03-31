@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java:java/time/LocalDateTime#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java
+empty definition using pc, found symbol in pc: java/time/LocalDateTime#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 300
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.domain.model;
 
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
@@ -7,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.security.MessageDigest;
-import java.time.LocalDateTime;
+import java.time.@@LocalDateTime;
 
 /**
  * Modelo de dominio: Usuario
@@ -82,3 +93,9 @@ public class User {
                 '}';
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/time/LocalDateTime#

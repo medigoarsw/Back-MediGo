@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:_empty_/UserAlreadyExistsException#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: _empty_/UserAlreadyExistsException#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 6071
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -160,7 +171,7 @@ public class AuthService implements AuthUseCase {
         // VALIDACIÓN 3: Username no registrado
         if (userRepository.findByUsername(signUpRequest.getName()).isPresent()) {
             log.warn("SignUp failed: username already exists");
-            throw UserAlreadyExistsException.usernameExists(signUpRequest.getName());
+            throw @@UserAlreadyExistsException.usernameExists(signUpRequest.getName());
         }
         
         // VALIDACIÓN 4: Email no registrado
@@ -234,3 +245,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/UserAlreadyExistsException#

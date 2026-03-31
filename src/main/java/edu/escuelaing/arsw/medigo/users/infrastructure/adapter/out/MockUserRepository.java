@@ -49,4 +49,10 @@ public class MockUserRepository implements UserRepositoryPort {
             .filter(u -> u.getId().equals(id))
             .findFirst();
     }
+    
+    @Override
+    public User save(User user) {
+        users.put(user.getEmail(), user);
+        return user;
+    }
 }

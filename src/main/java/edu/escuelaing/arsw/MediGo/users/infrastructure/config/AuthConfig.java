@@ -7,6 +7,8 @@ import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaReposi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * CONFIGURACIÓN: Inyección de dependencias del módulo Users
@@ -49,7 +51,16 @@ public class AuthConfig {
     /**
      * Aquí irían otras configuraciones como:
      * - JwtService (cuando implementes JWT real)
-     * - PasswordEncoder (cuando implementes hash real)
      * - AuthenticationManager (para Spring Security)
      */
+    
+    /**
+     * PasswordEncoder Bean para encriptar contraseñas
+     * Usa BCrypt con strength por defecto (10 rounds)
+     * Se inyecta automáticamente en AuthService
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

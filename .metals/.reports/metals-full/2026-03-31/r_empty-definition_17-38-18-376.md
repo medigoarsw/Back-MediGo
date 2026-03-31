@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java:edu/escuelaing/arsw/medigo/config/TestSecurityConfig#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/config/TestSecurityConfig#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 677
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +19,7 @@ import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
-import edu.escuelaing.arsw.medigo.config.TestSecurityConfig;
+import edu.escuelaing.arsw.medigo.config.@@TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,3 +183,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.role").value("delivery"));
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/config/TestSecurityConfig#

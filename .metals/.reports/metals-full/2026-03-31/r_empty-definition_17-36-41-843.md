@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:org/springframework/stereotype/Service#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: org/springframework/stereotype/Service#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 728
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -10,7 +21,7 @@ import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.@@Service;
 
 import java.util.Optional;
 
@@ -234,3 +245,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/stereotype/Service#

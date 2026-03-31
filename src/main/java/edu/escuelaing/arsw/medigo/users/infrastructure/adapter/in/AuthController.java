@@ -2,12 +2,15 @@ package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginRequestDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginResponseDto;
+import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
+import edu.escuelaing.arsw.medigo.users.application.dto.SignUpResponseDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.UserResponseDto;
 import edu.escuelaing.arsw.medigo.users.domain.exception.DomainException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
+import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,6 +56,7 @@ public class AuthController {
     // INYECCIÓN: AuthUseCase (puerto de entrada)
     // En realidad es AuthService que implementa este puerto
     private final AuthUseCase authUseCase;
+    private final AuthService authService;
 
     /**
      * POST /api/auth/login
@@ -112,6 +116,57 @@ public class AuthController {
         } catch (Exception e) {
             log.error("Unexpected error during authentication", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * POST /api/auth/register
+     * 
+     * Registra un nuevo usuario
+     * Solo permite roles: USUARIO, REPARTIDOR
+     * Los administradores son creados por otros administradores
+     */
+    @PostMapping("/register")
+    @Operation(
+        summary = "Registrar nuevo usuario",
+        description = "Crea una nueva cuenta de usuario. Solo se permiten los roles USUARIO y REPARTIDOR.",
+        tags = {"Authentication"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Usuario registrado exitosamente",
+            content = @Content(schema = @Schema(implementation = SignUpResponseDto.class))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos inválidos (email duplicado, contraseña débil, rol inválido)"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error interno del servidor"
+        )
+    })
+    public ResponseEntity<?> register(@Valid @RequestBody SignUpRequestDto request) {
+        try {
+            log.debug("Registration request received for email: {}", request.getEmail());
+            
+            // PASO 1: Llamar al servicio de registro
+            User newUser = authService.signUp(request);
+            
+            // PASO 2: Convertir a DTO de respuesta
+            SignUpResponseDto response = buildSignUpResponse(newUser);
+            
+            log.info("User registered successfully with ID: {}", newUser.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (DomainException e) {
+            log.debug("Registration failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Unexpected error during registration", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error al registrar usuario"));
         }
     }
 
@@ -267,4 +322,28 @@ public class AuthController {
                 user.getRole().getCode(),
                 timestamp);
     }
+
+    /**
+     * Convierte User → SignUpResponseDto
+     * Esta es la respuesta después de un registro exitoso
+     */
+    private SignUpResponseDto buildSignUpResponse(User user) {
+        return SignUpResponseDto.builder()
+                .id(user.getId())
+                .name(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().getCode())
+                .createdAt(user.getCreatedAt())
+                .message("Usuario registrado exitosamente")
+                .build();
+    }
+}
+
+/**
+ * DTO simple para respuestas de error
+ */
+@lombok.Data
+@lombok.AllArgsConstructor
+class ErrorResponse {
+    private String message;
 }
