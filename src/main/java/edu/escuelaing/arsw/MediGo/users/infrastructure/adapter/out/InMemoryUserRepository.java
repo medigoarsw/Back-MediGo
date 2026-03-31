@@ -19,11 +19,11 @@ import java.util.Optional;
  * - Almacena datos en memoria (HashMap)
  * - NO contiene lógica de negocio
  * 
- * 🎯 CUANDO MIGRAR A BD:
+ * CUANDO MIGRAR A BD:
  * 1. Crear JpaUserRepository extends UserRepositoryPort
  * 2. Usar Spring Data JPA @Repository
  * 3. Cambiar solo el @Bean en AuthConfig
- * 4. ¡El dominio + AuthService no cambian!
+ * 4. El dominio + AuthService no cambian
  * 
  * EJEMPLO DE FUTURO:
  *

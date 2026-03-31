@@ -3,14 +3,18 @@ package edu.escuelaing.arsw.medigo.users.domain.valueobject;
 /**
  * Value Object que representa los roles disponibles en el sistema.
  * 
+ * Roles del sistema MediGo:
+ * - ADMIN: Empresa Promotora de Salud (EPS)
+ * - USER: Usuario regular (paciente/cliente)
+ * - DELIVERY: Repartidor encargado de entregas
+ * 
  * Esta es una enumeración inmutable, perfecta para un value object.
  * En el futuro, podría migrarse a una tabla de roles en la BD.
  */
 public enum Role {
-    ADMIN("admin", "Administrator with full access"),
-    STUDENT("student", "Student with basic access"),
-    VENDOR("vendor", "Vendor managing auctions"),
-    LOGISTICS("logistics", "Logistics operator");
+    ADMIN("admin", "EPS Administrator with full access"),
+    USER("user", "Regular user/patient"),
+    DELIVERY("delivery", "Delivery operator");
 
     private final String code;
     private final String description;

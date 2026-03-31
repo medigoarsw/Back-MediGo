@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class LoginResponseDto {
     
     @JsonProperty("access_token")
-    @Schema(description = "Token de acceso (JWT)", example = "fake-jwt.1.student.1774978129358")
+    @Schema(description = "Token de acceso (JWT)", example = "fake-jwt.1.user.1774978129358")
     private String accessToken;  // En MVP es fake, en producción sería JWT
     
     @JsonProperty("token_type")
@@ -33,13 +33,13 @@ public class LoginResponseDto {
     @Schema(description = "ID del usuario autenticado", example = "1")
     private Long userId;
     
-    @Schema(description = "Nombre de usuario", example = "student")
+    @Schema(description = "Nombre de usuario", example = "user")
     private String username;
     
-    @Schema(description = "Email del usuario", example = "student@medigo.com")
+    @Schema(description = "Email del usuario", example = "user@medigo.com")
     private String email;
     
-    @Schema(description = "Rol del usuario", example = "STUDENT")
+    @Schema(description = "Rol del usuario", example = "USER")
     private String role;
     
     @JsonProperty("expires_in")

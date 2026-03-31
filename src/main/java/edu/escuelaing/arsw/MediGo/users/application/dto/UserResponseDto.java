@@ -19,13 +19,13 @@ public class UserResponseDto {
     @Schema(description = "ID único del usuario", example = "1")
     private Long id;
     
-    @Schema(description = "Nombre de usuario", example = "student")
+    @Schema(description = "Nombre de usuario", example = "user")
     private String username;
     
-    @Schema(description = "Email del usuario", example = "student@medigo.com")
+    @Schema(description = "Email del usuario", example = "user@medigo.com")
     private String email;
     
-    @Schema(description = "Rol del usuario", example = "STUDENT")
+    @Schema(description = "Rol del usuario", example = "USER")
     private String role;
     
     @Schema(description = "Indica si el usuario está activo", example = "true")

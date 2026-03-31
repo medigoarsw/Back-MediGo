@@ -19,9 +19,9 @@ import static org.mockito.Mockito.*;
 /**
  * Tests de integración del Servicio AuthService (Capa de Aplicación)
  * 
- * ✅ Mockea el puerto UserRepositoryPort (abstracción del adaptador)
- * ✅ Prueba casos de uso sin tocar BD real
- * ✅ Verifica interacciones con el repositorio
+ * Mockea el puerto UserRepositoryPort (abstracción del adaptador)
+ * Prueba casos de uso sin tocar BD real
+ * Verifica interacciones con el repositorio
  * 
  * IMPORTANTE: NO mockeamos la BD, mockeamos el PUERTO (abstracción)
  * Esto permite cambiar el adaptador sin cambiar los tests
@@ -46,18 +46,18 @@ class AuthServiceTest {
     @DisplayName("Debe autenticar usuario con credenciales válidas")
     void testAuthenticateSuccess() {
         // ARRANGE - Preparar datos
-        User user = User.create(1L, "student", "student@example.com", "123", Role.STUDENT);
-        when(userRepository.findByUsername("student"))
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        when(userRepository.findByUsername("user"))
             .thenReturn(Optional.of(user));
         
         // ACT - Ejecutar caso de uso
-        User result = authService.authenticate("student", "123");
+        User result = authService.authenticate("user", "123");
         
         // ASSERT - Verificar resultado
         assertNotNull(result);
-        assertEquals("student", result.getUsername());
+        assertEquals("user", result.getUsername());
         // Verificar que se llamó al puerto
-        verify(userRepository).findByUsername("student");
+        verify(userRepository).findByUsername("user");
     }
     
     @Test
@@ -80,17 +80,17 @@ class AuthServiceTest {
     @DisplayName("Debe lanzar excepción con contraseña incorrecta")
     void testAuthenticateInvalidPassword() {
         // ARRANGE
-        User user = User.create(1L, "student", "student@example.com", "123", Role.STUDENT);
-        when(userRepository.findByUsername("student"))
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        when(userRepository.findByUsername("user"))
             .thenReturn(Optional.of(user));
         
         // ACT & ASSERT
         assertThrows(InvalidCredentialsException.class, () -> {
-            authService.authenticate("student", "wrongpassword");
+            authService.authenticate("user", "wrongpassword");
         });
         
         // El usuario fue buscado
-        verify(userRepository).findByUsername("student");
+        verify(userRepository).findByUsername("user");
     }
     
     @Test
@@ -128,21 +128,21 @@ class AuthServiceTest {
     @DisplayName("Debe autenticar múltiples usuarios diferentes")
     void testAuthenticateMultipleUsers() {
         // ARRANGE - Diferentes usuarios con diferentes roles
-        User student = User.create(1L, "student", "student@example.com", "123", Role.STUDENT);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
         User admin = User.create(2L, "admin", "admin@example.com", "456", Role.ADMIN);
-        User vendor = User.create(3L, "vendor", "vendor@example.com", "789", Role.VENDOR);
+        User delivery = User.create(3L, "delivery", "delivery@example.com", "789", Role.DELIVERY);
         
-        when(userRepository.findByUsername("student")).thenReturn(Optional.of(student));
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
         when(userRepository.findByUsername("admin")).thenReturn(Optional.of(admin));
-        when(userRepository.findByUsername("vendor")).thenReturn(Optional.of(vendor));
+        when(userRepository.findByUsername("delivery")).thenReturn(Optional.of(delivery));
         
         // ACT & ASSERT
-        User studentResult = authService.authenticate("student", "123");
+        User userResult = authService.authenticate("user", "123");
         User adminResult = authService.authenticate("admin", "456");
-        User vendorResult = authService.authenticate("vendor", "789");
+        User deliveryResult = authService.authenticate("delivery", "789");
         
-        assertEquals(Role.STUDENT, studentResult.getRole());
+        assertEquals(Role.USER, userResult.getRole());
         assertEquals(Role.ADMIN, adminResult.getRole());
-        assertEquals(Role.VENDOR, vendorResult.getRole());
+        assertEquals(Role.DELIVERY, deliveryResult.getRole());
     }
 }

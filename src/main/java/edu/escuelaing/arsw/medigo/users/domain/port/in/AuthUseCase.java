@@ -9,7 +9,7 @@ import edu.escuelaing.arsw.medigo.users.domain.model.User;
  * La aplicación implementará este puerto (caso de uso).
  * Los adaptadores de entrada (ej: Controller REST) usarán este puerto.
  * 
- * 🔑 BENEFICIO PRINCIPAL:
+ * BENEFICIO PRINCIPAL:
  * Si mañana necesitas autenticación por GraphQL, REST, gRPC, WebSocket, etc.,
  * solo creas un nuevo adaptador que implementa este puerto.
  * El dominio + app NO cambian.

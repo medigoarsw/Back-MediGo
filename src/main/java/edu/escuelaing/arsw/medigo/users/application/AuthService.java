@@ -1,7 +1,7 @@
 package edu.escuelaing.arsw.medigo.users.application;
 
 /**
- * ⚠️ DEPRECATED - Usar edu.escuelaing.arsw.medigo.users.application.service.AuthService en su lugar
+ * DEPRECATED - Usar edu.escuelaing.arsw.medigo.users.application.service.AuthService en su lugar
  * 
  * Esta clase ha sido reubicada a:
  * edu.escuelaing.arsw.medigo.users.application.service.AuthService

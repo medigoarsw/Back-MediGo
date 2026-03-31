@@ -14,13 +14,13 @@ import org.springframework.security.web.SecurityFilterChain;
  * - GET /api/auth/: PERMITIDO (sin autenticación)
  * - Todo lo demás: requiere autenticación
  * 
- * ⚠️ CSRF está deshabilitado por diseño:
+ * CSRF está deshabilitado por diseño:
  * Esta es una API REST stateless que usa autenticación por token (JWT).
  * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
  * Los clientes (móvil, frontend, Postman) están protegidos por la autenticación
  * de token en el header Authorization.
  * 
- * ⚠️ PRODUCCIÓN:
+ * PRODUCCIÓN:
  * - Implementar JWT tokens en AuthController
  * - Crear JwtAuthenticationFilter
  * - Configurar token refresh

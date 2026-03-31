@@ -128,10 +128,14 @@ En el MVP actual, los usuarios están almacenados en memoria (InMemoryUserReposi
 
 | ID | Username | Email | Password | Role |
 |----|----------|-------|----------|------|
-| 1 | student | student@medigo.com | 123 | STUDENT |
-| 2 | admin | admin@medigo.com | 123 | ADMIN |
-| 3 | vendor | vendor@medigo.com | 123 | VENDOR |
-| 4 | logistics | logistics@medigo.com | 123 | LOGISTICS |
+| 1 | admin | admin@medigo.com | 123 | ADMIN |
+| 2 | user | user@medigo.com | 123 | USER |
+| 3 | delivery | delivery@medigo.com | 123 | DELIVERY |
+
+**Significado de los roles:**
+- **ADMIN**: Empresa Promotora de Salud (EPS) - permisos administrativos completos
+- **USER**: Usuario regular o paciente - acceso básico al sistema
+- **DELIVERY**: Repartidor de medicamentos - acceso para gestionar entregas
 
 ---
 

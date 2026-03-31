@@ -15,17 +15,17 @@ import java.util.Optional;
  * CAPA DE APLICACIÓN: Service que implementa el caso de uso de autenticación
  * 
  * Responsabilidades:
- * ✅ Implementar la lógica del caso de uso (autenticación)
- * ✅ Orquestar entre el dominio y los repositorios
- * ✅ Realizar transacciones
- * ✅ Logging
+ * - Implementar la lógica del caso de uso (autenticación)
+ * - Orquestar entre el dominio y los repositorios
+ * - Realizar transacciones
+ * - Logging
  * 
- * ❌ NO contiene lógica de persistencia
- * ❌ NO contiene lógica HTTP/REST
- * ❌ NO sabe cómo se llama desde el exterior (REST, GraphQL, etc.)
+ * NO contiene lógica de persistencia
+ * NO contiene lógica HTTP/REST
+ * NO sabe cómo se llama desde el exterior (REST, GraphQL, etc.)
  * 
  * DEPENDENCIAS:
- * - UserRepositoryPort (inyectada) → abstracc ión para buscar usuarios
+ * - UserRepositoryPort (inyectada) → abstracción para buscar usuarios
  * - No necesita inyectar Controller ni Entity
  * 
  * FLUJO:

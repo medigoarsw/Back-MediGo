@@ -24,12 +24,12 @@ public class MockUserRepository implements UserRepositoryPort {
     public MockUserRepository() {
         // Usuarios de prueba
         User admin = User.create(1L, "admin", "admin@medigo.com", "123", Role.ADMIN);
-        User student = User.create(2L, "student", "student@medigo.com", "123", Role.STUDENT);
-        User vendor = User.create(3L, "vendor", "vendor@medigo.com", "123", Role.VENDOR);
+        User user = User.create(2L, "user", "user@medigo.com", "123", Role.USER);
+        User delivery = User.create(3L, "delivery", "delivery@medigo.com", "123", Role.DELIVERY);
         
         users.put(admin.getEmail(), admin);
-        users.put(student.getEmail(), student);
-        users.put(vendor.getEmail(), vendor);
+        users.put(user.getEmail(), user);
+        users.put(delivery.getEmail(), delivery);
     }
     
     @Override

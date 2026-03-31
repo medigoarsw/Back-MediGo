@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * Este es el punto central donde configuramos qué implementación usar
  * para cada interfaz de puerto.
  * 
- * 🔑 VENTAJA PRINCIPAL:
+ * VENTAJA PRINCIPAL:
  * Cuando migres a JPA, SOLO cambias esta clase:
  * 
  * // De:
@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
  *     return new JpaUserRepository(userJpaRepository);
  * }
  * 
- * ¡Y TODO LO DEMÁS FUNCIONA SIN CAMBIOS!
+ * Y TODO LO DEMÁS FUNCIONA SIN CAMBIOS
  */
 @Configuration
 public class AuthConfig {

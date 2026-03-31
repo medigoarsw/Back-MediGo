@@ -27,7 +27,7 @@ import lombok.Setter;
 public class LoginRequestDto {
     @NotBlank(message = "Username es requerido")
     @Size(min = 3, max = 50, message = "Username debe tener entre 3 y 50 caracteres")
-    @Schema(description = "Nombre de usuario", example = "student")
+    @Schema(description = "Nombre de usuario", example = "user")
     private String username;
     
     @NotBlank(message = "Password es requerido")

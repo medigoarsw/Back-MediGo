@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * ⚠️ TEST DATA CONFIGURATION
+ * TEST DATA CONFIGURATION
  * 
  * CENTRALIZAMOS LOS DATOS DE PRUEBA AQUÍ POR:
- * ✅ Seguridad: Separamos test-data de la lógica
- * ✅ Mantenibilidad: Un solo lugar para actualizar credenciales de test
- * ✅ Auditabilidad: Fácil de encontrar y marcar como TEST-ONLY
+ * - Seguridad: Separamos test-data de la lógica
+ * - Mantenibilidad: Un solo lugar para actualizar credenciales de test
+ * - Auditabilidad: Fácil de encontrar y marcar como TEST-ONLY
  * 
  * IMPORTANTE: 
  * - Estos usuarios son SOLO PARA MVP/TESTING
@@ -24,7 +24,7 @@ import java.util.List;
  * Esta clase existe específicamente para concentrar credenciales de TEST
  * en una ubicación visible y auditable. El patrón es:
  * - Solo para environments de test (no en producción)
- * - Claramente marcado con @WarningComment y documentación
+ * - Claramente marcado con documentación
  * - Mejor que dispersar "123" en múltiples archivos
  */
 @Getter
@@ -33,12 +33,16 @@ public class TestDataConfig {
     /**
      * Usuarios de prueba predefinidos
      * Estructura: id, username, email, password, role
+     * 
+     * Roles del sistema:
+     * - ADMIN: Empresa Promotora de Salud (EPS)
+     * - USER: Usuario regular/paciente
+     * - DELIVERY: Repartidor de medicamentos
      */
     public static final List<UserTestData> TEST_USERS = Arrays.asList(
-        new UserTestData(1L, "student", "student@medigo.com", "123", Role.STUDENT),
-        new UserTestData(2L, "admin", "admin@medigo.com", "123", Role.ADMIN),
-        new UserTestData(3L, "vendor", "vendor@medigo.com", "123", Role.VENDOR),
-        new UserTestData(4L, "logistics", "logistics@medigo.com", "123", Role.LOGISTICS)
+        new UserTestData(1L, "admin", "admin@medigo.com", "123", Role.ADMIN),
+        new UserTestData(2L, "user", "user@medigo.com", "123", Role.USER),
+        new UserTestData(3L, "delivery", "delivery@medigo.com", "123", Role.DELIVERY)
     );
     
     /**

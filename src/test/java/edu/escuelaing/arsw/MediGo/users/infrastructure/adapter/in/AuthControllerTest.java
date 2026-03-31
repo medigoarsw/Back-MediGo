@@ -25,9 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Tests de integración del AuthController (Capa de Infraestructura - Adapter IN)
  * 
- * ✅ Prueba los endpoints REST sin cargar todo Spring
- * ✅ Mockea el caso de uso (puerto de entrada)
- * ✅ Verifica requests/responses HTTP
+ * Prueba los endpoints REST sin cargar todo Spring
+ * Mockea el caso de uso (puerto de entrada)
+ * Verifica requests/responses HTTP
  * 
  * @WebMvcTest: Carga solo el contexto web necesario (sin BD, sin servicios extras)
  * @AutoConfigureMockMvc(addFilters = false): Deshabilita Spring Security para tests
@@ -50,10 +50,10 @@ class AuthControllerTest {
     @DisplayName("POST /api/auth/login debe retornar 200 con credenciales válidas")
     void testLoginSuccess() throws Exception {
         // ARRANGE
-        LoginRequestDto request = new LoginRequestDto("student", "123");
-        User user = User.create(1L, "student", "student@example.com", "123", Role.STUDENT);
+        LoginRequestDto request = new LoginRequestDto("user", "123");
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
         
-        when(authUseCase.authenticate("student", "123"))
+        when(authUseCase.authenticate("user", "123"))
             .thenReturn(user);
         
         // ACT & ASSERT
@@ -63,11 +63,11 @@ class AuthControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.access_token").exists())
             .andExpect(jsonPath("$.user_id").value(1))
-            .andExpect(jsonPath("$.username").value("student"))
-            .andExpect(jsonPath("$.role").value("student"));
+            .andExpect(jsonPath("$.username").value("user"))
+            .andExpect(jsonPath("$.role").value("user"));
         
         // Verifica que se llamó al caso de uso
-        verify(authUseCase).authenticate("student", "123");
+        verify(authUseCase).authenticate("user", "123");
     }
     
     @Test
@@ -106,7 +106,7 @@ class AuthControllerTest {
     @DisplayName("GET /api/auth/{id} debe retornar usuario por ID")
     void testGetUserById() throws Exception {
         // ARRANGE
-        User user = User.create(1L, "student", "student@example.com", "123", Role.STUDENT);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
         
         when(authUseCase.getUserById(1L))
             .thenReturn(user);
@@ -116,8 +116,8 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.user_id").value(1))
-            .andExpect(jsonPath("$.username").value("student"))
-            .andExpect(jsonPath("$.email").value("student@example.com"));
+            .andExpect(jsonPath("$.username").value("user"))
+            .andExpect(jsonPath("$.email").value("user@example.com"));
     }
     
     @Test
@@ -152,20 +152,20 @@ class AuthControllerTest {
     }
     
     @Test
-    @DisplayName("POST /api/auth/login con vendedor debe retornar rol VENDOR")
-    void testLoginVendorRole() throws Exception {
+    @DisplayName("POST /api/auth/login con repartidor debe retornar rol DELIVERY")
+    void testLoginDeliveryRole() throws Exception {
         // ARRANGE
-        LoginRequestDto request = new LoginRequestDto("vendor", "789");
-        User vendor = User.create(3L, "vendor", "vendor@example.com", "789", Role.VENDOR);
+        LoginRequestDto request = new LoginRequestDto("delivery", "789");
+        User delivery = User.create(3L, "delivery", "delivery@example.com", "789", Role.DELIVERY);
         
-        when(authUseCase.authenticate("vendor", "789"))
-            .thenReturn(vendor);
+        when(authUseCase.authenticate("delivery", "789"))
+            .thenReturn(delivery);
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.role").value("vendor"));
+            .andExpect(jsonPath("$.role").value("delivery"));
     }
 }

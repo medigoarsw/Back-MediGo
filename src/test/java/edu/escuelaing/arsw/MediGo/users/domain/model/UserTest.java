@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests unitarios del dominio (User Entity)
  * 
- * ✅ SIN dependencias externas
- * ✅ SIN BD
- * ✅ SIN Spring
- * ✅ Lógica pura del dominio
+ * SIN dependencias externas
+ * SIN BD
+ * SIN Spring
+ * Lógica pura del dominio
  * 
  * Está en la capa de dominio porque prueba entidades, value objects y reglas de negocio
  */
@@ -20,7 +20,7 @@ class UserTest {
     @Test
     void testUserCredentialsMatchSuccess() {
         // ARRANGE
-        User user = User.create(1L, "student", "student@example.com", "password123", Role.STUDENT);
+        User user = User.create(1L, "user", "user@example.com", "password123", Role.USER);
         
         // ACT
         boolean result = user.credentialsMatch("password123");
@@ -32,7 +32,7 @@ class UserTest {
     @Test
     void testUserCredentialsMatchFailure() {
         // ARRANGE
-        User user = User.create(1L, "student", "student@example.com", "password123", Role.STUDENT);
+        User user = User.create(1L, "user", "user@example.com", "password123", Role.USER);
         
         // ACT
         boolean result = user.credentialsMatch("wrongpassword");
@@ -44,7 +44,7 @@ class UserTest {
     @Test
     void testInactiveUserCannotLogin() {
         // ARRANGE
-        User user = new User(1L, "student@example.com", "password123", "student", Role.STUDENT, false);
+        User user = new User(1L, "user@example.com", "password123", "user", Role.USER, false);
         
         // ACT
         boolean result = user.credentialsMatch("password123");
@@ -65,14 +65,14 @@ class UserTest {
     @Test
     void testUserCreationWithFactory() {
         // ARRANGE & ACT
-        User user = User.create(2L, "vendor", "vendor@example.com", "securepass", Role.VENDOR);
+        User user = User.create(2L, "delivery", "delivery@example.com", "securepass", Role.DELIVERY);
         
         // ASSERT
         assertNotNull(user);
         assertEquals(2L, user.getId());
-        assertEquals("vendor", user.getUsername());
-        assertEquals("vendor@example.com", user.getEmail());
-        assertEquals(Role.VENDOR, user.getRole());
+        assertEquals("delivery", user.getUsername());
+        assertEquals("delivery@example.com", user.getEmail());
+        assertEquals(Role.DELIVERY, user.getRole());
         assertTrue(user.credentialsMatch("securepass"));
     }
 }

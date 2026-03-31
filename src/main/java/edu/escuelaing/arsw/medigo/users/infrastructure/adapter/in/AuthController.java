@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
  * - Convierte respuestas de dominio → DTOs HTTP
  * - Maneja errores HTTP
  * 
- * 🔑 IMPORTANTE:
+ * IMPORTANTE:
  * - El Controller NO contiene lógica de negocio
  * - Solo traduce entre HTTP y dominio
  * - Si mañana quieres GraphQL, solo creas otro @RestController sin tocar esto
@@ -251,7 +251,7 @@ public class AuthController {
     }
 
     /**
-     * ⚠️ FAKE JWT - Solo para MVP
+     * FAKE JWT - Solo para MVP
      * 
      * En producción reemplazar con:
      * @Bean

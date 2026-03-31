@@ -14,8 +14,8 @@ import java.security.MessageDigest;
  * Esta es la entidad de dominio que representa un usuario en el sistema.
  * NO contiene lógica de persistencia, NO sabe nada de BD.
  * 
- * ❌ NO depende de Spring, JPA ni frameworks
- * ✅ SÍ contiene lógica pura de dominio (validaciones, reglas de negocio)
+ * NO depende de Spring, JPA ni frameworks
+ * SÍ contiene lógica pura de dominio (validaciones, reglas de negocio)
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,7 +41,7 @@ public class User {
      * Valida que las credenciales coincidan
      * Esta lógica está en el dominio porque es una regla de negocio pura
      * 
-     * ⚠️ TIMING ATTACK RESISTANCE:
+     * TIMING ATTACK RESISTANCE:
      * Se usa MessageDigest.isEqual() en lugar de String.equals() para evitar
      * ataques de timing que permitirían adivinar contraseñas carácter por carácter.
      * MessageDigest.isEqual() toma siempre el mismo tiempo independientemente
