@@ -1060,3 +1060,20 @@ WARNING: Unmatched cancel notification for request id 30
 2026.03.31 15:12:55 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java. Using fallback presentation compiler.
 2026.03.31 15:12:56 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java. Output:
 
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\UserResponseDto.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\port\in\AuthUseCase.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginResponseDto.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\AuthConfig.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\out\MockUserRepository.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\AuthService.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\out\InMemoryUserRepository.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\domain\model\UserTest.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\shared\infrastructure\config\SecurityConfig.java
+2026.03.31 15:32:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthControllerTest.java
+2026.03.31 15:32:10 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java

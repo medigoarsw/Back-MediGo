@@ -150,7 +150,7 @@ Autentica un usuario
 **Request:**
 ```json
 {
-  "username": "student",
+  "username": "user",
   "password": "123"
 }
 ```
@@ -158,12 +158,12 @@ Autentica un usuario
 **Response (200 OK):**
 ```json
 {
-  "access_token": "fake-jwt.1.student.1711894234567",
+  "access_token": "fake-jwt.1.user.1711894234567",
   "token_type": "Bearer",
-  "user_id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "user_id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "expires_in": 3600
 }
 ```
@@ -174,10 +174,10 @@ Obtiene el perfil del usuario
 **Response (200 OK):**
 ```json
 {
-  "id": 1,
-  "username": "student",
-  "email": "student@medigo.com",
-  "role": "STUDENT",
+  "id": 2,
+  "username": "user",
+  "email": "user@medigo.com",
+  "role": "USER",
   "active": true
 }
 ```
@@ -196,10 +196,14 @@ Inicializados automáticamente en `InMemoryUserRepository`:
 
 | Username | Password | Email | Role |
 |----------|----------|-------|------|
-| `student` | `123` | student@medigo.com | STUDENT |
 | `admin` | `123` | admin@medigo.com | ADMIN |
-| `vendor` | `123` | vendor@medigo.com | VENDOR |
-| `logistics` | `123` | logistics@medigo.com | LOGISTICS |
+| `user` | `123` | user@medigo.com | USER |
+| `delivery` | `123` | delivery@medigo.com | DELIVERY |
+
+**Explicación de roles:**
+- **ADMIN**: Empresa Promotora de Salud (EPS) - permisos administrativos
+- **USER**: Usuario regular o paciente - acceso básico
+- **DELIVERY**: Repartidor de medicamentos - acceso para entregas
 
 ---
 
