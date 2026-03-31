@@ -34,3 +34,4 @@ build/
 
 # Credenciales locales
 src/main/resources/application.properties
+application.properties

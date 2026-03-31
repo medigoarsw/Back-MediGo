@@ -51,6 +51,7 @@ jobs:
 
       - name: Build y Tests
         env:
+          # Credenciales para TESTING (usa contenedor PostgreSQL local)
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/medigo_test
           SPRING_DATASOURCE_USERNAME: medigo
           SPRING_DATASOURCE_PASSWORD: medigo123
@@ -58,6 +59,15 @@ jobs:
           SPRING_DATA_REDIS_PORT: 6379
           SPRING_PROFILES_ACTIVE: test
         run: mvn clean verify
+      
+      - name: Build para Producción
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          # Credenciales de PRODUCCIÓN (Supabase)
+          SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:6543/postgres
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: mvn clean package -DskipTests
 
       - name: Publicar reporte de tests
         uses: actions/upload-artifact@v4
@@ -69,6 +79,7 @@ jobs:
  
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
