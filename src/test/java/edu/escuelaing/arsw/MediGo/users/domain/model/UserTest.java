@@ -22,7 +22,7 @@ class UserTest {
     @Test
     void testUserCredentialsMatchSuccess() {
         // ARRANGE
-        User user = User.create(1L, "user", "user@example.com", "password123", Role.USER);
+        User user = User.create(1L, "user", "user@example.com", "password123", Role.AFFILIATE);
         
         // ACT
         boolean result = user.credentialsMatch("password123");
@@ -34,7 +34,7 @@ class UserTest {
     @Test
     void testUserCredentialsMatchFailure() {
         // ARRANGE
-        User user = User.create(1L, "user", "user@example.com", "password123", Role.USER);
+        User user = User.create(1L, "user", "user@example.com", "password123", Role.AFFILIATE);
         
         // ACT
         boolean result = user.credentialsMatch("wrongpassword");
@@ -46,7 +46,7 @@ class UserTest {
     @Test
     void testInactiveUserCannotLogin() {
         // ARRANGE
-        User user = new User(1L, "user@example.com", "password123", "user", Role.USER, false, LocalDateTime.now());
+        User user = new User(1L, "user@example.com", "password123", "user", Role.AFFILIATE, false, LocalDateTime.now());
         
         // ACT
         boolean result = user.credentialsMatch("password123");

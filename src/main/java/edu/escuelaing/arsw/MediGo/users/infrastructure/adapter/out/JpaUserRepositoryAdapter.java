@@ -58,7 +58,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .passwordHash(user.getPassword())
-                .role(user.getRole().getCode().toUpperCase())
+                .role(user.getRole().getCode())
                 .active(user.isActive())
                 .build();
         

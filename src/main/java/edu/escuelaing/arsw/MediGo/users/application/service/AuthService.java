@@ -175,11 +175,11 @@ public class AuthService implements AuthUseCase {
             throw InvalidInputException.weakPassword();
         }
         
-        // VALIDACIÓN 6: Rol válido (solo USUARIO o REPARTIDOR)
+        // VALIDACIÓN 6: Rol válido (solo AFFILIATE o REPARTIDOR)
         Role roleEnum;
         try {
             roleEnum = Role.valueOf(signUpRequest.getRole().toUpperCase());
-            if (roleEnum != Role.USER && roleEnum != Role.DELIVERY) {
+            if (roleEnum != Role.AFFILIATE && roleEnum != Role.DELIVERY) {
                 throw new IllegalArgumentException();
             }
         } catch (Exception e) {
