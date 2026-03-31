@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java:org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+empty definition using pc, found symbol in pc: org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 990
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,16 +20,14 @@ import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import edu.escuelaing.arsw.medigo.config.TestSecurityConfig;
-import edu.escuelaing.arsw.medigo.users.infrastructure.config.AuthConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.@@WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -39,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@Import({TestSecurityConfig.class, AuthConfig.class})
+@Import(TestSecurityConfig.class)
 @ActiveProfiles("ci")
 @DisplayName("AuthController - Endpoints de Autenticación REST")
 class AuthControllerTest {
@@ -176,3 +185,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.role").value("delivery"));
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#

@@ -15,5 +15,5 @@ public class UserEntity {
     @Column(nullable = false) private String role;
     @Column(nullable = false) private boolean active = true;
     @CreatedDate @Column(nullable = false, updatable = false) private LocalDateTime createdAt;
-    @LastModifiedDate @Column(nullable = false) private LocalDateTime updatedAt;
+    @LastModifiedDate @Column(nullable = true) private LocalDateTime updatedAt;
 }

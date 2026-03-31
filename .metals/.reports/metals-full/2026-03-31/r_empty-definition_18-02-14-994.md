@@ -1,10 +1,21 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java:org/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+empty definition using pc, found symbol in pc: org/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 473
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.config;
 
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.InMemoryUserRepository;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.JpaUserRepositoryAdapter;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.@@ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -54,3 +65,10 @@ public class AuthConfig {
         return new JpaUserRepositoryAdapter(userJpaRepository);
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean#
