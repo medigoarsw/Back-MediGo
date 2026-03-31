@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.auction.application;
 
+import edu.escuelaing.arsw.medigo.auction.application.AuctionService;
 import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
 import edu.escuelaing.arsw.medigo.auction.domain.model.*;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.CreateAuctionUseCase.CreateAuctionCommand;
