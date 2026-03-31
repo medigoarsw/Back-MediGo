@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java:_empty_/HttpSecurity#csrf#disable#authorizeHttpRequests#formLogin#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java
+empty definition using pc, found symbol in pc: _empty_/HttpSecurity#csrf#disable#authorizeHttpRequests#formLogin#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 2069
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.shared.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
@@ -14,13 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * - GET /api/auth/: PERMITIDO (sin autenticación)
  * - Todo lo demás: requiere autenticación
  * 
- * CSRF está deshabilitado por diseño:
- * Esta es una API REST stateless que usa autenticación por token (JWT).
- * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
- * Los clientes (móvil, frontend, Postman) están protegidos por la autenticación
- * de token en el header Authorization.
- * 
- * PRODUCCIÓN:
+ * ⚠️ PRODUCCIÓN:
  * - Implementar JWT tokens en AuthController
  * - Crear JwtAuthenticationFilter
  * - Configurar token refresh
@@ -30,10 +35,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    @SuppressWarnings("java:S4502")  // CSRF seguro en API stateless con token auth
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()  // Seguro: API stateless con autenticación por token
+            .csrf().disable()  // Temporal: para testing con curl/Postman
             .authorizeHttpRequests(authz -> authz
                 // Swagger UI y documentación (públicos)
                 .requestMatchers(
@@ -60,9 +64,15 @@ public class SecurityConfig {
                 // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
             )
-            .formLogin().disable()  // Desabilitar form login por defecto
+            .@@formLogin().disable()  // Desabilitar form login por defecto
             .httpBasic().disable();  // Desabilitar HTTP Basic
 
         return http.build();
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/HttpSecurity#csrf#disable#authorizeHttpRequests#formLogin#

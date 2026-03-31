@@ -1,4 +1,4 @@
-package edu.escuelaing.arsw.MediGo;
+package edu.escuelaing.arsw.medigo;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

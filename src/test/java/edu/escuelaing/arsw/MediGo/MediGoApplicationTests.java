@@ -1,10 +1,11 @@
-package edu.escuelaing.arsw.MediGo;
+package edu.escuelaing.arsw.medigo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import edu.escuelaing.arsw.MediGo.TestWebSocketConfig;
+
+import edu.escuelaing.arsw.medigo.TestWebSocketConfig;
 
 @SpringBootTest
 @ActiveProfiles("test")

@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java:java/lang/SuppressWarnings#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java
+empty definition using pc, found symbol in pc: java/lang/SuppressWarnings#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1186
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.shared.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
@@ -14,13 +25,13 @@ import org.springframework.security.web.SecurityFilterChain;
  * - GET /api/auth/: PERMITIDO (sin autenticación)
  * - Todo lo demás: requiere autenticación
  * 
- * CSRF está deshabilitado por diseño:
+ * ⚠️ CSRF está deshabilitado por diseño:
  * Esta es una API REST stateless que usa autenticación por token (JWT).
  * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
  * Los clientes (móvil, frontend, Postman) están protegidos por la autenticación
  * de token en el header Authorization.
  * 
- * PRODUCCIÓN:
+ * ⚠️ PRODUCCIÓN:
  * - Implementar JWT tokens en AuthController
  * - Crear JwtAuthenticationFilter
  * - Configurar token refresh
@@ -30,7 +41,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    @SuppressWarnings("java:S4502")  // CSRF seguro en API stateless con token auth
+    @@@SuppressWarnings("java:S4502")  // CSRF seguro en API stateless con token auth
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()  // Seguro: API stateless con autenticación por token
@@ -66,3 +77,9 @@ public class SecurityConfig {
         return http.build();
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/lang/SuppressWarnings#

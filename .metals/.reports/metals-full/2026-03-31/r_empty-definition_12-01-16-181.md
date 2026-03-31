@@ -1,12 +1,21 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java:edu/escuelaing/arsw/medigo/users/domain/valueobject/Role#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/valueobject/Role#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 117
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.domain.model;
 
-import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
+import edu.escuelaing.arsw.medigo.users.domain.valueobject.@@Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.security.MessageDigest;
 
 /**
  * Modelo de dominio: Usuario
@@ -14,8 +23,8 @@ import java.security.MessageDigest;
  * Esta es la entidad de dominio que representa un usuario en el sistema.
  * NO contiene lógica de persistencia, NO sabe nada de BD.
  * 
- * NO depende de Spring, JPA ni frameworks
- * SÍ contiene lógica pura de dominio (validaciones, reglas de negocio)
+ * ❌ NO depende de Spring, JPA ni frameworks
+ * ✅ SÍ contiene lógica pura de dominio (validaciones, reglas de negocio)
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,25 +49,13 @@ public class User {
     /**
      * Valida que las credenciales coincidan
      * Esta lógica está en el dominio porque es una regla de negocio pura
-     * 
-     * TIMING ATTACK RESISTANCE:
-     * Se usa MessageDigest.isEqual() en lugar de String.equals() para evitar
-     * ataques de timing que permitirían adivinar contraseñas carácter por carácter.
-     * MessageDigest.isEqual() toma siempre el mismo tiempo independientemente
-     * de dónde falle la comparación.
-     * 
-     * En producción: Usaría bcrypt.matches(providedPassword, this.password)
-     * que ya es timing-attack-resistant y además hashea las contraseñas.
      */
     public boolean credentialsMatch(String providedPassword) {
         if (!this.active) {
             return false;
         }
-        // Usar MessageDigest.isEqual() para comparación timing-attack-resistant
-        // Nota: Esto funciona incluso con passwords en texto plano (como en MVP)
-        byte[] providedBytes = providedPassword.getBytes();
-        byte[] storedBytes = this.password.getBytes();
-        return MessageDigest.isEqual(providedBytes, storedBytes);
+        // En producción aquí haría bcrypt.matches(providedPassword, this.password)
+        return this.password.equals(providedPassword);
     }
 
     /**
@@ -79,3 +76,9 @@ public class User {
                 '}';
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/valueobject/Role#
