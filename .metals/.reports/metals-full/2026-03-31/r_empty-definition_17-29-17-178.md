@@ -1,9 +1,20 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:edu/escuelaing/arsw/medigo/users/domain/exception/UserAlreadyExistsException#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/exception/UserAlreadyExistsException#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 371
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidInputException;
-import edu.escuelaing.arsw.medigo.users.domain.exception.UserAlreadyExistsException;
+import edu.escuelaing.arsw.medigo.users.domain.exception.@@UserAlreadyExistsException;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -158,18 +169,21 @@ class AuthServiceTest {
     @DisplayName("Debe registrar usuario nuevo satisfactoriamente")
     void testSignUpSuccess() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("newuser@example.com");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "newuser",
+            "newuser@example.com",
+            "Password123!",
+            Role.USER
+        );
         
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newuser@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
-        
-        User savedUser = User.create(1L, "newuser", "newuser@example.com", "encodedPassword", Role.USER);
-        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User user = invocation.getArgument(0);
+            user.setId(1L);
+            return user;
+        });
         
         // ACT
         User result = authService.signUp(signUpRequest);
@@ -178,6 +192,7 @@ class AuthServiceTest {
         assertNotNull(result);
         assertEquals("newuser", result.getUsername());
         assertEquals("newuser@example.com", result.getEmail());
+        assertEquals(Role.USER, result.getRole());
         verify(userRepository).save(any(User.class));
     }
 
@@ -185,11 +200,12 @@ class AuthServiceTest {
     @DisplayName("Debe fallar cuando el username ya existe")
     void testSignUpUsernameTaken() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("existing");
-        signUpRequest.setEmail("new@example.com");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "existing",
+            "new@example.com",
+            "Password123!",
+            Role.USER
+        );
         
         User existingUser = User.create(1L, "existing", "existing@example.com", "pass", Role.USER);
         when(userRepository.findByUsername("existing")).thenReturn(Optional.of(existingUser));
@@ -204,11 +220,12 @@ class AuthServiceTest {
     @DisplayName("Debe fallar cuando el email ya existe")
     void testSignUpEmailTaken() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("existing@example.com");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "newuser",
+            "existing@example.com",
+            "Password123!",
+            Role.USER
+        );
         
         User existingUser = User.create(1L, "existinguser", "existing@example.com", "pass", Role.USER);
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
@@ -224,11 +241,12 @@ class AuthServiceTest {
     @DisplayName("Debe fallar con email inválido")
     void testSignUpInvalidEmail() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("invalid-email");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "newuser",
+            "invalid-email",
+            "Password123!",
+            Role.USER
+        );
         
         // ACT & ASSERT
         assertThrows(InvalidInputException.class, () -> {
@@ -240,11 +258,12 @@ class AuthServiceTest {
     @DisplayName("Debe fallar con contraseña débil")
     void testSignUpWeakPassword() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("newuser@example.com");
-        signUpRequest.setPassword("weak");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "newuser",
+            "newuser@example.com",
+            "weak",
+            Role.USER
+        );
         
         // ACT & ASSERT
         assertThrows(InvalidInputException.class, () -> {
@@ -256,11 +275,12 @@ class AuthServiceTest {
     @DisplayName("Debe fallar cuando username está vacío")
     void testSignUpEmptyUsername() {
         // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("");
-        signUpRequest.setEmail("newuser@example.com");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        SignUpRequestDto signUpRequest = new SignUpRequestDto(
+            "",
+            "newuser@example.com",
+            "Password123!",
+            Role.USER
+        );
         
         // ACT & ASSERT
         assertThrows(InvalidInputException.class, () -> {
@@ -268,3 +288,10 @@ class AuthServiceTest {
         });
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/exception/UserAlreadyExistsException#

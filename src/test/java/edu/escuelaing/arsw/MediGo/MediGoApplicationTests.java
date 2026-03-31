@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import edu.escuelaing.arsw.medigo.TestWebSocketConfig;
 
 @SpringBootTest
-@ActiveProfiles("ci")
+@ActiveProfiles("test")
 @Import(TestWebSocketConfig.class)
 class MediGoApplicationTests {
 

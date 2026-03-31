@@ -48,6 +48,27 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .map(this::toDomainUser);
     }
     
+    @Override
+    public User save(User user) {
+        log.info("Guardando usuario con email: {}", user.getEmail());
+        
+        // Traducir de User (dominio) a UserEntity (BD)
+        UserEntity entity = UserEntity.builder()
+                .id(user.getId())
+                .name(user.getUsername())
+                .email(user.getEmail())
+                .passwordHash(user.getPassword())
+                .role(user.getRole().getCode().toUpperCase())
+                .active(user.isActive())
+                .build();
+        
+        // Guardar en BD
+        UserEntity savedEntity = userJpaRepository.save(entity);
+        
+        // Traducir de vuelta a dominio
+        return toDomainUser(savedEntity);
+    }
+    
     /**
      * Traduce UserEntity (infraestructura/BD) a User (dominio)
      */

@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java:org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+empty definition using pc, found symbol in pc: org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 990
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,16 +20,14 @@ import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import edu.escuelaing.arsw.medigo.config.TestSecurityConfig;
-import edu.escuelaing.arsw.medigo.users.infrastructure.config.AuthConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.@@WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -30,19 +39,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Tests de integración del AuthController (Capa de Infraestructura - Adapter IN)
  * 
- * Usa @SpringBootTest para cargar el contexto completo de Spring
- * Esto permite que AuthService esté disponible como un bean real
- * @AutoConfigureMockMvc: Proporciona MockMvc para hacer peticiones HTTP
+ * Prueba los endpoints REST sin cargar todo Spring
+ * Mockea el caso de uso (puerto de entrada)
+ * Verifica requests/responses HTTP
+ * 
+ * @WebMvcTest: Carga solo el contexto web necesario (sin BD, sin servicios extras)
+ * @AutoConfigureMockMvc(addFilters = false): Deshabilita Spring Security para tests
  */
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import({TestSecurityConfig.class, AuthConfig.class})
-@ActiveProfiles("test")
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(TestSecurityConfig.class)
+@ActiveProfiles("ci")
 @DisplayName("AuthController - Endpoints de Autenticación REST")
 class AuthControllerTest {
     
     @Autowired
     private MockMvc mockMvc;
+    
+    @MockBean
+    private AuthUseCase authUseCase;
     
     @Autowired
     private ObjectMapper mapper;
@@ -50,8 +65,12 @@ class AuthControllerTest {
     @Test
     @DisplayName("POST /api/auth/login debe retornar 200 con credenciales válidas")
     void testLoginSuccess() throws Exception {
-        // ARRANGE - Usuario real del repositorio en memoria
+        // ARRANGE
         LoginRequestDto request = new LoginRequestDto("user", "123");
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        
+        when(authUseCase.authenticate("user", "123"))
+            .thenReturn(user);
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -59,16 +78,22 @@ class AuthControllerTest {
                 .content(mapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.access_token").exists())
-            .andExpect(jsonPath("$.user_id").value(2))
+            .andExpect(jsonPath("$.user_id").value(1))
             .andExpect(jsonPath("$.username").value("user"))
             .andExpect(jsonPath("$.role").value("user"));
+        
+        // Verifica que se llamó al caso de uso
+        verify(authUseCase).authenticate("user", "123");
     }
     
     @Test
     @DisplayName("POST /api/auth/login debe retornar 401 con credenciales inválidas")
     void testLoginUnauthorized() throws Exception {
-        // ARRANGE - Usuario que existe pero contraseña incorrecta
-        LoginRequestDto request = new LoginRequestDto("user", "wrongpassword");
+        // ARRANGE
+        LoginRequestDto request = new LoginRequestDto("student", "wrongpassword");
+        
+        when(authUseCase.authenticate("student", "wrongpassword"))
+            .thenThrow(new InvalidCredentialsException("Bad credentials"));
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -80,8 +105,11 @@ class AuthControllerTest {
     @Test
     @DisplayName("POST /api/auth/login debe retornar 404 cuando usuario no existe")
     void testLoginUserNotFound() throws Exception {
-        // ARRANGE - Usuario que no existe en el repositorio
+        // ARRANGE
         LoginRequestDto request = new LoginRequestDto("nonexistent", "123");
+        
+        when(authUseCase.authenticate("nonexistent", "123"))
+            .thenThrow(new UserNotFoundException("User not found"));
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -93,27 +121,35 @@ class AuthControllerTest {
     @Test
     @DisplayName("GET /api/auth/{id} debe retornar usuario por ID")
     void testGetUserById() throws Exception {
-        // ARRANGE - Usuario real: ID=2, username=user
+        // ARRANGE
+        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        
+        when(authUseCase.getUserById(1L))
+            .thenReturn(user);
         
         // ACT & ASSERT
-        mockMvc.perform(get("/api/auth/2")
+        mockMvc.perform(get("/api/auth/1")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.user_id").value(2))
+            .andExpect(jsonPath("$.user_id").value(1))
             .andExpect(jsonPath("$.username").value("user"))
-            .andExpect(jsonPath("$.email").value("user@medigo.com"));
+            .andExpect(jsonPath("$.email").value("user@example.com"));
     }
     
     @Test
     @DisplayName("GET /api/auth/email/{email} debe retornar usuario por email")
     void testGetUserByEmail() throws Exception {
-        // ARRANGE - Usuario real: admin@medigo.com
+        // ARRANGE
+        User admin = User.create(2L, "admin", "admin@example.com", "456", Role.ADMIN);
+        
+        when(authUseCase.getUserByEmail("admin@example.com"))
+            .thenReturn(admin);
         
         // ACT & ASSERT
-        mockMvc.perform(get("/api/auth/email/admin@medigo.com")
+        mockMvc.perform(get("/api/auth/email/admin@example.com")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.user_id").value(1))
+            .andExpect(jsonPath("$.user_id").value(2))
             .andExpect(jsonPath("$.username").value("admin"))
             .andExpect(jsonPath("$.role").value("admin"));
     }
@@ -134,8 +170,12 @@ class AuthControllerTest {
     @Test
     @DisplayName("POST /api/auth/login con repartidor debe retornar rol DELIVERY")
     void testLoginDeliveryRole() throws Exception {
-        // ARRANGE - Usuario delivery real
-        LoginRequestDto request = new LoginRequestDto("delivery", "123");
+        // ARRANGE
+        LoginRequestDto request = new LoginRequestDto("delivery", "789");
+        User delivery = User.create(3L, "delivery", "delivery@example.com", "789", Role.DELIVERY);
+        
+        when(authUseCase.authenticate("delivery", "789"))
+            .thenReturn(delivery);
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -145,3 +185,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.role").value("delivery"));
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest#

@@ -1,8 +1,19 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 242
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.exception.*;
-import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
+import edu.escuelaing.arsw.medigo.users.application.dto.@@SignUpRequestDto;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.util.PasswordValidator;
@@ -133,70 +144,64 @@ public class AuthService implements AuthUseCase {
      * 10. Devolver el usuario creado
      */
     public User signUp(SignUpRequestDto signUpRequest) {
-        log.info("SignUp attempt for email: {}", signUpRequest.getEmail());
+        log.info("SignUp attempt for email: {}", signUpRequest.email());
         
         // VALIDACIÓN 1: Campos no vacíos
-        if (signUpRequest.getName() == null || signUpRequest.getName().strip().isEmpty()) {
+        if (signUpRequest.username() == null || signUpRequest.username().strip().isEmpty()) {
             log.warn("SignUp failed: empty username");
             throw InvalidInputException.emptyField("username");
         }
         
-        if (signUpRequest.getEmail() == null || signUpRequest.getEmail().strip().isEmpty()) {
+        if (signUpRequest.email() == null || signUpRequest.email().strip().isEmpty()) {
             log.warn("SignUp failed: empty email");
             throw InvalidInputException.emptyField("email");
         }
         
-        if (signUpRequest.getPassword() == null || signUpRequest.getPassword().isEmpty()) {
+        if (signUpRequest.password() == null || signUpRequest.password().isEmpty()) {
             log.warn("SignUp failed: empty password");
             throw InvalidInputException.emptyField("password");
         }
         
         // VALIDACIÓN 2: Email válido (formato)
-        if (!isValidEmail(signUpRequest.getEmail())) {
+        if (!isValidEmail(signUpRequest.email())) {
             log.warn("SignUp failed: invalid email format");
-            throw InvalidInputException.invalidEmail(signUpRequest.getEmail());
+            throw InvalidInputException.invalidEmail(signUpRequest.email());
         }
         
         // VALIDACIÓN 3: Username no registrado
-        if (userRepository.findByUsername(signUpRequest.getName()).isPresent()) {
+        if (userRepository.findByUsername(signUpRequest.username()).isPresent()) {
             log.warn("SignUp failed: username already exists");
-            throw UserAlreadyExistsException.usernameExists(signUpRequest.getName());
+            throw UserAlreadyExistsException.usernameExists(signUpRequest.username());
         }
         
         // VALIDACIÓN 4: Email no registrado
-        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(signUpRequest.email()).isPresent()) {
             log.warn("SignUp failed: email already registered");
-            throw UserAlreadyExistsException.emailExists(signUpRequest.getEmail());
+            throw UserAlreadyExistsException.emailExists(signUpRequest.email());
         }
         
         // VALIDACIÓN 5: Contraseña fuerte
-        if (!isStrongPassword(signUpRequest.getPassword())) {
+        if (!isStrongPassword(signUpRequest.password())) {
             log.warn("SignUp failed: weak password");
             throw InvalidInputException.weakPassword();
         }
         
         // VALIDACIÓN 6: Rol válido (solo USUARIO o REPARTIDOR)
-        Role roleEnum;
-        try {
-            roleEnum = Role.valueOf(signUpRequest.getRole().toUpperCase());
-            if (roleEnum != Role.USER && roleEnum != Role.DELIVERY) {
-                throw new IllegalArgumentException();
-            }
-        } catch (Exception e) {
-            log.warn("SignUp failed: invalid role {}", signUpRequest.getRole());
-            throw InvalidInputException.weakPassword();
+        if (signUpRequest.role() != Role.USER && signUpRequest.role() != Role.DELIVERY) {
+            log.warn("SignUp failed: invalid role {}", signUpRequest.role());
+            throw InvalidInputException.invalidEmail("El rol debe ser USUARIO o REPARTIDOR");
         }
         
         // CIFRADO: Encriptar la contraseña
-        String encryptedPassword = passwordEncoder.encode(signUpRequest.getPassword());
+        String encryptedPassword = passwordEncoder.encode(signUpRequest.password());
         
         // CREACIÓN: Crear usuario con set de fecha de creación
         User newUser = User.create(
             null,
-            signUpRequest.getName(),
-            signUpRequest.getEmail(),
+            signUpRequest.username(),
+            signUpRequest.email(),
             encryptedPassword,
-            roleEnum
+            signUpRequest.role()
         );
         
         // PERSISTENCIA: Guardar en repositorio
@@ -207,19 +212,11 @@ public class AuthService implements AuthUseCase {
     }
 
     /**
-     * Validar email con expresión regular (segura contra ReDoS)
+     * Validar email con expresión regular
      */
     private boolean isValidEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            return false;
-        }
-        // Validación simple y segura: debe contener @ y un punto
-        int atIndex = email.indexOf('@');
-        if (atIndex <= 0 || atIndex == email.length() - 1) {
-            return false;
-        }
-        // Verificar que hay un punto después del @
-        return email.lastIndexOf('.') > atIndex;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email != null && email.matches(emailRegex);
     }
     
     /**
@@ -234,11 +231,18 @@ public class AuthService implements AuthUseCase {
             return false;
         }
         
-        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
-        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
-        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasUppercase = password.matches(".*[A-Z].*");
+        boolean hasLowercase = password.matches(".*[a-z].*");
+        boolean hasDigit = password.matches(".*\\d.*");
         
         return hasUppercase && hasLowercase && hasDigit;
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto#

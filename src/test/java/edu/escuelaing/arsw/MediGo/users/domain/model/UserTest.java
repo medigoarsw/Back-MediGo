@@ -3,6 +3,8 @@ package edu.escuelaing.arsw.medigo.users.domain.model;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -44,7 +46,7 @@ class UserTest {
     @Test
     void testInactiveUserCannotLogin() {
         // ARRANGE
-        User user = new User(1L, "user@example.com", "password123", "user", Role.USER, false);
+        User user = new User(1L, "user@example.com", "password123", "user", Role.USER, false, LocalDateTime.now());
         
         // ACT
         boolean result = user.credentialsMatch("password123");

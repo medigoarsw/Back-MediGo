@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:org/springframework/security/crypto/password/PasswordEncoder#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 672
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -9,7 +20,7 @@ import edu.escuelaing.arsw.medigo.users.domain.util.PasswordValidator;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.@@PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -207,19 +218,11 @@ public class AuthService implements AuthUseCase {
     }
 
     /**
-     * Validar email con expresión regular (segura contra ReDoS)
+     * Validar email con expresión regular
      */
     private boolean isValidEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            return false;
-        }
-        // Validación simple y segura: debe contener @ y un punto
-        int atIndex = email.indexOf('@');
-        if (atIndex <= 0 || atIndex == email.length() - 1) {
-            return false;
-        }
-        // Verificar que hay un punto después del @
-        return email.lastIndexOf('.') > atIndex;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email != null && email.matches(emailRegex);
     }
     
     /**
@@ -234,11 +237,18 @@ public class AuthService implements AuthUseCase {
             return false;
         }
         
-        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
-        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
-        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasUppercase = password.matches(".*[A-Z].*");
+        boolean hasLowercase = password.matches(".*[a-z].*");
+        boolean hasDigit = password.matches(".*\\d.*");
         
         return hasUppercase && hasLowercase && hasDigit;
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder#

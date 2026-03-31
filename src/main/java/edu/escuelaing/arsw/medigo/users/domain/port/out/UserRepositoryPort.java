@@ -25,4 +25,9 @@ public interface UserRepositoryPort {
      * Busca un usuario por su ID
      */
     Optional<User> findById(Long id);
+    
+    /**
+     * Guarda un nuevo usuario
+     */
+    User save(User user);
 }

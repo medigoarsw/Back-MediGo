@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:_empty_/User#setId#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: _empty_/User#setId#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 6988
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
@@ -167,9 +178,11 @@ class AuthServiceTest {
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newuser@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
-        
-        User savedUser = User.create(1L, "newuser", "newuser@example.com", "encodedPassword", Role.USER);
-        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User user = invocation.getArgument(0);
+            user.@@setId(1L);
+            return user;
+        });
         
         // ACT
         User result = authService.signUp(signUpRequest);
@@ -268,3 +281,10 @@ class AuthServiceTest {
         });
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/User#setId#
