@@ -1,0 +1,63 @@
+package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
+
+import edu.escuelaing.arsw.medigo.users.domain.model.User;
+import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
+import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
+import edu.escuelaing.arsw.medigo.users.infrastructure.entity.UserEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * ADAPTADOR DE SALIDA: Implementación JPA del repositorio de usuarios
+ * 
+ * Implementa UserRepositoryPort (puerto del dominio)
+ * Usa UserJpaRepository (Spring Data JPA)
+ * Traduce entre UserEntity (BD) y User (dominio)
+ * 
+ * VENTAJA: El dominio no conoce JPA, podemos cambiar de BD sin toca el dominio
+ */
+@Slf4j
+public class JpaUserRepositoryAdapter implements UserRepositoryPort {
+    
+    private final UserJpaRepository userJpaRepository;
+    
+    public JpaUserRepositoryAdapter(UserJpaRepository userJpaRepository) {
+        this.userJpaRepository = userJpaRepository;
+    }
+    
+    @Override
+    public Optional<User> findByUsername(String username) {
+        log.debug("Buscando usuario por username: {}", username);
+        return userJpaRepository.findByName(username)
+                .map(this::toDomainUser);
+    }
+    
+    @Override
+    public Optional<User> findByEmail(String email) {
+        log.debug("Buscando usuario por email: {}", email);
+        return userJpaRepository.findByEmail(email)
+                .map(this::toDomainUser);
+    }
+    
+    @Override
+    public Optional<User> findById(Long id) {
+        log.debug("Buscando usuario por id: {}", id);
+        return userJpaRepository.findById(id)
+                .map(this::toDomainUser);
+    }
+    
+    /**
+     * Traduce UserEntity (infraestructura/BD) a User (dominio)
+     */
+    private User toDomainUser(UserEntity entity) {
+        return User.create(
+            entity.getId(),
+            entity.getName(),
+            entity.getEmail(),
+            entity.getPasswordHash(),
+            Role.valueOf(entity.getRole().toUpperCase())
+        );
+    }
+}

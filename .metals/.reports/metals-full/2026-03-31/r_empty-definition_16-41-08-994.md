@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/MockUserRepository.java:java/lang/Deprecated#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/MockUserRepository.java
+empty definition using pc, found symbol in pc: java/lang/Deprecated#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 603
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/MockUserRepository.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -15,7 +26,7 @@ import java.util.*;
  * por InMemoryUserRepository que tiene mejor arquitectura.
  */
 @Slf4j
-@Deprecated(since = "1.0", forRemoval = true)
+@@@Deprecated(since = "1.0", forRemoval = true)
 public class MockUserRepository implements UserRepositoryPort {
     
     private final Map<String, User> users = new HashMap<>();
@@ -50,3 +61,10 @@ public class MockUserRepository implements UserRepositoryPort {
             .findFirst();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/lang/Deprecated#
