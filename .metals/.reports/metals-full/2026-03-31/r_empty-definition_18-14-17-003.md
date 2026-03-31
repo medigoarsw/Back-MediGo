@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java:org/springframework/boot/test/context/SpringBootTest#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+empty definition using pc, found symbol in pc: org/springframework/boot/test/context/SpringBootTest#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1047
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.@@SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -145,3 +156,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.role").value("delivery"));
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/boot/test/context/SpringBootTest#

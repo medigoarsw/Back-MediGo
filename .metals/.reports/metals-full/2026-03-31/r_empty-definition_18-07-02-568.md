@@ -1,11 +1,24 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java:edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/UserJpaRepository#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/UserJpaRepository#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 397
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.config;
 
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.InMemoryUserRepository;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.JpaUserRepositoryAdapter;
-import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.@@UserJpaRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,11 +56,19 @@ public class AuthConfig {
     /**
      * PERFIL: default/local - Producción
      * Uso: Desarrollo y producción con BD real
-     * Se crea SOLO en perfiles locales/default (NO en test/ci)
+     * Se crea SOLO si no existe otro bean de UserRepositoryPort
+     * (@ConditionalOnMissingBean hace que no se cree si testUserRepository ya existe)
      */
     @Bean
-    @Profile({"local", "default"})
+    @ConditionalOnMissingBean
     public UserRepositoryPort productionUserRepository(UserJpaRepository userJpaRepository) {
         return new JpaUserRepositoryAdapter(userJpaRepository);
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/UserJpaRepository#
