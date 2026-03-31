@@ -32,10 +32,12 @@ public class PasswordValidator {
             return false;
         }
         
-        return password.matches(".*" + UPPERCASE_PATTERN + ".*") &&
-               password.matches(".*" + LOWERCASE_PATTERN + ".*") &&
-               password.matches(".*" + DIGIT_PATTERN + ".*") &&
-               password.matches(".*" + SPECIAL_CHAR_PATTERN + ".*");
+        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecialChar = password.chars().anyMatch(c -> !Character.isLetterOrDigit(c));
+        
+        return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
     }
     
     /**

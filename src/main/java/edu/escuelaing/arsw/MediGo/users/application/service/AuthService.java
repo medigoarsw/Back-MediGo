@@ -207,11 +207,19 @@ public class AuthService implements AuthUseCase {
     }
 
     /**
-     * Validar email con expresión regular
+     * Validar email con expresión regular (segura contra ReDoS)
      */
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return email != null && email.matches(emailRegex);
+        if (email == null || email.isEmpty()) {
+            return false;
+        }
+        // Validación simple y segura: debe contener @ y un punto
+        int atIndex = email.indexOf('@');
+        if (atIndex <= 0 || atIndex == email.length() - 1) {
+            return false;
+        }
+        // Verificar que hay un punto después del @
+        return email.lastIndexOf('.') > atIndex;
     }
     
     /**
@@ -226,9 +234,9 @@ public class AuthService implements AuthUseCase {
             return false;
         }
         
-        boolean hasUppercase = password.matches(".*[A-Z].*");
-        boolean hasLowercase = password.matches(".*[a-z].*");
-        boolean hasDigit = password.matches(".*\\d.*");
+        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
         
         return hasUppercase && hasLowercase && hasDigit;
     }
