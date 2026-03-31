@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java:org/springframework/stereotype/Repository#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java
+empty definition using pc, found symbol in pc: org/springframework/stereotype/Repository#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 427
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -5,7 +16,7 @@ import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import edu.escuelaing.arsw.medigo.users.infrastructure.config.TestDataConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.@@Repository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +50,7 @@ import java.util.Optional;
  * }
  */
 @Slf4j
+@Repository("inMemoryUserRepository")
 public class InMemoryUserRepository implements UserRepositoryPort {
     
     private final Map<Long, User> usersById = new HashMap<>();
@@ -117,3 +129,10 @@ public class InMemoryUserRepository implements UserRepositoryPort {
         return user;
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/stereotype/Repository#
