@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.security.MessageDigest;
+
 /**
  * Modelo de dominio: Usuario
  * 
@@ -38,13 +40,25 @@ public class User {
     /**
      * Valida que las credenciales coincidan
      * Esta lógica está en el dominio porque es una regla de negocio pura
+     * 
+     * ⚠️ TIMING ATTACK RESISTANCE:
+     * Se usa MessageDigest.isEqual() en lugar de String.equals() para evitar
+     * ataques de timing que permitirían adivinar contraseñas carácter por carácter.
+     * MessageDigest.isEqual() toma siempre el mismo tiempo independientemente
+     * de dónde falle la comparación.
+     * 
+     * En producción: Usaría bcrypt.matches(providedPassword, this.password)
+     * que ya es timing-attack-resistant y además hashea las contraseñas.
      */
     public boolean credentialsMatch(String providedPassword) {
         if (!this.active) {
             return false;
         }
-        // En producción aquí haría bcrypt.matches(providedPassword, this.password)
-        return this.password.equals(providedPassword);
+        // Usar MessageDigest.isEqual() para comparación timing-attack-resistant
+        // Nota: Esto funciona incluso con passwords en texto plano (como en MVP)
+        byte[] providedBytes = providedPassword.getBytes();
+        byte[] storedBytes = this.password.getBytes();
+        return MessageDigest.isEqual(providedBytes, storedBytes);
     }
 
     /**

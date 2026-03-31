@@ -55,14 +55,14 @@ public class AuthService implements AuthUseCase {
      */
     @Override
     public User authenticate(String username, String password) {
-        log.info("Intentando autenticar usuario: {}", username);
+        log.debug("Authentication attempt initiated");
         
         // Buscar usuario en repositorio (abstracto)
         Optional<User> user = userRepository.findByUsername(username);
         
         // Si no existe, lanzo excepción de dominio
         if (user.isEmpty()) {
-            log.warn("Usuario no encontrado: {}", username);
+            log.warn("Authentication failed: user not found");
             throw UserNotFoundException.byUsername(username);
         }
         
@@ -71,11 +71,11 @@ public class AuthService implements AuthUseCase {
         
         // Valido credenciales usando lógica del dominio
         if (!foundUser.credentialsMatch(password)) {
-            log.warn("Credenciales inválidas para usuario: {}", username);
+            log.warn("Authentication failed: invalid credentials");
             throw InvalidCredentialsException.withMessage(username);
         }
         
-        log.info("Usuario autenticado exitosamente: {}", username);
+        log.info("User authenticated successfully");
         return foundUser;
     }
 

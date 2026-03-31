@@ -86,7 +86,7 @@ public class AuthController {
     })
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
         try {
-            log.info("Login request para usuario: {}", request.getUsername());
+            log.debug("Authentication request received");
             
             // PASO 1: Llamar al caso de uso (AuthService)
             User user = authUseCase.authenticate(
@@ -97,20 +97,20 @@ public class AuthController {
             // PASO 2: Convertir a DTO
             LoginResponseDto response = buildLoginResponse(user);
             
-            log.info("Login exitoso para usuario: {}", user.getUsername());
+            log.info("Authentication successful for user ID: {}", user.getId());
             return ResponseEntity.ok(response);
             
         } catch (UserNotFoundException e) {
-            log.warn("Usuario no encontrado: {}", e.getMessage());
+            log.debug("Authentication failed: user not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidCredentialsException e) {
-            log.warn("Credenciales inválidas: {}", e.getMessage());
+            log.debug("Authentication failed: invalid credentials");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (DomainException e) {
-            log.warn("Error de dominio en login: {}", e.getMessage());
+            log.debug("Authentication failed: domain error");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
-            log.error("Error inesperado en login", e);
+            log.error("Unexpected error during authentication", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

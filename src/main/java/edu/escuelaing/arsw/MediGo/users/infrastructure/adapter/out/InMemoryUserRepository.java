@@ -3,6 +3,7 @@ package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
+import edu.escuelaing.arsw.medigo.users.infrastructure.config.TestDataConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -57,50 +58,18 @@ public class InMemoryUserRepository implements UserRepositoryPort {
     }
 
     /**
-     * Carga usuarios mock en memoria
+     * Carga usuarios mock en memoria desde TestDataConfig
+     * 
+     * Las credenciales reales están centralizadas en TestDataConfig
+     * para mejor seguridad y auditabilidad de datos de test.
      */
     private void initializeMockUsers() {
-        // Usuario 1: STUDENT
-        User student = User.create(
-            nextId++,
-            "student",
-            "student@medigo.com",
-            "123",
-            Role.STUDENT
-        );
-        addUserToMaps(student);
-        
-        // Usuario 2: ADMIN
-        User admin = User.create(
-            nextId++,
-            "admin",
-            "admin@medigo.com",
-            "123",
-            Role.ADMIN
-        );
-        addUserToMaps(admin);
-        
-        // Usuario 3: VENDOR
-        User vendor = User.create(
-            nextId++,
-            "vendor",
-            "vendor@medigo.com",
-            "123",
-            Role.VENDOR
-        );
-        addUserToMaps(vendor);
-        
-        // Usuario 4: LOGISTICS
-        User logistics = User.create(
-            nextId++,
-            "logistics",
-            "logistics@medigo.com",
-            "123",
-            Role.LOGISTICS
-        );
-        addUserToMaps(logistics);
-        
-        log.info("InMemoryUserRepository inicializado con {} usuarios de prueba", usersById.size());
+        TestDataConfig.TEST_USERS.forEach(testData -> {
+            User user = testData.toDomainUser();
+            addUserToMaps(user);
+        });
+        log.info("InMemoryUserRepository inicializado con {} usuarios de prueba", 
+                 TestDataConfig.TEST_USERS.size());
     }
 
     /**
