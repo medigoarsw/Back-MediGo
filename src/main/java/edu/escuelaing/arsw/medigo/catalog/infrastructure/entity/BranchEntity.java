@@ -5,26 +5,28 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "medications")
+@Table(name = "branches")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MedicationEntity {
+public class BranchEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    private String description;
+    private String address;
 
-    private String unit;
+    private Double latitude;
+
+    private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "medication_id")
+    @JoinColumn(name = "branch_id")
     private List<BranchStockEntity> stocks;
 }
