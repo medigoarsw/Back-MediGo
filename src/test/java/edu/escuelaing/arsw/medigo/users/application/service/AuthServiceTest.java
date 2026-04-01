@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.users.application.service;
 
+import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidInputException;

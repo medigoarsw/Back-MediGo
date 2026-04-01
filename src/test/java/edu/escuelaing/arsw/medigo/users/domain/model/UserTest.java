@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.users.domain.model;
 
+import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import org.junit.jupiter.api.Test;
 
