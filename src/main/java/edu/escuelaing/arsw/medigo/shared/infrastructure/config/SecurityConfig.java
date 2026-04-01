@@ -4,22 +4,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Configuración de Spring Security
- * 
- * Por ahora:
- * - POST /api/auth/login: PERMITIDO (sin autenticación)
- * - GET /api/auth/: PERMITIDO (sin autenticación)
- * - Todo lo demás: requiere autenticación
- * 
+ *
  * CSRF está deshabilitado por diseño:
- * Esta es una API REST stateless que usa autenticación por token (JWT).
- * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
- * Los clientes (móvil, frontend, Postman) están protegidos por la autenticación
- * de token en el header Authorization.
- * 
+ * API REST stateless con autenticación por token (JWT).
+ *
+ * Se usan AntPathRequestMatcher explícitamente para evitar el comportamiento
+ * de MvcRequestMatcher (default en Spring Security 6.1+) que puede fallar
+ * al resolver patrones wildcard cuando WebSocket está presente en el classpath.
+ *
  * PRODUCCIÓN:
  * - Implementar JWT tokens en AuthController
  * - Crear JwtAuthenticationFilter
@@ -33,35 +31,30 @@ public class SecurityConfig {
     @SuppressWarnings("java:S4502")  // CSRF seguro en API stateless con token auth
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()  // Seguro: API stateless con autenticación por token
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 // Swagger UI y documentación (públicos)
                 .requestMatchers(
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/v3/api-docs",
-                    "/v3/api-docs/**",
-                    "/swagger-resources",
-                    "/swagger-resources/**",
-                    "/webjars/**"
+                    new AntPathRequestMatcher("/swagger-ui.html"),
+                    new AntPathRequestMatcher("/swagger-ui/**"),
+                    new AntPathRequestMatcher("/v3/api-docs"),
+                    new AntPathRequestMatcher("/v3/api-docs/**"),
+                    new AntPathRequestMatcher("/swagger-resources"),
+                    new AntPathRequestMatcher("/swagger-resources/**"),
+                    new AntPathRequestMatcher("/webjars/**")
                 ).permitAll()
                 // Endpoints de autenticación (públicos)
-                .requestMatchers(
-                    "POST",
-                    "/api/auth/login",
-                    "/api/auth/register"
-                ).permitAll()
-                .requestMatchers(
-                    "GET",
-                    "/api/auth/**"
-                ).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                 // Endpoint raíz
-                .requestMatchers("/").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                // Endpoints de subastas (públicos hasta implementar JWT)
+                .requestMatchers(new AntPathRequestMatcher("/api/auctions/**")).permitAll()
                 // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
-            )
-            .formLogin().disable()  // Desabilitar form login por defecto
-            .httpBasic().disable();  // Desabilitar HTTP Basic
+            );
 
         return http.build();
     }
