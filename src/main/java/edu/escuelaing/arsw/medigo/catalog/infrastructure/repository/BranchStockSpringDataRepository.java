@@ -40,6 +40,7 @@ public interface BranchStockSpringDataRepository extends JpaRepository<BranchSto
             SELECT new edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo(
                 bs.medicationId, 
                 m.name, 
+                m.description,
                 m.unit, 
                 bs.branchId, 
                 bs.quantity

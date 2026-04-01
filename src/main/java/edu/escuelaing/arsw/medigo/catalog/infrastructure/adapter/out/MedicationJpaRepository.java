@@ -3,6 +3,7 @@ package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.out;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.MedicationEntity;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchStockEntity;
@@ -154,5 +155,40 @@ public class MedicationJpaRepository implements MedicationRepositoryPort {
                 .medicationId(entity.getMedicationId())
                 .quantity(entity.getQuantity())
                 .build();
+    }
+
+    /**
+     * Obtiene medicamentos disponibles en una sucursal específica con su información enriquecida
+     */
+    @Override
+    public List<StockWithMedicationInfo> findMedicationsByBranch(Long branchId) {
+        log.debug("Obteniendo medicamentos para sucursal: {}", branchId);
+        return branchStockSpringDataRepository.findStockByBranchWithMedicationInfo(branchId);
+    }
+
+    /**
+     * Obtiene todas las sucursales con sus medicamentos disponibles
+     * Útil para dashboards que muestren disponibilidad por sucursal
+     */
+    @Override
+    public List<BranchWithMedications> findAllBranchesWithMedications() {
+        log.debug("Obteniendo todas las sucursales con medicamentos");
+        
+        return medicationSpringDataRepository.findAllBranches()
+                .stream()
+                .map(branchEntity -> {
+                    List<StockWithMedicationInfo> medications = 
+                        branchStockSpringDataRepository.findStockByBranchWithMedicationInfo(branchEntity.getId());
+                    
+                    return BranchWithMedications.builder()
+                            .branchId(branchEntity.getId())
+                            .branchName(branchEntity.getName())
+                            .address(branchEntity.getAddress())
+                            .latitude(branchEntity.getLatitude())
+                            .longitude(branchEntity.getLongitude())
+                            .medications(medications)
+                            .build();
+                })
+                .toList();
     }
 }

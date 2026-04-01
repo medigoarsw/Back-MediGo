@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class StockWithMedicationInfo {
     private Long medicationId;
     private String medicationName;
+    private String description;
     private String medicationUnit;
     private Long branchId;
     private Integer quantity;

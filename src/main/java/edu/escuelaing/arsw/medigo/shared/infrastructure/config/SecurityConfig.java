@@ -55,6 +55,12 @@ public class SecurityConfig {
                     "GET",
                     "/api/auth/**"
                 ).permitAll()
+                // Endpoints de catálogo - lectura pública
+                .requestMatchers(
+                    "GET",
+                    "/api/medications/search",
+                    "/api/medications/*/stock"
+                ).permitAll()
                 // Endpoint raíz
                 .requestMatchers("/").permitAll()
                 // Todo lo demás requiere autenticación

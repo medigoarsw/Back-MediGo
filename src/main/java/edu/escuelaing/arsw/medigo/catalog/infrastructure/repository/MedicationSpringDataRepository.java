@@ -1,6 +1,7 @@
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.repository;
 
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.MedicationEntity;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,10 @@ public interface MedicationSpringDataRepository extends JpaRepository<Medication
      * Verificar si existe un medicamento con ese nombre
      */
     boolean existsByNameIgnoreCase(String name);
+
+    /**
+     * Obtener todas las sucursales para agregación de medicamentos
+     */
+    @Query("SELECT DISTINCT b FROM BranchEntity b")
+    List<BranchEntity> findAllBranches();
 }

@@ -159,6 +159,166 @@ public class MedicationController {
     }
 
     /**
+     * Obtener medicamentos disponibles por sucursal
+     */
+    @GetMapping("/branch/{branchId}/medications")
+    @Operation(
+        summary = "Obtener medicamentos por sucursal",
+        description = "Obtiene la lista completa de medicamentos disponibles en una sucursal específica con su información enriquecida (nombre, descripción, unidad)"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Medicamentos obtenidos exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    type = "array",
+                    example = """
+                        [
+                          {
+                            "medicationId": 1,
+                            "medicationName": "Ibuprofeno 400mg",
+                            "description": "Antiinflamatorio y analgésico",
+                            "unit": "Caja x30",
+                            "quantity": 150
+                          },
+                          {
+                            "medicationId": 2,
+                            "medicationName": "Paracetamol 500mg",
+                            "description": "Analgésico y antipirético",
+                            "unit": "Tableta",
+                            "quantity": 75
+                          }
+                        ]
+                        """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "ID de sucursal inválido"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Sucursal no encontrada"
+        )
+    })
+    public ResponseEntity<List<MedicationBranchStockResponse>> getMedicationsByBranch(
+            @Parameter(
+                name = "branchId",
+                description = "ID único de la sucursal",
+                example = "1",
+                required = true
+            )
+            @PathVariable Long branchId) {
+
+        log.info("Obteniendo medicamentos para sucursal: {}", branchId);
+
+        List<StockWithMedicationInfo> stocks = medicationRepository.findMedicationsByBranch(branchId);
+        List<MedicationBranchStockResponse> responses = stocks.stream()
+                .map(stock -> MedicationBranchStockResponse.builder()
+                        .medicationId(stock.getMedicationId())
+                        .medicationName(stock.getMedicationName())
+                        .description(stock.getDescription())
+                        .unit(stock.getMedicationUnit())
+                        .quantity(stock.getQuantity())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    /**
+     * Obtener medicamentos agrupados por sucursal
+     */
+    @GetMapping("/branches")
+    @Operation(
+        summary = "Obtener medicamentos por todas las sucursales",
+        description = "Obtiene una vista consolidada de todas las sucursales con los medicamentos disponibles en cada una. Útil para dashboards y reportes"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Sucursales y medicamentos obtenidos exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    type = "array",
+                    example = """
+                        [
+                          {
+                            "branchId": 1,
+                            "branchName": "Sucursal Centro",
+                            "address": "Calle 10 # 5-20",
+                            "latitude": 4.72160,
+                            "longitude": -74.04499,
+                            "medications": [
+                              {
+                                "medicationId": 1,
+                                "medicationName": "Ibuprofeno 400mg",
+                                "description": "Antiinflamatorio y analgésico",
+                                "unit": "Caja x30",
+                                "quantity": 150
+                              }
+                            ]
+                          },
+                          {
+                            "branchId": 2,
+                            "branchName": "Sucursal Norte",
+                            "address": "Carrera 7 # 120-45",
+                            "latitude": 4.75250,
+                            "longitude": -74.02300,
+                            "medications": [
+                              {
+                                "medicationId": 1,
+                                "medicationName": "Ibuprofeno 400mg",
+                                "description": "Antiinflamatorio y analgésico",
+                                "unit": "Caja x30",
+                                "quantity": 200
+                              }
+                            ]
+                          }
+                        ]
+                        """
+                )
+            )
+        )
+    })
+    public ResponseEntity<List<BranchMedicationsResponse>> getMedicationsByBranches() {
+        log.info("Obteniendo medicamentos agrupados por todas las sucursales");
+
+        List<edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications> branches;
+        try {
+            branches = searchUseCase.getAllMedicationsByBranches();
+        } catch (Exception e) {
+            log.warn("Error al obtener sucursales con medicamentos: {}", e.getMessage());
+            branches = List.of();
+        }
+
+        List<BranchMedicationsResponse> responses = branches.stream()
+                .map(branch -> BranchMedicationsResponse.builder()
+                        .branchId(branch.getBranchId())
+                        .branchName(branch.getBranchName())
+                        .address(branch.getAddress())
+                        .latitude(branch.getLatitude())
+                        .longitude(branch.getLongitude())
+                        .medications(branch.getMedications().stream()
+                                .map(stock -> MedicationBranchStockResponse.builder()
+                                        .medicationId(stock.getMedicationId())
+                                        .medicationName(stock.getMedicationName())
+                                        .description(stock.getDescription())
+                                        .unit(stock.getMedicationUnit())
+                                        .quantity(stock.getQuantity())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    /**
      * Crear un nuevo medicamento con stock inicial
      */
     @PostMapping

@@ -1,6 +1,8 @@
 package edu.escuelaing.arsw.medigo.catalog.application;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.*;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
@@ -136,6 +138,38 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
         medicationRepository.updateStock(branchId, medicationId, quantity);
 
         log.info("Stock actualizado exitosamente");
+    }
+
+    /**
+     * Obtiene todos los medicamentos disponibles en una sucursal específica
+     * @param branchId ID de la sucursal
+     * @return lista de medicamentos con sus stocks en esa sucursal
+     */
+    @Transactional(readOnly = true)
+    public List<StockWithMedicationInfo> getMedicationsByBranch(Long branchId) {
+        if (branchId == null || branchId <= 0) {
+            throw new BusinessException("El ID de la sucursal debe ser válido");
+        }
+
+        log.info("Obteniendo medicamentos para sucursal: {}", branchId);
+        List<StockWithMedicationInfo> medications = medicationRepository.findMedicationsByBranch(branchId);
+
+        log.info("Se encontraron {} medicamentos en sucursal {}", medications.size(), branchId);
+        return medications;
+    }
+
+    /**
+     * Obtiene todos los medicamentos agrupados por sucursal
+     * Útil para dashboards y reportes
+     * @return lista de sucursales con sus medicamentos disponibles
+     */
+    @Transactional(readOnly = true)
+    public List<BranchWithMedications> getAllMedicationsByBranches() {
+        log.info("Obteniendo medicamentos agrupados por todas las sucursales");
+        List<BranchWithMedications> result = medicationRepository.findAllBranchesWithMedications();
+
+        log.info("Se encontraron {} sucursales con medicamentos", result.size());
+        return result;
     }
 
     /**
