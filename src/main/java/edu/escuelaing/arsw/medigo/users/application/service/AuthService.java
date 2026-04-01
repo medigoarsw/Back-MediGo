@@ -55,7 +55,7 @@ public class AuthService implements AuthUseCase {
      * 1. Buscar el usuario por username
      * 2. Verificar que las credenciales coincidan (delegado al modelo de dominio)
      * 3. Si todo OK, devolver el usuario
-     * 4. Si fallaExceptionException
+     * 4. Si falla, lanzar excepción de dominio
      */
     @Override
     public User authenticate(String username, String password) {
@@ -175,11 +175,11 @@ public class AuthService implements AuthUseCase {
             throw InvalidInputException.weakPassword();
         }
         
-        // VALIDACIÓN 6: Rol válido (solo USUARIO o REPARTIDOR)
+        // VALIDACIÓN 6: Rol válido (solo AFFILIATE o REPARTIDOR)
         Role roleEnum;
         try {
             roleEnum = Role.valueOf(signUpRequest.getRole().toUpperCase());
-            if (roleEnum != Role.USER && roleEnum != Role.DELIVERY) {
+            if (roleEnum != Role.AFFILIATE && roleEnum != Role.DELIVERY) {
                 throw new IllegalArgumentException();
             }
         } catch (Exception e) {

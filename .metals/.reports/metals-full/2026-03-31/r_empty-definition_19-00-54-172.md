@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:org/junit/jupiter/params/ParameterizedTest#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: org/junit/jupiter/params/ParameterizedTest#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 975
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
@@ -13,6 +24,8 @@ import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.@@ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -54,7 +67,7 @@ class AuthServiceTest {
     @DisplayName("Debe autenticar usuario con credenciales válidas")
     void testAuthenticateSuccess() {
         // ARRANGE - Preparar datos
-        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         when(userRepository.findByUsername("user"))
             .thenReturn(Optional.of(user));
         
@@ -88,7 +101,7 @@ class AuthServiceTest {
     @DisplayName("Debe lanzar excepción con contraseña incorrecta")
     void testAuthenticateInvalidPassword() {
         // ARRANGE
-        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         when(userRepository.findByUsername("user"))
             .thenReturn(Optional.of(user));
         
@@ -136,7 +149,7 @@ class AuthServiceTest {
     @DisplayName("Debe autenticar múltiples usuarios diferentes")
     void testAuthenticateMultipleUsers() {
         // ARRANGE - Diferentes usuarios con diferentes roles
-        User user = User.create(1L, "user", "user@example.com", "123", Role.USER);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         User admin = User.create(2L, "admin", "admin@example.com", "456", Role.ADMIN);
         User delivery = User.create(3L, "delivery", "delivery@example.com", "789", Role.DELIVERY);
         
@@ -149,7 +162,7 @@ class AuthServiceTest {
         User adminResult = authService.authenticate("admin", "456");
         User deliveryResult = authService.authenticate("delivery", "789");
         
-        assertEquals(Role.USER, userResult.getRole());
+        assertEquals(Role.AFFILIATE, userResult.getRole());
         assertEquals(Role.ADMIN, adminResult.getRole());
         assertEquals(Role.DELIVERY, deliveryResult.getRole());
     }
@@ -162,13 +175,13 @@ class AuthServiceTest {
         signUpRequest.setName("newuser");
         signUpRequest.setEmail("newuser@example.com");
         signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        signUpRequest.setRole("AFFILIATE");
         
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newuser@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         
-        User savedUser = User.create(1L, "newuser", "newuser@example.com", "encodedPassword", Role.USER);
+        User savedUser = User.create(1L, "newuser", "newuser@example.com", "encodedPassword", Role.AFFILIATE);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
         
         // ACT
@@ -189,9 +202,9 @@ class AuthServiceTest {
         signUpRequest.setName("existing");
         signUpRequest.setEmail("new@example.com");
         signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        signUpRequest.setRole("AFFILIATE");
         
-        User existingUser = User.create(1L, "existing", "existing@example.com", "pass", Role.USER);
+        User existingUser = User.create(1L, "existing", "existing@example.com", "pass", Role.AFFILIATE);
         when(userRepository.findByUsername("existing")).thenReturn(Optional.of(existingUser));
         
         // ACT & ASSERT
@@ -208,9 +221,9 @@ class AuthServiceTest {
         signUpRequest.setName("newuser");
         signUpRequest.setEmail("existing@example.com");
         signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        signUpRequest.setRole("AFFILIATE");
         
-        User existingUser = User.create(1L, "existinguser", "existing@example.com", "pass", Role.USER);
+        User existingUser = User.create(1L, "existinguser", "existing@example.com", "pass", Role.AFFILIATE);
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("existing@example.com")).thenReturn(Optional.of(existingUser));
         
@@ -220,51 +233,31 @@ class AuthServiceTest {
         });
     }
 
-    @Test
-    @DisplayName("Debe fallar con email inválido")
-    void testSignUpInvalidEmail() {
+    @ParameterizedTest
+    @DisplayName("SignUp debe fallar con datos inválidos")
+    @CsvSource({
+        "'', 'newuser@example.com', 'Password123!', 'AFFILIATE', 'username vacío'",
+        "'newuser', 'invalid-email', 'Password123!', 'AFFILIATE', 'email inválido'",
+        "'newuser', 'newuser@example.com', 'weak', 'AFFILIATE', 'contraseña débil'"
+    })
+    void testSignUpWithInvalidData(String name, String email, String password, String role, String reason) {
         // ARRANGE
         SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("invalid-email");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
+        signUpRequest.setName(name);
+        signUpRequest.setEmail(email);
+        signUpRequest.setPassword(password);
+        signUpRequest.setRole(role);
         
         // ACT & ASSERT
         assertThrows(InvalidInputException.class, () -> {
             authService.signUp(signUpRequest);
-        });
-    }
-
-    @Test
-    @DisplayName("Debe fallar con contraseña débil")
-    void testSignUpWeakPassword() {
-        // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("newuser");
-        signUpRequest.setEmail("newuser@example.com");
-        signUpRequest.setPassword("weak");
-        signUpRequest.setRole("USER");
-        
-        // ACT & ASSERT
-        assertThrows(InvalidInputException.class, () -> {
-            authService.signUp(signUpRequest);
-        });
-    }
-
-    @Test
-    @DisplayName("Debe fallar cuando username está vacío")
-    void testSignUpEmptyUsername() {
-        // ARRANGE
-        SignUpRequestDto signUpRequest = new SignUpRequestDto();
-        signUpRequest.setName("");
-        signUpRequest.setEmail("newuser@example.com");
-        signUpRequest.setPassword("Password123!");
-        signUpRequest.setRole("USER");
-        
-        // ACT & ASSERT
-        assertThrows(InvalidInputException.class, () -> {
-            authService.signUp(signUpRequest);
-        });
+        }, "Debe fallar cuando " + reason);
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/junit/jupiter/params/ParameterizedTest#

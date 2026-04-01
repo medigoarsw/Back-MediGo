@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
@@ -61,7 +60,7 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.access_token").exists())
             .andExpect(jsonPath("$.user_id").value(2))
             .andExpect(jsonPath("$.username").value("user"))
-            .andExpect(jsonPath("$.role").value("user"));
+            .andExpect(jsonPath("$.role").value("AFFILIATE"));
     }
     
     @Test
@@ -115,7 +114,7 @@ class AuthControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.user_id").value(1))
             .andExpect(jsonPath("$.username").value("admin"))
-            .andExpect(jsonPath("$.role").value("admin"));
+            .andExpect(jsonPath("$.role").value("ADMIN"));
     }
     
     @Test
@@ -142,6 +141,6 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.role").value("delivery"));
+            .andExpect(jsonPath("$.role").value("DELIVERY"));
     }
 }

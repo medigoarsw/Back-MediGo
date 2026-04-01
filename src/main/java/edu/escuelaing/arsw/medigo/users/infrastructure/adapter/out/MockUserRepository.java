@@ -13,6 +13,8 @@ import java.util.*;
  * 
  * Este archivo se mantiene por compatibilidad pero está siendo reemplazado
  * por InMemoryUserRepository que tiene mejor arquitectura.
+ * 
+ * @deprecated Use {@link InMemoryUserRepository} instead. This class will be removed in version 2.0.
  */
 @Slf4j
 @Deprecated(since = "1.0", forRemoval = true)
@@ -23,7 +25,7 @@ public class MockUserRepository implements UserRepositoryPort {
     public MockUserRepository() {
         // Usuarios de prueba
         User admin = User.create(1L, "admin", "admin@medigo.com", "123", Role.ADMIN);
-        User user = User.create(2L, "user", "user@medigo.com", "123", Role.USER);
+        User user = User.create(2L, "user", "user@medigo.com", "123", Role.AFFILIATE);
         User delivery = User.create(3L, "delivery", "delivery@medigo.com", "123", Role.DELIVERY);
         
         users.put(admin.getEmail(), admin);
