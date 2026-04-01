@@ -36,34 +36,10 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-<<<<<<< HEAD
-                // TODO LOS ENDPOINTS PÚBLICOS (sin autenticación)
+                // TODOS LOS ENDPOINTS PÚBLICOS (sin autenticación)
                 // Se agregará JWT y permisos por endpoint en fase final
                 .anyRequest().permitAll()
-            )
-            .formLogin().disable()  // Desabilitar form login por defecto
-            .httpBasic().disable();  // Desabilitar HTTP Basic
-=======
-                // Swagger UI y documentación (públicos)
-                .requestMatchers(
-                    new AntPathRequestMatcher("/swagger-ui.html"),
-                    new AntPathRequestMatcher("/swagger-ui/**"),
-                    new AntPathRequestMatcher("/v3/api-docs"),
-                    new AntPathRequestMatcher("/v3/api-docs/**"),
-                    new AntPathRequestMatcher("/swagger-resources"),
-                    new AntPathRequestMatcher("/swagger-resources/**"),
-                    new AntPathRequestMatcher("/webjars/**")
-                ).permitAll()
-                // Endpoints de autenticación (públicos)
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                // Endpoint raíz
-                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
-                // Endpoints de subastas (públicos hasta implementar JWT)
-                .requestMatchers(new AntPathRequestMatcher("/api/auctions/**")).permitAll()
-                // Todo lo demás requiere autenticación
-                .anyRequest().authenticated()
             );
->>>>>>> 1a598441a6d622f352ffdff5ea8ff443872081fe
 
         return http.build();
     }
