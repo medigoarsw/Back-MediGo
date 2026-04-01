@@ -1,46 +1,124 @@
 package edu.escuelaing.arsw.medigo.shared.infrastructure.exception;
 
-import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
-@RestControllerAdvice
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Manejador global de excepciones para toda la aplicación
+ */
+@ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AuctionNotFoundException.class)
-    public ProblemDetail handleNotFound(AuctionNotFoundException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    /**
+     * Maneja excepciones de negocio (BusinessException)
+     */
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(
+            BusinessException ex,
+            WebRequest request) {
+
+        log.warn("BusinessException: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .errorCode(ex.getErrorCode())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
     }
 
-    @ExceptionHandler(AuctionNotEditableException.class)
-    public ProblemDetail handleNotEditable(AuctionNotEditableException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    /**
+     * Maneja excepciones de recurso no encontrado
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException ex,
+            WebRequest request) {
+
+        log.warn("ResourceNotFoundException: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .errorCode("RESOURCE_NOT_FOUND")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .details("Resource ID: " + ex.getResourceId())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
-    @ExceptionHandler(AuctionAlreadyExistsException.class)
-    public ProblemDetail handleDuplicate(AuctionAlreadyExistsException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    /**
+     * Maneja excepciones de validación de argumentos (anotaciones @Valid)
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException ex,
+            WebRequest request) {
+
+        log.warn("Validation error: {}", ex.getMessage());
+
+        Map<String, String> fieldErrors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Validation failed")
+                .errorCode("VALIDATION_ERROR")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .details(fieldErrors.toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
     }
 
-    @ExceptionHandler(InvalidAuctionDatesException.class)
-    public ProblemDetail handleInvalidDates(InvalidAuctionDatesException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
+    /**
+     * Maneja excepciones genéricas no controladas
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex,
+            WebRequest request) {
 
-    @ExceptionHandler(InvalidBidException.class)
-    public ProblemDetail handleInvalidBid(InvalidBidException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
+        log.error("Unexpected error occurred", ex);
 
-    @ExceptionHandler(AuctionClosedException.class)
-    public ProblemDetail handleClosed(AuctionClosedException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.GONE, ex.getMessage());
-    }
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("An unexpected error occurred")
+                .errorCode("INTERNAL_ERROR")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .details(ex.getMessage())
+                .build();
 
-    @ExceptionHandler(BidLockNotAcquiredException.class)
-    public ProblemDetail handleLock(BidLockNotAcquiredException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
     }
 }

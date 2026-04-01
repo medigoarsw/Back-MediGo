@@ -9,19 +9,22 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * Configuración de Spring Security
- *
- * CSRF está deshabilitado por diseño:
- * API REST stateless con autenticación por token (JWT).
- *
- * Se usan AntPathRequestMatcher explícitamente para evitar el comportamiento
- * de MvcRequestMatcher (default en Spring Security 6.1+) que puede fallar
- * al resolver patrones wildcard cuando WebSocket está presente en el classpath.
- *
+ * Configuración de Spring Security - DESARROLLO
+ * 
+ * ⚠️ MODO ABIERTO PARA DESARROLLO
+ * Todos los endpoints son PUBLIC sin autenticación
+ * Se agregará JWT y permisos por endpoint al final
+ * 
+ * CSRF está deshabilitado:
+ * Esta es una API REST stateless que usa autenticación por token (JWT).
+ * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
+ * 
  * PRODUCCIÓN:
  * - Implementar JWT tokens en AuthController
  * - Crear JwtAuthenticationFilter
  * - Configurar token refresh
+ * - Agregar @RequiresRole en endpoints sensibles
+ * - Cambiar .anyRequest().authenticated() nuevamente
  */
 @Configuration
 @EnableWebSecurity
@@ -36,10 +39,11 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // TODOS LOS ENDPOINTS PÚBLICOS (sin autenticación)
-                // Se agregará JWT y permisos por endpoint en fase final
+                // ✅ TODOS LOS ENDPOINTS PÚBLICOS - SIN AUTENTICACIÓN
                 .anyRequest().permitAll()
-            );
+            )
+            .formLogin().disable()  // Desabilitar form login por defecto
+            .httpBasic().disable();  // Desabilitar HTTP Basic
 
         return http.build();
     }
