@@ -13,6 +13,8 @@ import java.util.*;
  * 
  * Este archivo se mantiene por compatibilidad pero está siendo reemplazado
  * por InMemoryUserRepository que tiene mejor arquitectura.
+ * 
+ * @deprecated Use {@link InMemoryUserRepository} instead. This class will be removed in version 2.0.
  */
 @Slf4j
 @Deprecated(since = "1.0", forRemoval = true)

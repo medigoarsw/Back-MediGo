@@ -30,13 +30,17 @@ import java.util.List;
 @Getter
 public class TestDataConfig {
     
+    private TestDataConfig() {
+        // Utility class - no instantiation
+    }
+    
     /**
      * Usuarios de prueba predefinidos
      * Estructura: id, username, email, password, role
      * 
      * Roles del sistema:
      * - ADMIN: Empresa Promotora de Salud (EPS)
-     * - USER: Usuario regular/paciente
+     * - AFFILIATE: Usuario regular/paciente
      * - DELIVERY: Repartidor de medicamentos
      */
     public static final List<UserTestData> TEST_USERS = Arrays.asList(
