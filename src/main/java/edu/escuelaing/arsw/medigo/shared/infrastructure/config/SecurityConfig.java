@@ -35,30 +35,9 @@ public class SecurityConfig {
         http
             .csrf().disable()  // Seguro: API stateless con autenticación por token
             .authorizeHttpRequests(authz -> authz
-                // Swagger UI y documentación (públicos)
-                .requestMatchers(
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/v3/api-docs",
-                    "/v3/api-docs/**",
-                    "/swagger-resources",
-                    "/swagger-resources/**",
-                    "/webjars/**"
-                ).permitAll()
-                // Endpoints de autenticación (públicos)
-                .requestMatchers(
-                    "POST",
-                    "/api/auth/login",
-                    "/api/auth/register"
-                ).permitAll()
-                .requestMatchers(
-                    "GET",
-                    "/api/auth/**"
-                ).permitAll()
-                // Endpoint raíz
-                .requestMatchers("/").permitAll()
-                // Todo lo demás requiere autenticación
-                .anyRequest().authenticated()
+                // TODO LOS ENDPOINTS PÚBLICOS (sin autenticación)
+                // Se agregará JWT y permisos por endpoint en fase final
+                .anyRequest().permitAll()
             )
             .formLogin().disable()  // Desabilitar form login por defecto
             .httpBasic().disable();  // Desabilitar HTTP Basic
