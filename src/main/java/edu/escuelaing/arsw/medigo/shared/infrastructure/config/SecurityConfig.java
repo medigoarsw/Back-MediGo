@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Configuración de Spring Security - DESARROLLO
@@ -32,7 +34,10 @@ public class SecurityConfig {
     @SuppressWarnings("java:S4502")  // CSRF seguro en API stateless con token auth
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()  // Seguro: API stateless con autenticación por token
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 // ✅ TODOS LOS ENDPOINTS PÚBLICOS - SIN AUTENTICACIÓN
                 .anyRequest().permitAll()
