@@ -66,7 +66,7 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(
         summary = "Autenticar usuario",
-        description = "Autentica un usuario con sus credenciales (username y password)",
+        description = "Autentica un usuario con sus credenciales (email y password)",
         tags = {"Authentication"}
     )
     @ApiResponses(value = {
@@ -94,7 +94,7 @@ public class AuthController {
             
             // PASO 1: Llamar al caso de uso (AuthService)
             User user = authUseCase.authenticate(
-                request.getUsername(),
+                request.getEmail(),
                 request.getPassword()
             );
             

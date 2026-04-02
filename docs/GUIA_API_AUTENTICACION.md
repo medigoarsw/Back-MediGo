@@ -26,7 +26,7 @@ curl -X GET http://localhost:8080/api/auth/me?user_id=1
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "student",
+    "email": "student@medigo.com",
     "password": "123"
   }'
 ```
@@ -52,7 +52,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "admin",
+    "email": "admin@medigo.com",
     "password": "123"
   }'
 ```
@@ -78,7 +78,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "student",
+    "email": "student@medigo.com",
     "password": "wrongpassword"
   }'
 ```
@@ -96,7 +96,7 @@ Empty body
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "nonexistent",
+    "email": "nonexistent@medigo.com",
     "password": "123"
   }'
 ```
@@ -189,7 +189,7 @@ curl -X GET "http://localhost:8080/api/auth/email/admin@medigo.com"
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"username\":\"student\",\"password\":\"123\"}"
+          "raw": "{\"email\":\"student@medigo.com\",\"password\":\"123\"}"
         },
         "url": {
           "raw": "http://localhost:8080/api/auth/login",
@@ -239,9 +239,9 @@ logging.level.org.springframework.security=DEBUG
 ### Output esperado al login:
 
 ```
-[INFO ] Intentando autenticar usuario: student
-[DEBUG] Buscando usuario por username: student
-[INFO ] Usuario autenticado exitosamente: student
+[INFO ] Intentando autenticar usuario: student@medigo.com
+[DEBUG] Buscando usuario por email: student@medigo.com
+[INFO ] Usuario autenticado exitosamente: student@medigo.com
 ```
 
 ---
