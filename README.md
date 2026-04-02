@@ -84,6 +84,27 @@ MediGo es una plataforma integral de e-commerce especializada en medicamentos qu
 - **Documentación**: [HU-08 Edita Disponibilidad](docs/HU_08_ADMINISTRADOR_EDITA_STOCK.md)
 - **Commit Guide**: [Conventional Commit HU-08](docs/CONVENTIONAL_COMMIT_HU08.md)
 
+### ⭐ HU-10: Actualización Automática a Estado "Entregado" (NUEVA - COMPLETADA)
+- **Status**: ✅ COMPLETADA
+- **Resumen**: Cambio automático de estado de pedidos a "Entregado" cuando se confirma la entrega
+- **Escenarios**: 6/6 PASSING (4 happy-path + 2 error scenarios)
+  - Escenario 1: Estado cambia a entregado al finalizar
+  - Escenario 2: Cliente ve estado entregado
+  - Escenario 3: Notificación de entrega al cliente
+  - Escenario 4: Pedido aparece en historial
+  - Error 1: Entrega no encontrada
+  - Error 2: Entrega no está en estado correcto
+- **Tests**: 133/133 PASSING (6 nuevos LogisticsControllerTest + 127 existentes)
+- **Architecture**: Hexagonal - Port (AssignDeliveryUseCase), Service (LogisticsService), Controller (LogisticsController)
+- **Endpoint**: `PUT /api/logistics/deliveries/{id}/complete`
+- **Security**: ✅ JWT authorization, @SecurityRequirement annotation
+- **DTOs**: ✅ DeliveryResponse con Swagger documentation
+- **Error Handling**: ✅ ResourceNotFoundException, BusinessException
+- **Logging**: ✅ HU-10 prefixed messages for audit trail
+- **Build**: ✅ SUCCESS - 133/133 tests totales
+- **Documentación**: [HU-10 Actualización Automática](docs/HU_10_ACTUALIZACIÓN_AUTOMÁTICA.md)
+- **Commit Guide**: [Conventional Commit HU-10](docs/CONVENTIONAL_COMMIT_HU10.md)
+
 ---
 
 ## 🚀 Quick Start
@@ -177,8 +198,8 @@ Back-MediGo/
 
 ### Resumen Actual
 ```
-Total Tests: 127 (25 MedicationControllerTest + others)
-Passing: 127/127 ✅
+Total Tests: 133 (6 LogisticsControllerTest + 25 MedicationControllerTest + others)
+Passing: 133/133 ✅
 Failing: 0 ✅
 Build: SUCCESS ✅
 ```
@@ -201,6 +222,17 @@ Build: SUCCESS ✅
 | 3️⃣ | Establecer stock a 0 | `testHU08_StockACero()` | ✅ |
 | 4️⃣ | Rechazar stock negativo | `testHU08_RechazarStockNegativo()` | ✅ |
 | 5️⃣ | Cambios en tiempo real | `testHU08_CambioEnTiempoReal()` | ✅ |
+
+### HU-10 Tests (6 escenarios: 4 happy-path + 2 error cases)
+
+| # | Escenario | Test | Status |
+|---|-----------|------|--------|
+| 1️⃣ | Estado cambia a entregado | `testHU10_EstadoCambiaAEntregado()` | ✅ |
+| 2️⃣ | Cliente ve estado entregado | `testHU10_ClienteVeeEstadoEntregado()` | ✅ |
+| 3️⃣ | Notificación de entrega | `testHU10_NotificacionDeEntrega()` | ✅ |
+| 4️⃣ | Pedido en historial | `testHU10_PedidoEnHistorial()` | ✅ |
+| 5️⃣ | Error: Entrega no encontrada | `testHU10_EntregaNoEncontrada()` | ✅ |
+| 6️⃣ | Error: Estado no es IN_ROUTE | `testHU10_EntregaNoEnEstadoInRoute()` | ✅ |
 
 ---
 
@@ -264,6 +296,8 @@ http://localhost:8080/swagger-ui.html
 - [Conventional Commit HU-07](docs/CONVENTIONAL_COMMIT_HU07.md) - ✅ NUEVA
 - [HU-08: Editar Disponibilidad](docs/HU_08_ADMINISTRADOR_EDITA_STOCK.md) - ✅ NUEVA
 - [Conventional Commit HU-08](docs/CONVENTIONAL_COMMIT_HU08.md) - ✅ NUEVA
+- [HU-10: Actualización Automática a Estado Entregado](docs/HU_10_ACTUALIZACIÓN_AUTOMÁTICA.md) - ✅ NUEVA
+- [Conventional Commit HU-10](docs/CONVENTIONAL_COMMIT_HU10.md) - ✅ NUEVA
 - [Guía API Autenticación](docs/GUIA_API_AUTENTICACION.md)
 - [Resumen Final](docs/RESUMEN_FINAL.md)
 - [Quick Reference](docs/QUICK_REFERENCE.md)
@@ -281,16 +315,17 @@ http://localhost:8080/swagger-ui.html
 - HU-05: Confirmación de órdenes
 - HU-06: Asignación de ruta + Seguridad (PASO-1)
 - HU-07: Administrador crea medicamento ⭐
-- **HU-08: Administrador edita disponibilidad** ⭐
+- HU-08: Administrador edita disponibilidad ⭐
+- **HU-10: Actualización automática a estado "Entregado"** ⭐
 
 ### En Progreso ⏳
 - HU-09: Seguimiento de pedidos
-- HU-10: Historial de compras
 
 ### Planeadas 📋
-- HU-11: Historial de entregas
-- HU-12: Reportes administrativos
-- HU-13: Notificaciones por email
+- HU-11: Notificaciones de entrega
+- HU-12: Historial de entregas
+- HU-13: Reportes administrativos
+- HU-14: Rating de entregas
 
 ---
 
