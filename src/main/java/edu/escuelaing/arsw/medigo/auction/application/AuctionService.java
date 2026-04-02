@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,8 @@ public class AuctionService implements
     private final BidLockPort               bidLock;
     private final AuctionEventPublisherPort eventPublisher;
     private final AuctionParticipantPort    participantPort;
+    private final AuctionOrderPort          auctionOrderPort;
+    private final AuctionCatalogPort        auctionCatalogPort;
 
     // ── HU-15: Crear subasta ──────────────────────────────────────
 
@@ -101,6 +104,36 @@ public class AuctionService implements
         return auctionRepository.findBidsByAuction(auctionId);
     }
 
+    @Override
+    public AuctionDetailView getAuctionDetail(Long id) {
+        Auction auction = findOrThrow(id);
+
+        String medicationName = null;
+        String medicationUnit = null;
+        AuctionCatalogPort.MedicationInfo medInfo =
+                auctionCatalogPort.getMedicationInfo(auction.getMedicationId()).orElse(null);
+        if (medInfo != null) {
+            medicationName = medInfo.name();
+            medicationUnit = medInfo.unit();
+        }
+
+        Duration remaining = null;
+        if (auction.getStatus() == Auction.AuctionStatus.ACTIVE
+                || auction.getStatus() == Auction.AuctionStatus.SCHEDULED) {
+            Duration d = Duration.between(LocalDateTime.now(), auction.getEndTime());
+            remaining = d.isNegative() ? Duration.ZERO : d;
+        }
+
+        String winnerName = null;
+        if (auction.getWinnerId() != null) {
+            winnerName = auctionRepository.findHighestBid(id)
+                    .map(Bid::getUserName)
+                    .orElse(null);
+        }
+
+        return new AuctionDetailView(auction, medicationName, medicationUnit, remaining, winnerName);
+    }
+
     // ── HU-18: Unirse a subasta ───────────────────────────────────
 
     @Override
@@ -137,6 +170,11 @@ public class AuctionService implements
 
         if (!auction.isAcceptingBids()) {
             throw new AuctionClosedException();
+        }
+
+        // HU-19: validar que el usuario se haya unido previamente
+        if (!participantPort.isParticipant(auctionId, userId)) {
+            throw new UserNotJoinedException(userId, auctionId);
         }
 
         String lockValue = UUID.randomUUID().toString();
@@ -238,7 +276,7 @@ public class AuctionService implements
                 });
     }
 
-    // ── HU-22: Cerrar y adjudicar ─────────────────────────────────
+    // ── HU-22: Cierre y adjudicación ─────────────────────────────
 
     @Override
     @Transactional
@@ -270,11 +308,59 @@ public class AuctionService implements
         });
     }
 
+    // ── HU-22 + Segundo lugar: Cron de 24h ───────────────────────
+
+    /**
+     * Corre cada hora. Busca órdenes PENDING_PAYMENT creadas hace más de 24h
+     * y ejecuta la lógica de re-adjudicación al segundo lugar.
+     */
+    @Scheduled(cron = "0 0 * * * *")
+    public void checkExpiredPayments() {
+        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
+        List<AuctionOrderPort.ExpiredAuctionOrder> expired =
+                auctionOrderPort.findExpiredPendingOrders(cutoff);
+
+        for (AuctionOrderPort.ExpiredAuctionOrder expiredOrder : expired) {
+            log.info("Pago expirado - orderId={}, auctionId={}",
+                    expiredOrder.orderId(), expiredOrder.auctionId());
+
+            auctionOrderPort.cancelOrder(expiredOrder.orderId());
+
+            Auction auction = findOrThrow(expiredOrder.auctionId());
+
+            auctionRepository.findSecondHighestBid(expiredOrder.auctionId(), expiredOrder.winnerId())
+                    .ifPresentOrElse(
+                        secondBid -> readjudicateToSecond(auction, secondBid),
+                        () -> {
+                            auctionCatalogPort.releaseStock(
+                                    auction.getBranchId(), auction.getMedicationId());
+                            log.info("Sin segundo lugar. Stock liberado para medicamento={}",
+                                    auction.getMedicationId());
+                        }
+                    );
+        }
+    }
+
     // ── Helpers privados ──────────────────────────────────────────
 
     private void closeAndAdjudicate(Long auctionId) {
         closeAuction(auctionId);
         adjudicateWinner(auctionId);
+
+        // HU-22: generar orden y reservar stock para el ganador
+        auctionRepository.findHighestBid(auctionId).ifPresent(winningBid -> {
+            Auction auction = findOrThrow(auctionId);
+            Long orderId = auctionOrderPort.createAuctionOrder(
+                    auctionId, winningBid.getUserId(), auction.getMedicationId(),
+                    winningBid.getAmount(), auction.getBranchId());
+            log.info("Orden {} creada para ganador userId={}", orderId, winningBid.getUserId());
+
+            try {
+                auctionCatalogPort.reserveStock(auction.getBranchId(), auction.getMedicationId());
+            } catch (Exception e) {
+                log.warn("No se pudo reservar stock para subasta {}: {}", auctionId, e.getMessage());
+            }
+        });
 
         eventPublisher.publish(auctionId, AuctionEvent.builder()
                 .type(AuctionEvent.EventType.AUCTION_CLOSED)
@@ -282,6 +368,27 @@ public class AuctionService implements
                 .timestamp(LocalDateTime.now())
                 .message("La subasta ha finalizado")
                 .build());
+    }
+
+    private void readjudicateToSecond(Auction auction, Bid secondBid) {
+        Long newOrderId = auctionOrderPort.createAuctionOrder(
+                auction.getId(), secondBid.getUserId(), auction.getMedicationId(),
+                secondBid.getAmount(), auction.getBranchId());
+
+        auctionRepository.setWinner(auction.getId(), secondBid.getUserId());
+
+        eventPublisher.publish(auction.getId(), AuctionEvent.builder()
+                .type(AuctionEvent.EventType.WINNER_ADJUDICATED)
+                .auctionId(auction.getId())
+                .currentAmount(secondBid.getAmount())
+                .leaderName(secondBid.getUserName())
+                .leaderId(secondBid.getUserId())
+                .timestamp(LocalDateTime.now())
+                .message("Re-adjudicación: " + secondBid.getUserName()
+                        + " con $" + secondBid.getAmount())
+                .build());
+
+        log.info("Re-adjudicado a userId={}, nuevaOrden={}", secondBid.getUserId(), newOrderId);
     }
 
     private Auction findOrThrow(Long id) {

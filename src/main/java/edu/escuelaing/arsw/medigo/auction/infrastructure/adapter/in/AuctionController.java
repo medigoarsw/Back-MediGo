@@ -51,10 +51,10 @@ public class AuctionController {
         return AuctionResponse.from(auction);
     }
 
-    // HU-17: Ver detalle de subasta
+    // HU-17: Ver detalle de subasta (enriquecido con catálogo, tiempo restante y ganador)
     @GetMapping("/{id}")
     public AuctionResponse getById(@PathVariable Long id) {
-        return AuctionResponse.from(queryAuctionUseCase.getAuctionById(id));
+        return AuctionResponse.fromDetail(queryAuctionUseCase.getAuctionDetail(id));
     }
 
     // HU-17: Listar subastas activas

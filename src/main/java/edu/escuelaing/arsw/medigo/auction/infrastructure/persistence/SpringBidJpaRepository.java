@@ -15,4 +15,10 @@ public interface SpringBidJpaRepository extends JpaRepository<BidEntity, Long> {
     @Query("SELECT b FROM BidEntity b WHERE b.auctionId = :auctionId " +
            "ORDER BY b.amount DESC LIMIT 1")
     Optional<BidEntity> findHighestBid(@Param("auctionId") Long auctionId);
+
+    // Segunda puja más alta (para re-adjudicación), excluyendo al ganador original
+    @Query("SELECT b FROM BidEntity b WHERE b.auctionId = :auctionId " +
+           "AND b.userId <> :excludeUserId ORDER BY b.amount DESC LIMIT 1")
+    Optional<BidEntity> findSecondHighestBid(@Param("auctionId") Long auctionId,
+                                              @Param("excludeUserId") Long excludeUserId);
 }

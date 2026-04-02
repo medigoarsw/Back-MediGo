@@ -105,6 +105,11 @@ public class AuctionJpaRepository implements AuctionRepositoryPort {
                 .stream().map(this::toBidDomain).toList();
     }
 
+    @Override
+    public Optional<Bid> findSecondHighestBid(Long auctionId, Long excludeUserId) {
+        return bidRepo.findSecondHighestBid(auctionId, excludeUserId).map(this::toBidDomain);
+    }
+
     // ── Mappers ───────────────────────────────────────────────────
 
     private AuctionEntity toEntity(Auction a) {

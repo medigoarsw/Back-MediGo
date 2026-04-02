@@ -1,30 +1,28 @@
 package edu.escuelaing.arsw.medigo.shared.infrastructure.config;
 
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Configuración de Spring Security - DESARROLLO
- * 
- * ⚠️ MODO ABIERTO PARA DESARROLLO
- * Todos los endpoints son PUBLIC sin autenticación
- * Se agregará JWT y permisos por endpoint al final
- * 
- * CSRF está deshabilitado:
- * Esta es una API REST stateless que usa autenticación por token (JWT).
- * CSRF es un riesgo solo en aplicaciones con sesiones basadas en cookies.
- * 
- * PRODUCCIÓN:
- * - Implementar JWT tokens en AuthController
- * - Crear JwtAuthenticationFilter
- * - Configurar token refresh
- * - Agregar @RequiresRole en endpoints sensibles
- * - Cambiar .anyRequest().authenticated() nuevamente
+ * Configuración de Spring Security.
+ *
+ * El API Gateway valida la autenticación y reenvía cada petición con el JWT.
+ * Este backend es la fuente de verdad para la AUTORIZACIÓN: extrae el rol
+ * del token y aplica las reglas por endpoint y método HTTP.
+ *
+ * Roles del sistema:
+ *   ADMIN    – acceso total al módulo de subastas.
+ *   AFFILIATE (USUARIO) – puede consultar, unirse y pujar; no puede crear/editar.
+ *   DELIVERY – sin permisos sobre subastas (403 en cualquier endpoint).
+ *
+ * CSRF deshabilitado: API REST stateless con autenticación por token.
  */
 @Configuration
 @EnableWebSecurity
@@ -37,13 +35,39 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // Extraer rol del JWT antes de que Spring Security evalúe permisos
+            .addFilterBefore(new JwtAuthenticationFilter(),
+                             UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
-                // ✅ TODOS LOS ENDPOINTS PÚBLICOS - SIN AUTENTICACIÓN
-                .anyRequest().permitAll()
-            )
-            .formLogin().disable()  // Desabilitar form login por defecto
-            .httpBasic().disable();  // Desabilitar HTTP Basic
+
+                // ── Endpoints públicos ──────────────────────────────────
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
+                                 "/swagger-ui.html").permitAll()
+                .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+
+                // ── Subastas: solo ADMIN ────────────────────────────────
+                // POST /api/auctions   → crear subasta
+                .requestMatchers(HttpMethod.POST, "/api/auctions")
+                        .hasRole("ADMIN")
+                // PUT  /api/auctions/{id} → editar subasta
+                .requestMatchers(HttpMethod.PUT,  "/api/auctions/**")
+                        .hasRole("ADMIN")
+
+                // ── Subastas: ADMIN y AFFILIATE (USUARIO) ───────────────
+                // GET  /api/auctions/**  → ver detalle, listar, historial de pujas
+                .requestMatchers(HttpMethod.GET, "/api/auctions/**")
+                        .hasAnyRole("ADMIN", "AFFILIATE")
+                // POST /api/auctions/** → unirse y pujar  (/{id}/join, /{id}/bids)
+                .requestMatchers(HttpMethod.POST, "/api/auctions/**")
+                        .hasAnyRole("ADMIN", "AFFILIATE")
+
+                // ── Resto: requiere autenticación (403 si no hay token) ─
+                .anyRequest().authenticated()
+            );
 
         return http.build();
     }
