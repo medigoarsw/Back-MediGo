@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUseCase {
+public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUseCase, GetActiveDeliveriesUseCase {
     private final LocationStatePort locationState;
     private final DeliveryRepositoryPort deliveryRepository;
     private final OrderRepositoryPort orderRepository;
@@ -52,5 +53,36 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
         log.info("HU-10: Entrega {} marcada como DELIVERED", deliveryId);
         
         return updatedDelivery;
+    }
+    
+    /**
+     * HU-11: Obtiene todas las entregas activas del repartidor
+     * Las entregas activas son las que no han sido entregadas aún
+     */
+    @Override
+    public List<Delivery> getActiveDeliveries(Long deliveryPersonId) {
+        log.info("HU-11: Obteniendo entregas activas para repartidor ID: {}", deliveryPersonId);
+        
+        // TODO: Implementar búsqueda en repositorio
+        // Debería filtrar por:
+        // - deliveryPersonId = deliveryPersonId
+        // - status IN (IN_ROUTE, ASSIGNED, PENDING_SHIPPING)
+        throw new UnsupportedOperationException("Implementar búsqueda de entregas activas en repositorio");
+    }
+    
+    /**
+     * HU-11: Obtiene una entrega si pertenece al repartidor propietario
+     * Valida la propiedad para evitar acceso no autorizado
+     */
+    @Override
+    public Delivery getDeliveryIfOwner(Long deliveryId, Long deliveryPersonId) {
+        log.info("HU-11: Validando propiedad de entrega {} para repartidor {}", deliveryId, deliveryPersonId);
+        
+        // TODO: Implementar búsqueda en repositorio
+        // Debería:
+        // 1. Buscar la entrega por ID
+        // 2. Validar que deliveryPersonId coincida
+        // 3. Lanzar excepción si no pertenece
+        throw new UnsupportedOperationException("Implementar validación de propiedad de entrega");
     }
 }
