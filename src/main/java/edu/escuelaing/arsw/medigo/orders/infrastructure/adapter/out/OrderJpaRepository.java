@@ -52,6 +52,12 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .stream().map(this::toDomain).toList();
     }
 
+    @Override
+    public Optional<Order> findPendingByAffiliateAndBranch(Long affiliateId, Long branchId) {
+        return springRepo.findPendingByAffiliateAndBranch(affiliateId, branchId)
+                .map(this::toDomain);
+    }
+
     // ── Mappers ───────────────────────────────────────────────────
 
     private OrderEntity toEntity(Order o) {
@@ -61,6 +67,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .branchId(o.getBranchId())
                 .auctionId(o.getAuctionId())
                 .finalPrice(o.getFinalPrice())
+                .totalPrice(o.getTotalPrice())
                 .status(o.getStatus().name())
                 .addressLat(o.getAddressLat())
                 .addressLng(o.getAddressLng())
@@ -75,6 +82,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .branchId(e.getBranchId())
                 .auctionId(e.getAuctionId())
                 .finalPrice(e.getFinalPrice())
+                .totalPrice(e.getTotalPrice())
                 .status(Order.OrderStatus.valueOf(e.getStatus()))
                 .addressLat(e.getAddressLat())
                 .addressLng(e.getAddressLng())
