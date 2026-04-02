@@ -191,4 +191,57 @@ public class MedicationJpaRepository implements MedicationRepositoryPort {
                 })
                 .toList();
     }
+
+    /**
+     * Obtiene el stock de un medicamento en una sucursal específica (HU-04)
+     * @param medicationId ID del medicamento
+     * @param branchId ID de la sucursal
+     * @return BranchStock con quantity 0 si no existe
+     */
+    @Override
+    public BranchStock findStockByMedicationAndBranch(Long medicationId, Long branchId) {
+        log.debug("Buscando stock del medicamento {} en sucursal {}", medicationId, branchId);
+        
+        Optional<BranchStockEntity> entity = branchStockSpringDataRepository
+                .findByBranchIdAndMedicationId(branchId, medicationId);
+        
+        if (entity.isPresent()) {
+            return toBranchStockDomain(entity.get());
+        } else {
+            // Retornar con cantidad 0 si no existe el registro
+            return BranchStock.builder()
+                    .branchId(branchId)
+                    .medicationId(medicationId)
+                    .quantity(0)
+                    .build();
+        }
+    }
+
+    /**
+     * Obtiene todos los stocks de un medicamento en todas las sucursales (HU-04)
+     * @param medicationId ID del medicamento
+     * @return Lista de BranchStock para ese medicamento en todas las sucursales
+     */
+    @Override
+    public List<BranchStock> findStockByMedication(Long medicationId) {
+        log.debug("Buscando stock del medicamento {} en todas las sucursales", medicationId);
+        
+        return branchStockSpringDataRepository
+                .findByMedicationId(medicationId)
+                .stream()
+                .map(this::toBranchStockDomain)
+                .toList();
+    }
+
+    /**
+     * Obtiene stocks enriquecidos con información de sucursal para un medicamento (HU-04)
+     * @param medicationId ID del medicamento
+     * @return Lista de StockWithMedicationInfo con información de sucursales
+     */
+    @Override
+    public List<StockWithMedicationInfo> findStockByMedicationWithBranchInfo(Long medicationId) {
+        log.debug("Buscando stock enriquecido del medicamento {} con información de sucursal", medicationId);
+        
+        return branchStockSpringDataRepository.findStockByMedicationWithBranchInfo(medicationId);
+    }
 }

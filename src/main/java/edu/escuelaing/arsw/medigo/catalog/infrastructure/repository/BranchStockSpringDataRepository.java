@@ -53,6 +53,25 @@ public interface BranchStockSpringDataRepository extends JpaRepository<BranchSto
     List<StockWithMedicationInfo> findStockByBranchWithMedicationInfo(@Param("branchId") Long branchId);
 
     /**
+     * Obtener stocks de un medicamento en todas las sucursales con información enriquecida (HU-04)
+     */
+    @Query("""
+            SELECT new edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo(
+                bs.medicationId, 
+                m.name, 
+                m.description,
+                m.unit, 
+                bs.branchId, 
+                bs.quantity
+            )
+            FROM BranchStockEntity bs
+            JOIN MedicationEntity m ON bs.medicationId = m.id
+            WHERE bs.medicationId = :medicationId
+            ORDER BY bs.branchId ASC
+            """)
+    List<StockWithMedicationInfo> findStockByMedicationWithBranchInfo(@Param("medicationId") Long medicationId);
+
+    /**
      * Eliminar stock específico
      */
     void deleteByBranchIdAndMedicationId(Long branchId, Long medicationId);
