@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.shared.infrastructure.exception;
 
+import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,48 @@ import java.util.Map;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    // ── Subastas: recurso no encontrado (404) ─────────────────────────
+
+    @ExceptionHandler(AuctionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAuctionNotFound(
+            AuctionNotFoundException ex, WebRequest request) {
+        log.warn("AuctionNotFoundException: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(buildError(HttpStatus.NOT_FOUND, ex.getMessage(),
+                        "AUCTION_NOT_FOUND", request));
+    }
+
+    // ── Subastas: conflicto de estado o regla de negocio (409) ────────
+
+    @ExceptionHandler({
+        AuctionAlreadyExistsException.class,
+        AuctionNotEditableException.class,
+        AuctionClosedException.class,
+        InvalidBidException.class,
+        UserNotJoinedException.class,
+        BidLockNotAcquiredException.class
+    })
+    public ResponseEntity<ErrorResponse> handleAuctionConflict(
+            RuntimeException ex, WebRequest request) {
+        log.warn("Auction conflict: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(buildError(HttpStatus.CONFLICT, ex.getMessage(),
+                        "AUCTION_CONFLICT", request));
+    }
+
+    // ── Subastas: datos de entrada inválidos (400) ────────────────────
+
+    @ExceptionHandler(InvalidAuctionDatesException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAuctionDates(
+            InvalidAuctionDatesException ex, WebRequest request) {
+        log.warn("InvalidAuctionDatesException: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, ex.getMessage(),
+                        "INVALID_AUCTION_DATES", request));
+    }
+
+    // ── Negocio genérico (400) ────────────────────────────────────────
 
     /**
      * Maneja excepciones de negocio (BusinessException)
@@ -120,5 +163,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(errorResponse);
+    }
+
+    // ── Helper ────────────────────────────────────────────────────────
+
+    private ErrorResponse buildError(HttpStatus status, String message,
+                                     String errorCode, WebRequest request) {
+        return ErrorResponse.builder()
+                .status(status.value())
+                .message(message)
+                .errorCode(errorCode)
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 }
