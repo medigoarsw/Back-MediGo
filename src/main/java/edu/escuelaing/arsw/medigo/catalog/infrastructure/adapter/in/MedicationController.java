@@ -1,11 +1,13 @@
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
+import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in.dto.*;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.out.MedicationJpaRepository;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -427,6 +429,167 @@ public class MedicationController {
         updateUseCase.updateStock(branchId, medicationId, request.getQuantity());
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Obtener disponibilidad de un medicamento en una sucursal específica (HU-04)
+     */
+    @GetMapping("/{medicationId}/availability/branch/{branchId}")
+    @Operation(
+        summary = "Ver disponibilidad de medicamento en sucursal",
+        description = "Obtiene la disponibilidad de un medicamento específico en una sucursal en tiempo real. " +
+                     "Muestra cantidad disponible, estado (disponible/no disponible) y datos de la sucursal."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Disponibilidad obtenida exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = BranchAvailabilityResponse.class),
+                examples = {
+                    @io.swagger.v3.oas.annotations.media.ExampleObject(
+                        name = "Medicamento disponible",
+                        value = """
+                            {
+                              "branchId": 1,
+                              "branchName": "Sucursal Centro",
+                              "address": "Calle 10 # 5-20",
+                              "latitude": 4.72160,
+                              "longitude": -74.04499,
+                              "quantity": 5,
+                              "isAvailable": true,
+                              "availabilityStatus": "Disponible"
+                            }
+                            """
+                    ),
+                    @io.swagger.v3.oas.annotations.media.ExampleObject(
+                        name = "Medicamento no disponible",
+                        value = """
+                            {
+                              "branchId": 2,
+                              "branchName": "Sucursal Norte",
+                              "address": "Carrera 7 # 120-45",
+                              "latitude": 4.75250,
+                              "longitude": -74.02300,
+                              "quantity": 0,
+                              "isAvailable": false,
+                              "availabilityStatus": "No disponible"
+                            }
+                            """
+                    )
+                }
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "ID de medicamento o sucursal inválido"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Medicamento no encontrado"
+        )
+    })
+    public ResponseEntity<BranchAvailabilityResponse> getAvailabilityInBranch(
+            @Parameter(
+                name = "medicationId",
+                description = "ID del medicamento",
+                required = true
+            )
+            @PathVariable Long medicationId,
+            @Parameter(
+                name = "branchId",
+                description = "ID de la sucursal",
+                required = true
+            )
+            @PathVariable Long branchId) {
+
+        log.info("Obteniendo disponibilidad del medicamento {} en sucursal {}", medicationId, branchId);
+
+        // Obtener la disponibilidad
+        BranchStock stock = searchUseCase.getAvailabilityByMedicationBranch(medicationId, branchId);
+        
+        BranchAvailabilityResponse response = BranchAvailabilityResponse.builder()
+                .branchId(branchId)
+                .quantity(stock.getQuantity())
+                .isAvailable(stock.getQuantity() > 0)
+                .availabilityStatus(stock.getQuantity() > 0 ? "Disponible" : "No disponible")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Obtener disponibilidad de un medicamento en todas las sucursales (HU-04)
+     */
+    @GetMapping("/{medicationId}/availability/branches")
+    @Operation(
+        summary = "Ver disponibilidad de medicamento en todas las sucursales",
+        description = "Obtiene la disponibilidad de un medicamento en todas las sucursales en tiempo real. " +
+                     "Útil para que el cliente vea dónde está disponible y dónde no. Incluye total disponible y número de sucursales con stock."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Disponibilidad obtenida exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MedicationAvailabilityResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "ID de medicamento inválido"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Medicamento no encontrado"
+        )
+    })
+    public ResponseEntity<MedicationAvailabilityResponse> getAvailabilityInAllBranches(
+            @Parameter(
+                name = "medicationId",
+                description = "ID del medicamento",
+                required = true
+            )
+            @PathVariable Long medicationId) {
+
+        log.info("Obteniendo disponibilidad del medicamento {} en todas las sucursales", medicationId);
+
+        // Obtener medicamento
+        Medication medication = searchUseCase.findById(medicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Medicamento no encontrado con ID: " + medicationId));
+
+        // Obtener disponibilidad en todas las sucursales
+        List<BranchStock> stocks = searchUseCase.getAvailabilityByMedicationAllBranches(medicationId);
+
+        // Convertir a responses
+        List<BranchAvailabilityResponse> availabilityByBranch = stocks.stream()
+                .map(stock -> BranchAvailabilityResponse.builder()
+                        .branchId(stock.getBranchId())
+                        .quantity(stock.getQuantity())
+                        .isAvailable(stock.getQuantity() > 0)
+                        .availabilityStatus(stock.getQuantity() > 0 ? "Disponible" : "No disponible")
+                        .build())
+                .toList();
+
+        // Calcular totales
+        int totalAvailable = stocks.stream().mapToInt(BranchStock::getQuantity).sum();
+        int branchesWithStock = (int) stocks.stream()
+                .filter(s -> s.getQuantity() > 0)
+                .count();
+
+        MedicationAvailabilityResponse response = MedicationAvailabilityResponse.builder()
+                .medicationId(medication.getId())
+                .medicationName(medication.getName())
+                .description(medication.getDescription())
+                .unit(medication.getUnit())
+                .availabilityByBranch(availabilityByBranch)
+                .totalAvailable(totalAvailable)
+                .branchesWithStock(branchesWithStock)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     /**

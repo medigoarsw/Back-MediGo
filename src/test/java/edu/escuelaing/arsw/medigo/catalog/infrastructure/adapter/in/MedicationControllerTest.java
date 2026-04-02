@@ -238,4 +238,166 @@ class MedicationControllerTest {
         assertThrows(BusinessException.class, () ->
                 controller.updateStock(1L, 5L, request));
     }
+
+    // ======================== AVAILABILITY ENDPOINTS (HU-04) ========================
+
+    @Test
+    @DisplayName("Debería retornar disponibilidad en sucursal cuando hay stock")
+    void testGetAvailabilityInBranchWithStock() {
+        // Arrange
+        Long medicationId = 1L;
+        Long branchId = 5L;
+        BranchStock stock = BranchStock.builder()
+                .medicationId(medicationId)
+                .branchId(branchId)
+                .quantity(50)
+                .build();
+
+        when(searchUseCase.getAvailabilityByMedicationBranch(medicationId, branchId))
+                .thenReturn(stock);
+
+        // Act
+        ResponseEntity<?> response = controller.getAvailabilityInBranch(medicationId, branchId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).getAvailabilityByMedicationBranch(medicationId, branchId);
+    }
+
+    @Test
+    @DisplayName("Debería retornar disponibilidad en sucursal cuando NO hay stock")
+    void testGetAvailabilityInBranchNoStock() {
+        // Arrange
+        Long medicationId = 1L;
+        Long branchId = 5L;
+        BranchStock stock = BranchStock.builder()
+                .medicationId(medicationId)
+                .branchId(branchId)
+                .quantity(0)
+                .build();
+
+        when(searchUseCase.getAvailabilityByMedicationBranch(medicationId, branchId))
+                .thenReturn(stock);
+
+        // Act
+        ResponseEntity<?> response = controller.getAvailabilityInBranch(medicationId, branchId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).getAvailabilityByMedicationBranch(medicationId, branchId);
+    }
+
+    @Test
+    @DisplayName("Debería manejar medicación no encontrada en disponibilidad por sucursal")
+    void testGetAvailabilityInBranchMedicationNotFound() {
+        // Arrange
+        Long medicationId = 999L;
+        Long branchId = 5L;
+
+        when(searchUseCase.getAvailabilityByMedicationBranch(medicationId, branchId))
+                .thenThrow(new ResourceNotFoundException("Medicación no encontrada"));
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () ->
+                controller.getAvailabilityInBranch(medicationId, branchId));
+    }
+
+    @Test
+    @DisplayName("Debería retornar disponibilidad en todas las sucursales")
+    void testGetAvailabilityInAllBranchesSuccess() {
+        // Arrange
+        Long medicationId = 1L;
+        Medication medication = Medication.builder()
+                .id(medicationId)
+                .name("Paracetamol 500mg")
+                .unit("tableta")
+                .description("Analgésico")
+                .build();
+
+        List<BranchStock> stocks = List.of(
+                BranchStock.builder()
+                        .medicationId(medicationId)
+                        .branchId(1L)
+                        .quantity(100)
+                        .build(),
+                BranchStock.builder()
+                        .medicationId(medicationId)
+                        .branchId(5L)
+                        .quantity(50)
+                        .build(),
+                BranchStock.builder()
+                        .medicationId(medicationId)
+                        .branchId(10L)
+                        .quantity(0)
+                        .build()
+        );
+
+        when(searchUseCase.findById(medicationId))
+                .thenReturn(java.util.Optional.of(medication));
+        when(searchUseCase.getAvailabilityByMedicationAllBranches(medicationId))
+                .thenReturn(stocks);
+
+        // Act
+        ResponseEntity<?> response = controller.getAvailabilityInAllBranches(medicationId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).getAvailabilityByMedicationAllBranches(medicationId);
+    }
+
+    @Test
+    @DisplayName("Debería retornar disponibilidad vacía cuando medicação no tiene stock en ninguna sucursal")
+    void testGetAvailabilityInAllBranchesNoStock() {
+        // Arrange
+        Long medicationId = 1L;
+        Medication medication = Medication.builder()
+                .id(medicationId)
+                .name("Paracetamol 500mg")
+                .unit("tableta")
+                .description("Analgésico")
+                .build();
+
+        List<BranchStock> stocks = List.of(
+                BranchStock.builder()
+                        .medicationId(medicationId)
+                        .branchId(1L)
+                        .quantity(0)
+                        .build(),
+                BranchStock.builder()
+                        .medicationId(medicationId)
+                        .branchId(5L)
+                        .quantity(0)
+                        .build()
+        );
+
+        when(searchUseCase.findById(medicationId))
+                .thenReturn(java.util.Optional.of(medication));
+        when(searchUseCase.getAvailabilityByMedicationAllBranches(medicationId))
+                .thenReturn(stocks);
+
+        // Act
+        ResponseEntity<?> response = controller.getAvailabilityInAllBranches(medicationId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).getAvailabilityByMedicationAllBranches(medicationId);
+    }
+
+    @Test
+    @DisplayName("Debería manejar medicación no encontrada en disponibilidad por todas sucursales")
+    void testGetAvailabilityInAllBranchesMedicationNotFound() {
+        // Arrange
+        Long medicationId = 999L;
+
+        when(searchUseCase.getAvailabilityByMedicationAllBranches(medicationId))
+                .thenThrow(new ResourceNotFoundException("Medicación no encontrada"));
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () ->
+                controller.getAvailabilityInAllBranches(medicationId));
+    }
 }

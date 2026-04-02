@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Servicio de aplicación que implementa los casos de uso del módulo de Catálogo
@@ -170,6 +171,85 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         log.info("Se encontraron {} sucursales con medicamentos", result.size());
         return result;
+    }
+
+    /**
+     * Obtiene un medicamento por ID
+     * @param id ID del medicamento
+     * @return el medicamento si existe
+     */
+    @Transactional(readOnly = true)
+    public Optional<Medication> findById(Long id) {
+        if (id == null || id <= 0) {
+            throw new BusinessException("El ID del medicamento debe ser válido");
+        }
+
+        log.debug("Buscando medicamento con ID: {}", id);
+        return medicationRepository.findById(id);
+    }
+
+    /**
+     * Obtiene la disponibilidad de un medicamento en una sucursal específica (HU-04)
+     * @param medicationId ID del medicamento
+     * @param branchId ID de la sucursal
+     * @return información de disponibilidad del medicamento en esa sucursal
+     */
+    @Transactional(readOnly = true)
+    public BranchStock getAvailabilityByMedicationBranch(Long medicationId, Long branchId) {
+        if (medicationId == null || medicationId <= 0) {
+            throw new BusinessException("El ID del medicamento debe ser válido");
+        }
+
+        if (branchId == null || branchId <= 0) {
+            throw new BusinessException("El ID de la sucursal debe ser válido");
+        }
+
+        log.info("Obteniendo disponibilidad del medicamento {} en sucursal {}", medicationId, branchId);
+
+        // Verificar que el medicamento existe
+        medicationRepository.findById(medicationId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Medicamento no encontrado con ID: " + medicationId));
+
+        // Obtener el stock del medicamento en la sucursal
+        BranchStock stock = medicationRepository.findStockByMedicationAndBranch(medicationId, branchId);
+
+        if (stock == null) {
+            // Si no hay registro, retornar con cantidad 0 (no disponible)
+            stock = BranchStock.builder()
+                    .medicationId(medicationId)
+                    .branchId(branchId)
+                    .quantity(0)
+                    .build();
+        }
+
+        log.info("Disponibilidad obtenida: {} unidades", stock.getQuantity());
+        return stock;
+    }
+
+    /**
+     * Obtiene la disponibilidad de un medicamento en todas las sucursales (HU-04)
+     * @param medicationId ID del medicamento
+     * @return información de disponibilidad del medicamento en todas las sucursales
+     */
+    @Transactional(readOnly = true)
+    public List<BranchStock> getAvailabilityByMedicationAllBranches(Long medicationId) {
+        if (medicationId == null || medicationId <= 0) {
+            throw new BusinessException("El ID del medicamento debe ser válido");
+        }
+
+        log.info("Obteniendo disponibilidad del medicamento {} en todas las sucursales", medicationId);
+
+        // Verificar que el medicamento existe
+        medicationRepository.findById(medicationId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Medicamento no encontrado con ID: " + medicationId));
+
+        // Obtener el stock del medicamento en todas las sucursales
+        List<BranchStock> stocks = medicationRepository.findStockByMedication(medicationId);
+
+        log.info("Se encontraron {} sucursales con stock para medicamento {}", stocks.size(), medicationId);
+        return stocks;
     }
 
     /**
