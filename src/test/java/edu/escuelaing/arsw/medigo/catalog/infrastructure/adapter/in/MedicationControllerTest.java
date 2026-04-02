@@ -82,6 +82,182 @@ class MedicationControllerTest {
         assertThrows(BusinessException.class, () -> controller.search(""));
     }
 
+    @Test
+    @DisplayName("Búsqueda insensible a mayúsculas/minúsculas (Escenario 3)")
+    void testSearchCaseInsensitive() {
+        // Given el catálogo contiene "Paracetamol 500mg"
+        // When escribe "PARACETAMOL" en mayúsculas
+        // Then se muestra "Paracetamol 500mg" en los resultados
+        
+        // Arrange
+        String searchTermUpperCase = "PARACETAMOL";
+        List<Medication> medications = List.of(
+                Medication.builder()
+                        .id(1L)
+                        .name("Paracetamol 500mg")
+                        .description("Analgésico")
+                        .unit("tableta")
+                        .build()
+        );
+
+        when(searchUseCase.searchByName(searchTermUpperCase))
+                .thenReturn(medications);
+
+        // Act
+        ResponseEntity<?> response = controller.search(searchTermUpperCase);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).searchByName(searchTermUpperCase);
+    }
+
+    @Test
+    @DisplayName("Búsqueda con coincidencia parcial (Escenario 4)")
+    void testSearchPartialMatch() {
+        // Given el catálogo contiene "Paracetamol 500mg"
+        // When escribe "para" en el campo de búsqueda
+        // Then se muestra "Paracetamol 500mg" en los resultados
+        
+        // Arrange
+        String partialSearchTerm = "para";
+        List<Medication> medications = List.of(
+                Medication.builder()
+                        .id(1L)
+                        .name("Paracetamol 500mg")
+                        .description("Analgésico")
+                        .unit("tableta")
+                        .build(),
+                Medication.builder()
+                        .id(2L)
+                        .name("Paracetamol 1000mg")
+                        .description("Analgésico potente")
+                        .unit("tableta")
+                        .build()
+        );
+
+        when(searchUseCase.searchByName(partialSearchTerm))
+                .thenReturn(medications);
+
+        // Act
+        ResponseEntity<?> response = controller.search(partialSearchTerm);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        List<?> resultList = (List<?>) response.getBody();
+        assertEquals(2, resultList.size());
+        verify(searchUseCase).searchByName(partialSearchTerm);
+    }
+
+    @Test
+    @DisplayName("Sin resultados en búsqueda (Escenario 5)")
+    void testSearchNoResults() {
+        // Given el catálogo no contiene ningún medicamento con "aspirina"
+        // When escribe "aspirina" en el campo de búsqueda
+        // Then se muestra el mensaje "No se encontraron medicamentos"
+        // And el catálogo muestra la lista vacía
+        
+        // Arrange
+        String searchTermNoResults = "aspirina";
+        List<Medication> emptyResults = List.of();
+
+        when(searchUseCase.searchByName(searchTermNoResults))
+                .thenReturn(emptyResults);
+
+        // Act
+        ResponseEntity<?> response = controller.search(searchTermNoResults);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        List<?> resultList = (List<?>) response.getBody();
+        assertEquals(0, resultList.size());
+        verify(searchUseCase).searchByName(searchTermNoResults);
+    }
+
+    @Test
+    @DisplayName("Búsqueda por nombre genérico (Escenario 2)")
+    void testSearchByGenericName() {
+        // Given el catálogo contiene medicamentos con principio activo "paracetamol"
+        // When escribe "paracetamol" en el campo de búsqueda
+        // Then se muestran todos los medicamentos que contienen paracetamol
+        
+        // Arrange
+        String genericSearchTerm = "paracetamol";
+        List<Medication> medications = List.of(
+                Medication.builder()
+                        .id(1L)
+                        .name("Paracetamol 500mg")
+                        .description("Paracetamol puro - Analgésico")
+                        .unit("tableta")
+                        .build(),
+                Medication.builder()
+                        .id(2L)
+                        .name("Paracetamol Infantil")
+                        .description("Paracetamol en gotas para niños")
+                        .unit("ml")
+                        .build()
+        );
+
+        when(searchUseCase.searchByName(genericSearchTerm))
+                .thenReturn(medications);
+
+        // Act
+        ResponseEntity<?> response = controller.search(genericSearchTerm);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        List<?> resultList = (List<?>) response.getBody();
+        assertEquals(2, resultList.size());
+        verify(searchUseCase).searchByName(genericSearchTerm);
+    }
+
+    @Test
+    @DisplayName("Búsqueda comercial excluye no coincidentes (Escenario 1)")
+    void testSearchCommericalNameExcludesNonMatches() {
+        // Given el cliente está en la pantalla principal
+        // And el catálogo contiene "Paracetamol 500mg", "Paracetamol Infantil" y "Ibuprofeno"
+        // When escribe "paracetamol" en el campo de búsqueda
+        // Then se muestran "Paracetamol 500mg" y "Paracetamol Infantil"
+        // And NO se muestra "Ibuprofeno"
+        
+        // Arrange
+        String searchTerm = "paracetamol";
+        List<Medication> medications = List.of(
+                Medication.builder()
+                        .id(1L)
+                        .name("Paracetamol 500mg")
+                        .description("Analgésico")
+                        .unit("tableta")
+                        .build(),
+                Medication.builder()
+                        .id(2L)
+                        .name("Paracetamol Infantil")
+                        .description("Para niños")
+                        .unit("ml")
+                        .build()
+        );
+
+        when(searchUseCase.searchByName(searchTerm))
+                .thenReturn(medications);
+
+        // Act
+        ResponseEntity<?> response = controller.search(searchTerm);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        List<?> resultList = (List<?>) response.getBody();
+        assertEquals(2, resultList.size());
+        // Verificar que Ibuprofeno NO está en los resultados
+        String responseBody = response.getBody().toString();
+        assertFalse(responseBody.contains("Ibuprofeno"),
+                "Ibuprofeno no debería estar en los resultados de búsqueda de 'paracetamol'");
+        verify(searchUseCase).searchByName(searchTerm);
+    }
+
     // ======================== GET STOCK ENDPOINT ========================
 
     @Test
