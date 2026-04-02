@@ -37,6 +37,9 @@ class MedicationControllerTest {
     private UpdateStockUseCase updateUseCase;
 
     @Mock
+    private edu.escuelaing.arsw.medigo.catalog.domain.port.in.CreateMedicationUseCase createUseCase;
+
+    @Mock
     private MedicationJpaRepository medicationRepository;
 
     private MedicationController controller;
@@ -44,7 +47,7 @@ class MedicationControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller = new MedicationController(searchUseCase, updateUseCase, medicationRepository);
+        controller = new MedicationController(searchUseCase, updateUseCase, createUseCase, medicationRepository);
     }
 
     // ======================== SEARCH ENDPOINT ========================
@@ -319,6 +322,7 @@ class MedicationControllerTest {
                 .name("Aspirina")
                 .unit("tableta")
                 .description("Analgésico")
+                .price(java.math.BigDecimal.valueOf(3500))
                 .branchId(1L)
                 .initialStock(100)
                 .build();
@@ -328,9 +332,10 @@ class MedicationControllerTest {
                 .name("Aspirina")
                 .unit("tableta")
                 .description("Analgésico")
+                .price(java.math.BigDecimal.valueOf(3500))
                 .build();
 
-        when(updateUseCase.createMedication(any(), anyLong(), anyInt()))
+        when(createUseCase.createMedication(anyString(), anyString(), anyString(), any(), anyLong(), anyInt()))
                 .thenReturn(created);
 
         // Act
@@ -339,7 +344,14 @@ class MedicationControllerTest {
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(updateUseCase).createMedication(any(), eq(1L), eq(100));
+        verify(createUseCase).createMedication(
+                eq("Aspirina"),
+                eq("Analgésico"),
+                eq("tableta"),
+                any(),
+                eq(1L),
+                eq(100)
+        );
     }
 
     @Test
@@ -349,11 +361,18 @@ class MedicationControllerTest {
         CreateMedicationRequest request = CreateMedicationRequest.builder()
                 .name("Existente")
                 .unit("tableta")
+                .price(java.math.BigDecimal.valueOf(2000))
                 .branchId(1L)
                 .initialStock(100)
                 .build();
 
-        when(updateUseCase.createMedication(any(), anyLong(), anyInt()))
+        when(createUseCase.createMedication(
+                anyString(),
+                anyString(),
+                anyString(),
+                any(java.math.BigDecimal.class),
+                anyLong(),
+                anyInt()))
                 .thenThrow(new BusinessException("El medicamento ya existe"));
 
         // Act & Assert

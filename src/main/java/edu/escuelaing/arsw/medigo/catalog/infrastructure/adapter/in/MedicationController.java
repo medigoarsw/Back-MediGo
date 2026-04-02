@@ -5,6 +5,7 @@ import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
+import edu.escuelaing.arsw.medigo.catalog.domain.port.in.CreateMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in.dto.*;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.out.MedicationJpaRepository;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
@@ -15,11 +16,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +39,7 @@ public class MedicationController {
 
     private final SearchMedicationUseCase searchUseCase;
     private final UpdateStockUseCase updateUseCase;
+    private final CreateMedicationUseCase createUseCase;  // HU-07: Inyectar CreateMedicationUseCase
     private final MedicationJpaRepository medicationRepository;
 
     /**
@@ -321,13 +325,16 @@ public class MedicationController {
     }
 
     /**
-     * Crear un nuevo medicamento con stock inicial
+     * HU-07: Crear un nuevo medicamento con stock inicial
+     * Solo los administradores pueden crear medicamentos
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")  // HU-07: Validar que sea admin
     @Operation(
-        summary = "Crear medicamento",
-        description = "Crea un nuevo medicamento en el catálogo con stock inicial en una sucursal"
+        summary = "Crear medicamento (Admin)",
+        description = "Crea un nuevo medicamento en el catálogo con stock inicial en una sucursal. Solo administradores."
     )
+    @SecurityRequirement(name = "JWT")
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",
@@ -338,9 +345,10 @@ public class MedicationController {
                     example = """
                         {
                           "id": 10,
-                          "name": "Aspirina 100mg",
-                          "description": "Antiinflamatorio y anticoagulante",
-                          "unit": "tableta"
+                          "name": "Paracetamol 500mg",
+                          "description": "Analgésico y antipirético",
+                          "unit": "tableta",
+                          "price": 5000.00
                         }
                         """
                 )
@@ -348,7 +356,11 @@ public class MedicationController {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Datos inválidos o incompletos"
+            description = "Datos inválidos: nombre vacío, presentación vacía, precio 0 o negativo, stock 0 o negativo"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "No autorizado: solo administradores pueden crear medicamentos"
         )
     })
     public ResponseEntity<MedicationResponse> create(
@@ -358,21 +370,19 @@ public class MedicationController {
             )
             @Valid @RequestBody CreateMedicationRequest request) {
 
-        log.info("Creando medicamento: {} en sucursal: {} con stock inicial: {}",
+        log.info("HU-07: Creando medicamento: {} en sucursal: {} con stock inicial: {}",
                 request.getName(), request.getBranchId(), request.getInitialStock());
 
-        Medication medication = Medication.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .unit(request.getUnit())
-                .build();
-
-        Medication created = updateUseCase.createMedication(
-                medication,
+        Medication created = createUseCase.createMedication(
+                request.getName(),
+                request.getDescription(),
+                request.getUnit(),
+                request.getPrice(),
                 request.getBranchId(),
                 request.getInitialStock()
         );
 
+        log.info("HU-07: Medicamento creado exitosamente con ID: {}", created.getId());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(toMedicationResponse(created));
@@ -601,6 +611,7 @@ public class MedicationController {
                 .name(medication.getName())
                 .description(medication.getDescription())
                 .unit(medication.getUnit())
+                .price(medication.getPrice())  // HU-07: Incluir precio en respuesta
                 .build();
     }
 

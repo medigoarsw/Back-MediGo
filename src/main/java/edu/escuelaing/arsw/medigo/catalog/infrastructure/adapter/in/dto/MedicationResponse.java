@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 
 /**
  * DTO de respuesta para un medicamento
@@ -42,4 +43,10 @@ public class MedicationResponse {
         example = "tableta"
     )
     private String unit;
+
+    @Schema(
+        description = "Precio del medicamento",
+        example = "5000.00"
+    )
+    private BigDecimal price;  // HU-07: Agregar precio
 }
