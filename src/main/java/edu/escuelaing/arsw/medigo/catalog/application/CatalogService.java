@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase {
+public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase {
 
     private final MedicationRepositoryPort medicationRepository;
 
@@ -268,8 +269,89 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
             throw new BusinessException("La unidad del medicamento es requerida");
         }
 
+        if (medication.getPrice() == null) {
+            throw new BusinessException("El precio del medicamento es requerido");
+        }
+
+        if (medication.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("El precio debe ser mayor a 0");
+        }
+
         if (medication.getName().length() > 255) {
             throw new BusinessException("El nombre del medicamento no puede exceder 255 caracteres");
         }
+    }
+
+    /**
+     * HU-07: Implementa CreateMedicationUseCase con parámetros individuales
+     * Crea un nuevo medicamento en el catálogo con stock inicial en una sucursal
+     * @param name nombre del medicamento (obligatorio)
+     * @param description descripción (opcional)
+     * @param unit presentación/unidad (obligatorio)
+     * @param price precio del medicamento (debe ser > 0)
+     * @param branchId sucursal donde se crea el stock inicial
+     * @param initialStock cantidad inicial de stock (debe ser > 0)
+     * @return medicamento creado con ID asignado
+     */
+    @Override
+    @Transactional
+    public Medication createMedication(
+            String name,
+            String description,
+            String unit,
+            BigDecimal price,
+            Long branchId,
+            Integer initialStock) {
+
+        // Validar parámetros individualmente
+        if (name == null || name.trim().isEmpty()) {
+            throw new BusinessException("El nombre es obligatorio");
+        }
+
+        if (unit == null || unit.trim().isEmpty()) {
+            throw new BusinessException("La presentación es obligatoria");
+        }
+
+        if (price == null) {
+            throw new BusinessException("El precio es requerido");
+        }
+
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("El precio debe ser mayor a 0");
+        }
+
+        if (branchId == null || branchId <= 0) {
+            throw new BusinessException("El ID de la sucursal debe ser válido");
+        }
+
+        if (initialStock == null || initialStock <= 0) {
+            throw new BusinessException("El stock inicial debe ser mayor a 0");
+        }
+
+        if (name.length() > 255) {
+            throw new BusinessException("El nombre del medicamento no puede exceder 255 caracteres");
+        }
+
+        log.info("HU-07: Creando medicamento: {} en sucursal: {} con stock inicial: {}",
+                name, branchId, initialStock);
+
+        // Crear el objeto Medication
+        Medication medication = Medication.builder()
+                .name(name.trim())
+                .description(description != null ? description.trim() : null)
+                .unit(unit.trim())
+                .price(price)
+                .build();
+
+        // Guardar el medicamento
+        Medication savedMedication = medicationRepository.save(medication);
+
+        // Crear el stock inicial en la sucursal
+        medicationRepository.updateStock(branchId, savedMedication.getId(), initialStock);
+
+        log.info("HU-07: Medicamento creado exitosamente con ID: {} y número de orden: ORD-{}",
+                savedMedication.getId(), savedMedication.getId());
+
+        return savedMedication;
     }
 }

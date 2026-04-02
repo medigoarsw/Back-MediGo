@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.catalog.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,9 @@ public class MedicationEntity {
     private String description;
 
     private String unit;
+
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;  // Precio del medicamento (HU-07)
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "medication_id")
