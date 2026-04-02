@@ -299,9 +299,6 @@ class OrderServiceTest {
             .commune("Centro")
             .build();
 
-    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
-        .thenReturn(Optional.of(orderWithItems));
-
     // When & Then: lanza excepción por dirección incompleta
     BusinessException exception = assertThrows(BusinessException.class, () ->
         orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, incompleteRequest)
