@@ -105,6 +105,31 @@ MediGo es una plataforma integral de e-commerce especializada en medicamentos qu
 - **Documentación**: [HU-10 Actualización Automática](docs/HU_10_ACTUALIZACIÓN_AUTOMÁTICA.md)
 - **Commit Guide**: [Conventional Commit HU-10](docs/CONVENTIONAL_COMMIT_HU10.md)
 
+### ⭐ HU-11: Repartidor Presiona Botón de Finalización al Entregar (NUEVA - COMPLETADA)
+- **Status**: ✅ COMPLETADA
+- **Resumen**: Repartidores visualizan entregas activas y presionan botón para finalizar entregas con validación de propiedad
+- **Escenarios**: 4/4 PASSING (BDD scenarios)
+  - Escenario 1: Finalizar entrega exitosamente
+  - Escenario 2: Cancelar finalización de entrega
+  - Escenario 3: Botón visible solo en pedidos activos
+  - Escenario 4: Confirmación antes de finalizar
+- **Validaciones de Seguridad**: 2/2 PASSING
+  - Seguridad 1: Repartidor solo ve sus propias entregas
+  - Seguridad 2: No puede acceder a entregas de otro repartidor
+- **Tests**: 139/139 PASSING (6 nuevos LogisticsControllerHU11Test + 133 existentes)
+- **Architecture**: Hexagonal - Port (GetActiveDeliveriesUseCase - NEW), Service (LogisticsService), Controller (LogisticsController)
+- **Endpoints**: 
+  - `GET /api/logistics/deliveries/active?deliveryPersonId={id}` - Listar entregas activas
+  - `GET /api/logistics/deliveries/{id}?deliveryPersonId={id}` - Obtener detalles con validación
+  - `PUT /api/logistics/deliveries/{id}/complete` - Confirmar (reutilizada de HU-10)
+- **Security**: ✅ JWT authorization, ownership validation, @SecurityRequirement annotation
+- **DTOs**: ✅ DeliveryResponse con Swagger documentation para todos los endpoints
+- **Error Handling**: ✅ ResourceNotFoundException si entrega no existe o no pertenece, validaciones de parámetros
+- **Logging**: ✅ HU-11 prefixed messages for audit trail
+- **Build**: ✅ SUCCESS - 139/139 tests totales
+- **Documentación**: [HU-11 Repartidor Botón Entrega](docs/HU_11_REPARTIDOR_BOTÓN_ENTREGA.md)
+- **Commit Guide**: [Conventional Commit HU-11](docs/CONVENTIONAL_COMMIT_HU11.md)
+
 ---
 
 ## 🚀 Quick Start
@@ -129,8 +154,8 @@ mvn clean compile
 # 3. Ejecutar todos los tests
 mvn test
 
-# 4. Ejecutar solo tests de HU-07
-mvn test -Dtest=CatalogServiceTest
+# 4. Ejecutar solo tests de HU-11
+mvn test -Dtest=LogisticsControllerHU11Test
 
 # 5. Build completo (compilar + tests)
 mvn clean package

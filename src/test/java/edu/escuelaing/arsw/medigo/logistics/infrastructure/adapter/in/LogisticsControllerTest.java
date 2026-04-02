@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
@@ -28,11 +29,14 @@ class LogisticsControllerTest {
 
     @Mock
     private AssignDeliveryUseCase assignDeliveryUseCase;
+    
+    @Mock
+    private GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller = new LogisticsController(null, assignDeliveryUseCase);
+        controller = new LogisticsController(null, assignDeliveryUseCase, getActiveDeliveriesUseCase);
     }
 
     // ======================== HU-10 BDD SCENARIOS ========================
