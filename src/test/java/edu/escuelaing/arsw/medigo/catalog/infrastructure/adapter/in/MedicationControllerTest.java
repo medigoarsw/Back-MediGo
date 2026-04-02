@@ -360,6 +360,7 @@ class MedicationControllerTest {
         // Arrange
         CreateMedicationRequest request = CreateMedicationRequest.builder()
                 .name("Existente")
+                .description("Medicamento existente")
                 .unit("tableta")
                 .price(java.math.BigDecimal.valueOf(2000))
                 .branchId(1L)
