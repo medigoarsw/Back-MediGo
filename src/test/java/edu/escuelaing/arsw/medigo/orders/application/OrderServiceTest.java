@@ -4,6 +4,8 @@ import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
+import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
+import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,9 @@ class OrderServiceTest {
 
   @Mock
   private SearchMedicationUseCase searchMedicationUseCase;
+
+  @Mock
+  private UpdateStockUseCase updateStockUseCase;
 
   @InjectMocks
   private OrderService orderService;
@@ -202,5 +207,265 @@ class OrderServiceTest {
     assertThrows(ResourceNotFoundException.class, () ->
         orderService.getCart(AFFILIATE_ID, BRANCH_ID)
     );
+  }
+
+  // ────── HU-06: Confirmar Pedido para Envío a Domicilio ──────
+
+  @Test
+  @DisplayName("HU-06 Escenario 1: Confirmar pedido con dirección completa")
+  void testConfirmPendingOrderWithCompleteAddressSuccess() {
+    // Given: cliente tiene carrito con medicamentos
+    OrderItem medication = OrderItem.builder()
+        .medicationId(MEDICATION_ID)
+        .quantity(2)
+        .unitPrice(BigDecimal.valueOf(25.00))
+        .build();
+
+    Order cartWithItems = Order.builder()
+        .id(1L)
+        .affiliateId(AFFILIATE_ID)
+        .branchId(BRANCH_ID)
+        .status(Order.OrderStatus.PENDING)
+        .createdAt(LocalDateTime.now())
+        .totalPrice(BigDecimal.valueOf(50.00))
+        .items(new ArrayList<>(java.util.List.of(medication)))
+        .build();
+
+    edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest request = 
+        edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest.builder()
+            .street("Calle 10")
+            .streetNumber("50-20")
+            .city("Bogotá")
+            .commune("Centro")
+            .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(cartWithItems));
+    when(orderRepository.save(any(Order.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+    
+    // Mock stock disponible: 50 unidades en sucursal
+    BranchStock currentStock = BranchStock.builder()
+        .medicationId(MEDICATION_ID)
+        .branchId(BRANCH_ID)
+        .quantity(50)
+        .build();
+    when(searchMedicationUseCase.getAvailabilityByMedicationBranch(MEDICATION_ID, BRANCH_ID))
+        .thenReturn(currentStock);
+    doNothing().when(updateStockUseCase).updateStock(anyLong(), anyLong(), anyInt());
+
+    // When: confirma pedido con dirección completa
+    Order confirmedOrder = orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, request);
+
+    // Then: se genera número de orden, estado cambia a CONFIRMED, dirección se guarda
+    assertNotNull(confirmedOrder);
+    assertNotNull(confirmedOrder.getOrderNumber());
+    assertTrue(confirmedOrder.getOrderNumber().matches("ORD-\\d{4}-\\d{6}"));
+    assertEquals(Order.OrderStatus.CONFIRMED, confirmedOrder.getStatus());
+    assertEquals("Calle 10", confirmedOrder.getStreet());
+    assertEquals("50-20", confirmedOrder.getStreetNumber());
+    assertEquals("Bogotá", confirmedOrder.getCity());
+    assertEquals("Centro", confirmedOrder.getCommune());
+    verify(orderRepository, times(2)).save(any(Order.class)); // Una para confirmar, otra para nuevo carrito
+    // Verificar que se redujo el stock: 50 - 2 = 48 unidades
+    verify(updateStockUseCase).updateStock(BRANCH_ID, MEDICATION_ID, 48);
+  }
+
+  @Test
+  @DisplayName("HU-06 Escenario 2: Intentar confirmar sin dirección completa")
+  void testConfirmPendingOrderWithIncompleteAddressThrowsException() {
+    // Given: cliente intenta confirmar sin calle
+    Order orderWithItems = Order.builder()
+        .id(1L)
+        .affiliateId(AFFILIATE_ID)
+        .branchId(BRANCH_ID)
+        .status(Order.OrderStatus.PENDING)
+        .createdAt(LocalDateTime.now())
+        .totalPrice(BigDecimal.valueOf(50.00))
+        .items(new ArrayList<>(java.util.List.of(
+            OrderItem.builder()
+                .medicationId(MEDICATION_ID)
+                .quantity(1)
+                .unitPrice(BigDecimal.valueOf(25.00))
+                .build()
+        )))
+        .build();
+
+    edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest incompleteRequest = 
+        edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest.builder()
+            .street("")  // Calle vacía
+            .streetNumber("50-20")
+            .city("Bogotá")
+            .commune("Centro")
+            .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(orderWithItems));
+
+    // When & Then: lanza excepción por dirección incompleta
+    BusinessException exception = assertThrows(BusinessException.class, () ->
+        orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, incompleteRequest)
+    );
+
+    assertEquals("La calle es obligatoria", exception.getMessage());
+    verify(orderRepository, never()).save(any(Order.class));
+  }
+
+  @Test
+  @DisplayName("HU-06 Escenario 3: Ver resumen antes de confirmar (con medicamentos)")
+  void testConfirmPendingOrderShowsSummaryWithItems() {
+    // Given: cliente tiene carrito con resumen: productos, cantidad, subtotal, total
+    OrderItem medication1 = OrderItem.builder()
+        .medicationId(5L)
+        .quantity(2)
+        .unitPrice(BigDecimal.valueOf(25.00))
+        .build();
+
+    OrderItem medication2 = OrderItem.builder()
+        .medicationId(7L)
+        .quantity(1)
+        .unitPrice(BigDecimal.valueOf(15.50))
+        .build();
+
+    Order cartWithMultipleItems = Order.builder()
+        .id(1L)
+        .affiliateId(AFFILIATE_ID)
+        .branchId(BRANCH_ID)
+        .status(Order.OrderStatus.PENDING)
+        .createdAt(LocalDateTime.now())
+        .totalPrice(BigDecimal.valueOf(65.50))  // (2*25.00) + (1*15.50)
+        .items(new ArrayList<>(java.util.List.of(medication1, medication2)))
+        .build();
+
+    edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest request = 
+        edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest.builder()
+            .street("Calle 10")
+            .streetNumber("50-20")
+            .city("Bogotá")
+            .commune("Centro")
+            .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(cartWithMultipleItems));
+    when(orderRepository.save(any(Order.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+    
+    // Mock stock disponible para ambos medicamentos
+    BranchStock stock1 = BranchStock.builder()
+        .medicationId(5L)
+        .branchId(BRANCH_ID)
+        .quantity(100)
+        .build();
+    BranchStock stock2 = BranchStock.builder()
+        .medicationId(7L)
+        .branchId(BRANCH_ID)
+        .quantity(50)
+        .build();
+    when(searchMedicationUseCase.getAvailabilityByMedicationBranch(5L, BRANCH_ID))
+        .thenReturn(stock1);
+    when(searchMedicationUseCase.getAvailabilityByMedicationBranch(7L, BRANCH_ID))
+        .thenReturn(stock2);
+    doNothing().when(updateStockUseCase).updateStock(anyLong(), anyLong(), anyInt());
+
+    // When: obtiene confir­mación que muestra resumen completo
+    Order confirmedOrder = orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, request);
+
+    // Then: resumen muestra todos los detalles
+    assertNotNull(confirmedOrder);
+    assertEquals(2, confirmedOrder.getItems().size());
+    assertEquals(BigDecimal.valueOf(65.50), confirmedOrder.getTotalPrice());
+    assertEquals(2, confirmedOrder.getItems().get(0).getQuantity());
+    assertEquals(1, confirmedOrder.getItems().get(1).getQuantity());
+    // Verificar que se redujo stock para ambos medicamentos
+    verify(updateStockUseCase).updateStock(BRANCH_ID, 5L, 98);  // 100 - 2 = 98
+    verify(updateStockUseCase).updateStock(BRANCH_ID, 7L, 49);  // 50 - 1 = 49
+  }
+
+  @Test
+  @DisplayName("HU-06 Escenario 4: Carrito se vacía después de confirmar")
+  void testConfirmPendingOrderCreatesNewEmptyCart() {
+    // Given: cliente confirma carrito con items
+    OrderItem medication = OrderItem.builder()
+        .medicationId(MEDICATION_ID)
+        .quantity(2)
+        .unitPrice(BigDecimal.valueOf(25.00))
+        .build();
+
+    Order cartWithItems = Order.builder()
+        .id(1L)
+        .affiliateId(AFFILIATE_ID)
+        .branchId(BRANCH_ID)
+        .status(Order.OrderStatus.PENDING)
+        .createdAt(LocalDateTime.now())
+        .totalPrice(BigDecimal.valueOf(50.00))
+        .items(new ArrayList<>(java.util.List.of(medication)))
+        .build();
+
+    edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest request = 
+        edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest.builder()
+            .street("Calle 10")
+            .streetNumber("50-20")
+            .city("Bogotá")
+            .commune("Centro")
+            .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(cartWithItems));
+    when(orderRepository.save(any(Order.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+    
+    // Mock stock disponible
+    BranchStock currentStock = BranchStock.builder()
+        .medicationId(MEDICATION_ID)
+        .branchId(BRANCH_ID)
+        .quantity(50)
+        .build();
+    when(searchMedicationUseCase.getAvailabilityByMedicationBranch(MEDICATION_ID, BRANCH_ID))
+        .thenReturn(currentStock);
+    doNothing().when(updateStockUseCase).updateStock(anyLong(), anyLong(), anyInt());
+
+    // When: confirma pedido
+    Order confirmedOrder = orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, request);
+
+    // Then: nuevo carrito vacío se crea para el cliente
+    assertNotNull(confirmedOrder);
+    assertEquals(Order.OrderStatus.CONFIRMED, confirmedOrder.getStatus());
+    
+    // Verificar que se hizo save dos veces: una para la orden confirmada, otra para nuevo carrito vacío
+    verify(orderRepository, times(2)).save(any(Order.class));
+  }
+
+  @Test
+  @DisplayName("HU-06 Validación: No se puede confirmar carrito vacío")
+  void testConfirmPendingOrderEmptyCartThrowsException() {
+    // Given: cliente intenta confirmar carrito vacío
+    Order emptyCart = Order.builder()
+        .id(1L)
+        .affiliateId(AFFILIATE_ID)
+        .branchId(BRANCH_ID)
+        .status(Order.OrderStatus.PENDING)
+        .createdAt(LocalDateTime.now())
+        .totalPrice(BigDecimal.ZERO)
+        .items(new ArrayList<>())  // Carrito vacío
+        .build();
+
+    edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest request = 
+        edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest.builder()
+            .street("Calle 10")
+            .streetNumber("50-20")
+            .city("Bogotá")
+            .commune("Centro")
+            .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(emptyCart));
+
+    // When & Then: lanza excepción por carrito vacío
+    BusinessException exception = assertThrows(BusinessException.class, () ->
+        orderService.confirmPendingOrder(AFFILIATE_ID, BRANCH_ID, request)
+    );
+
+    assertEquals("El carrito está vacío. Agregue medicamentos antes de confirmar", exception.getMessage());
+    verify(orderRepository, never()).save(any(Order.class));
   }
 }

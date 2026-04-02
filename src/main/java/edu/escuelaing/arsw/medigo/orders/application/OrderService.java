@@ -2,8 +2,12 @@ package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
 import edu.escuelaing.arsw.medigo.orders.domain.port.in.*;
+import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest;
+import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.out.util.OrderNumberGenerator;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
+import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
+import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
     
     private final OrderRepositoryPort orderRepository;
     private final SearchMedicationUseCase searchMedicationUseCase;
+    private final UpdateStockUseCase updateStockUseCase;
     private static final BigDecimal DEFAULT_MEDICATION_PRICE = BigDecimal.valueOf(25.00);
     
     /**
@@ -99,6 +104,97 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         throw new UnsupportedOperationException("TODO Miguel: SELECT FOR UPDATE SKIP LOCKED");
     }
     
+    /**
+     * HU-06: Confirma el carrito pendiente con dirección de envío.
+     * Genera número de orden, actualiza dirección, cambia estado a CONFIRMED.
+     * 
+     * Escenario 1: Confirmar pedido con dirección completa - genera número, actualiza dirección, estado CONFIRMED
+     * Escenario 2: Intentar confirmar sin dirección completa - valida que NO deje confirmar
+     * Escenario 3: Ver resumen antes de confirmar - muestra resumen con productos y precios
+     * Escenario 4: Carrito se vacía después de confirmar - crea nueva orden PENDING vacía
+     */
+    @Override @Transactional
+    public Order confirmPendingOrder(Long affiliateId, Long branchId, ConfirmOrderRequest request) {
+        log.info("Confirmando pedido para cliente {} en sucursal {}", affiliateId, branchId);
+        
+        // Validar request (dirección completa)
+        if (request == null || request.getStreet() == null || request.getStreet().isBlank()) {
+            throw new BusinessException("La calle es obligatoria");
+        }
+        if (request.getStreetNumber() == null || request.getStreetNumber().isBlank()) {
+            throw new BusinessException("El número es obligatorio");
+        }
+        if (request.getCity() == null || request.getCity().isBlank()) {
+            throw new BusinessException("La ciudad es obligatoria");
+        }
+        if (request.getCommune() == null || request.getCommune().isBlank()) {
+            throw new BusinessException("La comuna es obligatoria");
+        }
+        
+        // Obtener carrito pendiente
+        Order cart = orderRepository.findPendingByAffiliateAndBranch(affiliateId, branchId)
+                .orElseThrow(() -> {
+                    log.warn("Carrito no encontrado para cliente: {}, sucursal: {}", affiliateId, branchId);
+                    return new ResourceNotFoundException("Carrito no encontrado");
+                });
+        
+        // Validar que carrito NO esté vacío (Escenario 3)
+        if (cart.getItems() == null || cart.getItems().isEmpty()) {
+            throw new BusinessException("El carrito está vacío. Agregue medicamentos antes de confirmar");
+        }
+        
+        // Generar número de orden único (Escenario 1)
+        String orderNumber = OrderNumberGenerator.generateOrderNumber();
+        log.debug("Número de orden generado: {}", orderNumber);
+        
+        // Actualizar carrito con dirección y información de confirmación (Escenario 1)
+        Order confirmedOrder = Order.builder()
+                .id(cart.getId())
+                .orderNumber(orderNumber)
+                .affiliateId(cart.getAffiliateId())
+                .branchId(cart.getBranchId())
+                .auctionId(cart.getAuctionId())
+                .finalPrice(cart.getFinalPrice())
+                .totalPrice(cart.getTotalPrice())
+                .status(Order.OrderStatus.CONFIRMED)  // Estado CONFIRMED
+                .street(request.getStreet())
+                .streetNumber(request.getStreetNumber())
+                .city(request.getCity())
+                .commune(request.getCommune())
+                .addressLat(request.getLatitude())
+                .addressLng(request.getLongitude())
+                .createdAt(cart.getCreatedAt())
+                .items(cart.getItems())
+                .build();
+        
+        Order savedOrder = orderRepository.save(confirmedOrder);
+        log.info("Pedido confirmado exitosamente. Número: {}", orderNumber);
+        
+        // Reducir stock en catálogo para cada medicamento del pedido
+        try {
+            reduceStockForOrder(branchId, savedOrder);
+            log.info("Stock reducido exitosamente para pedido: {}", orderNumber);
+        } catch (Exception e) {
+            log.error("Error al reducir stock para pedido {}: {}", orderNumber, e.getMessage());
+            // No lanzar excepción - el pedido ya está confirmado, solo logear el error
+        }
+        
+        // Escenario 4: Crear nuevo carrito vacío para el cliente
+        Order newPendingCart = Order.builder()
+                .affiliateId(affiliateId)
+                .branchId(branchId)
+                .status(Order.OrderStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .totalPrice(BigDecimal.ZERO)
+                .items(new ArrayList<>())
+                .build();
+        
+        orderRepository.save(newPendingCart);
+        log.debug("Carrito vacío creado para cliente: {}", affiliateId);
+        
+        return savedOrder;
+    }
+    
     // ────── Private Helper Methods ──────
     
     private void validateCartInput(Long affiliateId, Long branchId, Long medicationId, int quantity) {
@@ -174,6 +270,55 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
             
             cart.getItems().add(newItem);
             log.debug("Nuevo medicamento agregado al carrito");
+        }
+    }
+    
+    /**
+     * Reduce el stock en el catálogo para todos los medicamentos del pedido confirmado.
+     * Para cada medicamento: obtiene stock actual y resta la cantidad del pedido.
+     * 
+     * @param branchId ID de la sucursal
+     * @param order Orden confirmada con items
+     */
+    private void reduceStockForOrder(Long branchId, Order order) {
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            log.debug("No hay items para reducir stock");
+            return;
+        }
+        
+        for (OrderItem item : order.getItems()) {
+            try {
+                Long medicationId = item.getMedicationId();
+                int quantityOrdered = item.getQuantity();
+                
+                log.debug("Reduciendo stock - Medicamento: {}, Cantidad ordenada: {}", medicationId, quantityOrdered);
+                
+                // Obtener stock actual en la sucursal
+                BranchStock currentStock = searchMedicationUseCase.getAvailabilityByMedicationBranch(medicationId, branchId);
+                
+                if (currentStock == null) {
+                    log.warn("Stock no encontrado para medicamento: {} en sucursal: {}", medicationId, branchId);
+                    continue;
+                }
+                
+                int currentQuantity = currentStock.getQuantity();
+                int newQuantity = currentQuantity - quantityOrdered;
+                
+                if (newQuantity < 0) {
+                    log.warn("Stock insuficiente para medicamento: {}. Actual: {}, Solicitado: {}", 
+                        medicationId, currentQuantity, quantityOrdered);
+                    newQuantity = 0; // No permitir stock negativo
+                }
+                
+                // Actualizar stock en catálogo
+                updateStockUseCase.updateStock(branchId, medicationId, newQuantity);
+                log.info("Stock actualizado - Medicamento: {}, Sucursal: {}, Nuevo stock: {}", 
+                    medicationId, branchId, newQuantity);
+                
+            } catch (Exception e) {
+                log.error("Error al reducir stock para medicamento: {}: {}", item.getMedicationId(), e.getMessage());
+                // No relanzar excepción - continuar con otros items
+            }
         }
     }
 }
