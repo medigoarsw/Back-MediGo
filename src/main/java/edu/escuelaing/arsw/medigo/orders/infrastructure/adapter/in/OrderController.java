@@ -360,7 +360,68 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
     
-    @GetMapping("/my-orders")
+    /**
+     * POST /api/orders/{branchId}/confirm
+     * HU-06: Confirma el carrito pendiente del cliente con dirección de envío
+     */
+    @PostMapping("/{branchId}/confirm")
+    @Operation(
+        summary = "Confirmar carrito con dirección de envío",
+        description = "Confirma el carrito pendiente (PENDING) del cliente y agrega dirección de envío. " +
+                     "Genera número de orden único, valida dirección completa, cambia estado a CONFIRMED, " +
+                     "y crea nuevo carrito vacío."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Carrito confirmado exitosamente con orden generada"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Solicitud inválida - dirección incompleta o carrito vacío"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Carrito no encontrado"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error interno del servidor"
+        )
+    })
+    public ResponseEntity<Object> confirmPendingOrder(
+            @Parameter(
+                name = "affiliateId",
+                description = "ID del cliente (afiliado)",
+                required = true,
+                schema = @Schema(type = "integer", format = "int64", minimum = "1")
+            )
+            @RequestParam Long affiliateId,
+            @Parameter(
+                name = "branchId",
+                description = "ID de la sucursal",
+                required = true,
+                schema = @Schema(type = "integer", format = "int64", minimum = "1")
+            )
+            @PathVariable Long branchId,
+            @Valid @RequestBody edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest request) {
+        try {
+            log.info("Confirmando carrito para cliente {} en sucursal {}", affiliateId, branchId);
+            
+            Order confirmedOrder = orderService.confirmPendingOrder(affiliateId, branchId, request);
+            
+            log.info("Carrito confirmado exitosamente. Número de orden: {}", confirmedOrder.getOrderNumber());
+            
+            return ResponseEntity.ok(confirmedOrder);
+            
+        } catch (Exception e) {
+            log.error("Error al confirmar carrito: {}", e.getMessage(), e);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ErrorMessage(e.getMessage()));
+        }
+    }
+    
     @Operation(
         summary = "Obtener mis órdenes",
         description = "Retorna todas las órdenes (en cualquier estado) del cliente autenticado. " +
