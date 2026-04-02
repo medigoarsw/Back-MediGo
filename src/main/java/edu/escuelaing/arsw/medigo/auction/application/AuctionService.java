@@ -100,6 +100,20 @@ public class AuctionService implements
     }
 
     @Override
+    public QueryAuctionUseCase.WinnerView getAuctionWinner(Long auctionId) {
+        Auction auction = findOrThrow(auctionId);
+
+        if (auction.getWinnerId() == null) {
+            return new QueryAuctionUseCase.WinnerView(auctionId, null, null, null);
+        }
+
+        return auctionRepository.findHighestBid(auctionId)
+                .map(bid -> new QueryAuctionUseCase.WinnerView(
+                        auctionId, bid.getUserId(), bid.getUserName(), bid.getAmount()))
+                .orElse(new QueryAuctionUseCase.WinnerView(auctionId, auction.getWinnerId(), null, null));
+    }
+
+    @Override
     public List<Bid> getBidHistory(Long auctionId) {
         return auctionRepository.findBidsByAuction(auctionId);
     }
@@ -348,7 +362,8 @@ public class AuctionService implements
         adjudicateWinner(auctionId);
 
         // HU-22: generar orden y reservar stock para el ganador
-        auctionRepository.findHighestBid(auctionId).ifPresent(winningBid -> {
+        Bid winningBid = auctionRepository.findHighestBid(auctionId).orElse(null);
+        if (winningBid != null) {
             Auction auction = findOrThrow(auctionId);
             Long orderId = auctionOrderPort.createAuctionOrder(
                     auctionId, winningBid.getUserId(), auction.getMedicationId(),
@@ -360,14 +375,27 @@ public class AuctionService implements
             } catch (Exception e) {
                 log.warn("No se pudo reservar stock para subasta {}: {}", auctionId, e.getMessage());
             }
-        });
+        }
 
-        eventPublisher.publish(auctionId, AuctionEvent.builder()
+        // Incluir datos del ganador en el evento AUCTION_CLOSED para que el front
+        // pueda mostrar al ganador en el mismo mensaje de cierre.
+        AuctionEvent.AuctionEventBuilder closedEvent = AuctionEvent.builder()
                 .type(AuctionEvent.EventType.AUCTION_CLOSED)
                 .auctionId(auctionId)
-                .timestamp(LocalDateTime.now())
-                .message("La subasta ha finalizado")
-                .build());
+                .timestamp(LocalDateTime.now());
+
+        if (winningBid != null) {
+            closedEvent
+                    .currentAmount(winningBid.getAmount())
+                    .leaderName(winningBid.getUserName())
+                    .leaderId(winningBid.getUserId())
+                    .message("La subasta finalizó. Ganador: " + winningBid.getUserName()
+                            + " con $" + winningBid.getAmount());
+        } else {
+            closedEvent.message("La subasta ha finalizado sin pujas");
+        }
+
+        eventPublisher.publish(auctionId, closedEvent.build());
     }
 
     private void readjudicateToSecond(Auction auction, Bid secondBid) {
