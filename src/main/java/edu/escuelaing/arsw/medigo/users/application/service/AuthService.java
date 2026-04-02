@@ -32,8 +32,8 @@ import java.util.Optional;
  * - No necesita inyectar Controller ni Entity
  * 
  * FLUJO:
- * 1. Controller llama a authenticate(username, password)
- * 2. Service delega a userRepository.findByUsername(username)
+ * 1. Controller llama a authenticate(email, password)
+ * 2. Service delega a userRepository.findByEmail(email)
  * 3. Service valida credenciales en el modelo de dominio
  * 4. Service devuelve User al Controller
  */
@@ -52,22 +52,22 @@ public class AuthService implements AuthUseCase {
      * Autentica un usuario
      * 
      * LÓGICA DE NEGOCIO:
-     * 1. Buscar el usuario por username
+     * 1. Buscar el usuario por email
      * 2. Verificar que las credenciales coincidan (delegado al modelo de dominio)
      * 3. Si todo OK, devolver el usuario
      * 4. Si falla, lanzar excepción de dominio
      */
     @Override
-    public User authenticate(String username, String password) {
+    public User authenticate(String email, String password) {
         log.debug("Authentication attempt initiated");
         
         // Buscar usuario en repositorio (abstracto)
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByEmail(email);
         
         // Si no existe, lanzo excepción de dominio
         if (user.isEmpty()) {
             log.warn("Authentication failed: user not found");
-            throw UserNotFoundException.byUsername(username);
+            throw UserNotFoundException.byEmail(email);
         }
         
         // Obtengo el usuario
@@ -76,7 +76,7 @@ public class AuthService implements AuthUseCase {
         // Valido credenciales usando lógica del dominio
         if (!foundUser.credentialsMatch(password)) {
             log.warn("Authentication failed: invalid credentials");
-            throw InvalidCredentialsException.withMessage(username);
+            throw InvalidCredentialsException.withMessage(email);
         }
         
         log.info("User authenticated successfully");

@@ -58,33 +58,33 @@ class AuthServiceTest {
     void testAuthenticateSuccess() {
         // ARRANGE - Preparar datos
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
-        when(userRepository.findByUsername("user"))
+        when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
         
         // ACT - Ejecutar caso de uso
-        User result = authService.authenticate("user", "123");
+        User result = authService.authenticate("user@example.com", "123");
         
         // ASSERT - Verificar resultado
         assertNotNull(result);
         assertEquals("user", result.getUsername());
         // Verificar que se llamó al puerto
-        verify(userRepository).findByUsername("user");
+        verify(userRepository).findByEmail("user@example.com");
     }
     
     @Test
     @DisplayName("Debe lanzar excepción cuando usuario no existe")
     void testAuthenticateUserNotFound() {
         // ARRANGE
-        when(userRepository.findByUsername("nonexistent"))
+        when(userRepository.findByEmail("nonexistent@example.com"))
             .thenReturn(Optional.empty());
         
         // ACT & ASSERT
         assertThrows(UserNotFoundException.class, () -> {
-            authService.authenticate("nonexistent", "123");
+            authService.authenticate("nonexistent@example.com", "123");
         });
         
         // Verificar que se buscó el usuario
-        verify(userRepository).findByUsername("nonexistent");
+        verify(userRepository).findByEmail("nonexistent@example.com");
     }
     
     @Test
@@ -92,16 +92,16 @@ class AuthServiceTest {
     void testAuthenticateInvalidPassword() {
         // ARRANGE
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
-        when(userRepository.findByUsername("user"))
+        when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
         
         // ACT & ASSERT
         assertThrows(InvalidCredentialsException.class, () -> {
-            authService.authenticate("user", "wrongpassword");
+            authService.authenticate("user@example.com", "wrongpassword");
         });
         
         // El usuario fue buscado
-        verify(userRepository).findByUsername("user");
+        verify(userRepository).findByEmail("user@example.com");
     }
     
     @Test
@@ -143,14 +143,14 @@ class AuthServiceTest {
         User admin = User.create(2L, "admin", "admin@example.com", "456", Role.ADMIN);
         User delivery = User.create(3L, "delivery", "delivery@example.com", "789", Role.DELIVERY);
         
-        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
-        when(userRepository.findByUsername("admin")).thenReturn(Optional.of(admin));
-        when(userRepository.findByUsername("delivery")).thenReturn(Optional.of(delivery));
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
+        when(userRepository.findByEmail("delivery@example.com")).thenReturn(Optional.of(delivery));
         
         // ACT & ASSERT
-        User userResult = authService.authenticate("user", "123");
-        User adminResult = authService.authenticate("admin", "456");
-        User deliveryResult = authService.authenticate("delivery", "789");
+        User userResult = authService.authenticate("user@example.com", "123");
+        User adminResult = authService.authenticate("admin@example.com", "456");
+        User deliveryResult = authService.authenticate("delivery@example.com", "789");
         
         assertEquals(Role.AFFILIATE, userResult.getRole());
         assertEquals(Role.ADMIN, adminResult.getRole());

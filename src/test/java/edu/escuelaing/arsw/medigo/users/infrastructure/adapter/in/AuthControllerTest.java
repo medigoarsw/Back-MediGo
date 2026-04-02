@@ -50,7 +50,7 @@ class AuthControllerTest {
     @DisplayName("POST /api/auth/login debe retornar 200 con credenciales válidas")
     void testLoginSuccess() throws Exception {
         // ARRANGE - Usuario real del repositorio en memoria
-        LoginRequestDto request = new LoginRequestDto("user", "123");
+        LoginRequestDto request = new LoginRequestDto("user@medigo.com", "123");
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -67,7 +67,7 @@ class AuthControllerTest {
     @DisplayName("POST /api/auth/login debe retornar 401 con credenciales inválidas")
     void testLoginUnauthorized() throws Exception {
         // ARRANGE - Usuario que existe pero contraseña incorrecta
-        LoginRequestDto request = new LoginRequestDto("user", "wrongpassword");
+        LoginRequestDto request = new LoginRequestDto("user@medigo.com", "wrongpassword");
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -80,7 +80,7 @@ class AuthControllerTest {
     @DisplayName("POST /api/auth/login debe retornar 404 cuando usuario no existe")
     void testLoginUserNotFound() throws Exception {
         // ARRANGE - Usuario que no existe en el repositorio
-        LoginRequestDto request = new LoginRequestDto("nonexistent", "123");
+        LoginRequestDto request = new LoginRequestDto("nonexistent@medigo.com", "123");
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
@@ -134,7 +134,7 @@ class AuthControllerTest {
     @DisplayName("POST /api/auth/login con repartidor debe retornar rol DELIVERY")
     void testLoginDeliveryRole() throws Exception {
         // ARRANGE - Usuario delivery real
-        LoginRequestDto request = new LoginRequestDto("delivery", "123");
+        LoginRequestDto request = new LoginRequestDto("delivery@medigo.com", "123");
         
         // ACT & ASSERT
         mockMvc.perform(post("/api/auth/login")
