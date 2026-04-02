@@ -389,12 +389,15 @@ public class MedicationController {
     }
 
     /**
-     * Actualizar disponibilidad de medicamento en una sucursal
+     * HU-08: Administrador edita disponibilidad (stock)
+     * Solo los administradores pueden actualizar el stock
      */
     @PutMapping("/{medicationId}/branch/{branchId}/stock")
+    @PreAuthorize("hasRole('ADMIN')")  // HU-08: Validar que sea admin
+    @SecurityRequirement(name = "JWT")
     @Operation(
-        summary = "Actualizar disponibilidad",
-        description = "Actualiza la cantidad disponible de un medicamento en una sucursal específica. Crea el registro si no existe."
+        summary = "Actualizar disponibilidad (Admin)",
+        description = "Actualiza la cantidad disponible de un medicamento en una sucursal específica. Solo administradores. Crea el registro si no existe."
     )
     @ApiResponses({
         @ApiResponse(
@@ -404,6 +407,10 @@ public class MedicationController {
         @ApiResponse(
             responseCode = "400",
             description = "Datos inválidos o cantidad negativa"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "No autorizado: solo administradores pueden actualizar stock"
         ),
         @ApiResponse(
             responseCode = "404",

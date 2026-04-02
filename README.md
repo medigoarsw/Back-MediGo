@@ -63,7 +63,7 @@ MediGo es una plataforma integral de e-commerce especializada en medicamentos qu
 - **Security**: ✅ Fixed weak PRNG (SecureRandom), 0 SonarCloud hotspots
 - **Documentación**: [Resumen Final](docs/RESUMEN_FINAL.md)
 
-### ⭐ HU-07: Administrador Crea Medicamento (NUEVA - COMPLETADA)
+### ⭐ HU-07: Administrador Crea Medicamento (COMPLETADA)
 - **Status**: ✅ COMPLETADA
 - **Resumen**: Administradores agregan medicamentos al catálogo con precio y stock
 - **Escenarios**: 4/4 PASSING (incluidos en CatalogServiceTest)
@@ -72,6 +72,17 @@ MediGo es una plataforma integral de e-commerce especializada en medicamentos qu
 - **Build**: ✅ SUCCESS
 - **Documentación**: [HU-07 Crear Medicamento](docs/HU_07_CREAR_MEDICAMENTO.md)
 - **Commit Guide**: [Conventional Commit HU-07](docs/CONVENTIONAL_COMMIT_HU07.md)
+
+### ⭐ HU-08: Administrador Edita Disponibilidad (NUEVA - COMPLETADA)
+- **Status**: ✅ COMPLETADA
+- **Resumen**: Administradores editan stock de medicamentos en sucursales específicas
+- **Escenarios**: 5/5 PASSING (nuevos en MedicationControllerTest)
+- **Tests**: 25/25 PASSING en MedicationControllerTest (5 nuevos HU-08)
+- **Security**: ✅ @PreAuthorize("hasRole('ADMIN')"), @PositiveOrZero validation
+- **Validaciones**: Stock no negativo, cantidad entero, medicamento existe
+- **Build**: ✅ SUCCESS - 127/127 tests totales
+- **Documentación**: [HU-08 Edita Disponibilidad](docs/HU_08_ADMINISTRADOR_EDITA_STOCK.md)
+- **Commit Guide**: [Conventional Commit HU-08](docs/CONVENTIONAL_COMMIT_HU08.md)
 
 ---
 
@@ -166,8 +177,8 @@ Back-MediGo/
 
 ### Resumen Actual
 ```
-Total Tests: 19 (CatalogServiceTest - HU-07 incluida)
-Passing: 19/19 ✅
+Total Tests: 127 (25 MedicationControllerTest + others)
+Passing: 127/127 ✅
 Failing: 0 ✅
 Build: SUCCESS ✅
 ```
@@ -180,6 +191,16 @@ Build: SUCCESS ✅
 | 2️⃣ | Campos obligatorios vacíos | `testCreateMedicationWithEmptyName()` | ✅ |
 | 3️⃣ | Precio inválido (≤ 0) | `testCreateMedicationWithInvalidPrice()` | ✅ |
 | 4️⃣ | Visible en búsqueda de clientes | `testCreatedMedicationVisibleInSearch()` | ✅ |
+
+### HU-08 Tests (5 escenarios BDD)
+
+| # | Escenario | Test | Status |
+|---|-----------|------|--------|
+| 1️⃣ | Editar stock exitosamente | `testHU08_EditarStockExitosamente()` | ✅ |
+| 2️⃣ | Ver stock actual antes de editar | `testHU08_VerStockActual()` | ✅ |
+| 3️⃣ | Establecer stock a 0 | `testHU08_StockACero()` | ✅ |
+| 4️⃣ | Rechazar stock negativo | `testHU08_RechazarStockNegativo()` | ✅ |
+| 5️⃣ | Cambios en tiempo real | `testHU08_CambioEnTiempoReal()` | ✅ |
 
 ---
 
@@ -241,6 +262,8 @@ http://localhost:8080/swagger-ui.html
 
 - [HU-07: Crear Medicamento](docs/HU_07_CREAR_MEDICAMENTO.md) - ✅ NUEVA
 - [Conventional Commit HU-07](docs/CONVENTIONAL_COMMIT_HU07.md) - ✅ NUEVA
+- [HU-08: Editar Disponibilidad](docs/HU_08_ADMINISTRADOR_EDITA_STOCK.md) - ✅ NUEVA
+- [Conventional Commit HU-08](docs/CONVENTIONAL_COMMIT_HU08.md) - ✅ NUEVA
 - [Guía API Autenticación](docs/GUIA_API_AUTENTICACION.md)
 - [Resumen Final](docs/RESUMEN_FINAL.md)
 - [Quick Reference](docs/QUICK_REFERENCE.md)
@@ -257,16 +280,17 @@ http://localhost:8080/swagger-ui.html
 - HU-04: Creación de pedidos
 - HU-05: Confirmación de órdenes
 - HU-06: Asignación de ruta + Seguridad (PASO-1)
-- **HU-07: Administrador crea medicamento** ⭐
+- HU-07: Administrador crea medicamento ⭐
+- **HU-08: Administrador edita disponibilidad** ⭐
 
 ### En Progreso ⏳
-- HU-08: Seguimiento de pedidos
-- HU-09: Historial de compras
+- HU-09: Seguimiento de pedidos
+- HU-10: Historial de compras
 
 ### Planeadas 📋
-- HU-10: Historial de entregas
-- HU-11: Reportes administrativos
-- HU-12: Notificaciones por email
+- HU-11: Historial de entregas
+- HU-12: Reportes administrativos
+- HU-13: Notificaciones por email
 
 ---
 
