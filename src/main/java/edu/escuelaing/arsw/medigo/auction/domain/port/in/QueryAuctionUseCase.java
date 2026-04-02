@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.auction.domain.port.in;
 
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Bid;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public interface QueryAuctionUseCase {
     Auction           getAuctionById(Long id);
     List<Bid>         getBidHistory(Long auctionId);
     AuctionDetailView getAuctionDetail(Long id);
+    WinnerView        getAuctionWinner(Long auctionId);
 
     record AuctionDetailView(
         Auction  auction,
@@ -17,5 +19,12 @@ public interface QueryAuctionUseCase {
         String   medicationUnit,
         Duration remainingTime,  // null if CLOSED / CANCELLED
         String   winnerName      // null if no winner yet
+    ) {}
+
+    record WinnerView(
+        Long       auctionId,
+        Long       winnerId,
+        String     winnerName,
+        BigDecimal winningAmount // monto de la puja ganadora
     ) {}
 }

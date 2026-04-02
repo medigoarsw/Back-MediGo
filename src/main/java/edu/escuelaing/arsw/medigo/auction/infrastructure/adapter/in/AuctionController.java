@@ -71,6 +71,17 @@ public class AuctionController {
                 .stream().map(BidResponse::from).toList();
     }
 
+    // HU-22: Consultar ganador de una subasta cerrada
+    @GetMapping("/{id}/winner")
+    public ResponseEntity<WinnerResponse> getWinner(@PathVariable Long id) {
+        QueryAuctionUseCase.WinnerView view = queryAuctionUseCase.getAuctionWinner(id);
+        if (view.winnerId() == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(new WinnerResponse(
+                view.auctionId(), view.winnerId(), view.winnerName(), view.winningAmount()));
+    }
+
     // HU-18: Unirse a subasta
     @PostMapping("/{id}/join")
     @ResponseStatus(HttpStatus.NO_CONTENT)
