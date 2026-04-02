@@ -17,4 +17,7 @@ public interface SpringOrderJpaRepository extends JpaRepository<OrderEntity, Lon
 
     @Query("SELECT o FROM OrderEntity o WHERE o.status = 'PENDING_PAYMENT' AND o.createdAt < :cutoff")
     List<OrderEntity> findPendingPaymentCreatedBefore(@Param("cutoff") LocalDateTime cutoff);
+    
+    @Query("SELECT o FROM OrderEntity o WHERE o.affiliateId = :affiliateId AND o.branchId = :branchId AND o.status = 'PENDING' ORDER BY o.createdAt DESC")
+    Optional<OrderEntity> findPendingByAffiliateAndBranch(@Param("affiliateId") Long affiliateId, @Param("branchId") Long branchId);
 }

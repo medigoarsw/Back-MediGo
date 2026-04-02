@@ -11,6 +11,7 @@ public class OrderEntity {
     @Column(name = "branch_id", nullable = false) private Long branchId;
     @Column(name = "auction_id") private Long auctionId;
     @Column(name = "final_price", precision = 12, scale = 2) private BigDecimal finalPrice;
+    @Column(name = "total_price", precision = 12, scale = 2) private BigDecimal totalPrice;
     @Column(nullable = false) private String status;
     @Column(name = "address_lat") private Double addressLat;
     @Column(name = "address_lng") private Double addressLng;

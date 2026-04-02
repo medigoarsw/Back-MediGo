@@ -9,4 +9,5 @@ public interface OrderRepositoryPort {
     void updateStatus(Long orderId, Order.OrderStatus status);
     Optional<Order> findByAuctionId(Long auctionId);
     List<Order> findPendingPaymentCreatedBefore(LocalDateTime cutoff);
+    Optional<Order> findPendingByAffiliateAndBranch(Long affiliateId, Long branchId);
 }
