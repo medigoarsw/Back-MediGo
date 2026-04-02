@@ -147,7 +147,7 @@ public class AuthController {
             description = "Error interno del servidor"
         )
     })
-    public ResponseEntity<?> register(@Valid @RequestBody SignUpRequestDto request) {
+    public ResponseEntity<Object> register(@Valid @RequestBody SignUpRequestDto request) {
         try {
             log.debug("Registration request received for email: {}", request.getEmail());
             
@@ -193,7 +193,7 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    public ResponseEntity<?> getCurrentUser(
+    public ResponseEntity<Object> getCurrentUser(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @RequestParam(name = "user_id") Long userId) {
         try {
@@ -226,7 +226,7 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    public ResponseEntity<?> getUserById(
+    public ResponseEntity<Object> getUserById(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @PathVariable Long id) {
         try {
@@ -259,7 +259,7 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    public ResponseEntity<?> getUserByEmail(
+    public ResponseEntity<Object> getUserByEmail(
             @Parameter(description = "Email del usuario", required = true, example = "student@medigo.com")
             @PathVariable String email) {
         try {
