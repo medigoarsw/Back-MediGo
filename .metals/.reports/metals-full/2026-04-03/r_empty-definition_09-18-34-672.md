@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java:java/util/List#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java
+empty definition using pc, found symbol in pc: java/util/List#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 972
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.orders.application.OrderService;
@@ -19,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.@@List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -150,7 +161,7 @@ public class OrderController {
                     request.quantity
             );
             
-            CartResponse response = buildCartResponse(cart, "Medicamento agregado al carrito exitosamente");
+            CartResponse response = buildCartResponse(cart);
             log.info("Medicamento agregado exitosamente. Total: {}", response.totalPrice);
             
             return ResponseEntity
@@ -159,10 +170,9 @@ public class OrderController {
                     
         } catch (Exception e) {
             log.error("Error al agregar medicamento al carrito", e);
-            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error al agregar medicamento al carrito";
             return ResponseEntity
                     .badRequest()
-                    .body(new ErrorMessage(errorMessage));
+                    .body(new ErrorMessage(e.getMessage()));
         }
     }
     
@@ -300,16 +310,15 @@ public class OrderController {
             log.debug("Obteniendo carrito del cliente {}", affiliateId);
             
             Order cart = orderService.getCart(affiliateId, branchId);
-            CartResponse response = buildCartResponse(cart, "Carrito obtenido exitosamente");
+            CartResponse response = buildCartResponse(cart);
             
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             log.error("Error al obtener carrito", e);
-            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error al obtener carrito";
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorMessage(errorMessage));
+                    .body(new ErrorMessage(e.getMessage()));
         }
     }
     
@@ -449,10 +458,9 @@ public class OrderController {
                     
         } catch (Exception e) {
             log.error("Error al crear carrito", e);
-            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error al crear carrito";
             return ResponseEntity
                     .badRequest()
-                    .body(new ErrorMessage(errorMessage));
+                    .body(new ErrorMessage(e.getMessage()));
         }
     }
     
@@ -513,10 +521,9 @@ public class OrderController {
             
         } catch (Exception e) {
             log.error("Error al confirmar carrito: {}", e.getMessage(), e);
-            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error al confirmar carrito";
             return ResponseEntity
                     .badRequest()
-                    .body(new ErrorMessage(errorMessage));
+                    .body(new ErrorMessage(e.getMessage()));
         }
     }
     
@@ -541,7 +548,7 @@ public class OrderController {
     
     // ────── Helper Methods ──────
     
-    private CartResponse buildCartResponse(Order cart, String message) {
+    private CartResponse buildCartResponse(Order cart) {
         List<CartItemResponse> items = cart.getItems() != null
                 ? cart.getItems().stream()
                     .map(item -> new CartItemResponse(
@@ -559,12 +566,8 @@ public class OrderController {
                 cart.getBranchId(),
                 items,
                 cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO,
-                message
+                "Medicamento agregado al carrito exitosamente"
         );
-    }
-    
-    private CartResponse buildCartResponse(Order cart) {
-        return buildCartResponse(cart, "Medicamento agregado al carrito exitosamente");
     }
     
     // ────── DTOs ──────
@@ -795,3 +798,9 @@ public class OrderController {
             String message
     ) {}
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/util/List#

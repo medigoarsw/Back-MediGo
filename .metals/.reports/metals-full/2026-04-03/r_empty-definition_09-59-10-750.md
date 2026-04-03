@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java:_empty_/OneToMany#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java
+empty definition using pc, found symbol in pc: _empty_/OneToMany#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1449
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.entity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +35,12 @@ public class OrderEntity {
     @Column(name = "address_lng") private Double addressLng;
     @Column(name = "created_at") private LocalDateTime createdAt;
     
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @@@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OrderItemEntity> items;
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/OneToMany#

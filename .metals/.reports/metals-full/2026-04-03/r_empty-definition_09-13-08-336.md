@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java:java/math/BigDecimal#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+empty definition using pc, found symbol in pc: java/math/BigDecimal#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1128
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
@@ -14,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
+import java.math.@@BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -39,12 +50,8 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         validateCartInput(affiliateId, branchId, medicationId, quantityToAdd);
         
         // Obtener o crear carrito (Order en estado PENDING)
-        // Se busca de forma thread-safe para evitar crear múltiples carritos
         Order cart = orderRepository.findPendingByAffiliateAndBranch(affiliateId, branchId)
-                .orElseGet(() -> {
-                    Order newCart = createNewCart(affiliateId, branchId);
-                    return orderRepository.save(newCart);  // Guardar inmediatamente
-                });
+                .orElseGet(() -> createNewCart(affiliateId, branchId));
         
         // Verificar stock disponible (ESCENARIO 3 y 4)
         int currentQuantityInCart = cart.getItems() != null 
@@ -356,3 +363,9 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         }
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/math/BigDecimal#

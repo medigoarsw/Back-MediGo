@@ -1,15 +1,24 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java:_empty_/Column#nullable#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java
+empty definition using pc, found symbol in pc: _empty_/Column#nullable#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 432
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-
 @Entity @Table(name = "orders")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class OrderEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-    @Column(name = "order_number", unique = true, nullable = true, length = 50) private String orderNumber;
+    @Column(name = "order_number", unique = true, @@nullable = true, length = 50) private String orderNumber;
     @Column(name = "affiliate_id", nullable = false) private Long affiliateId;
     @Column(name = "branch_id", nullable = false) private Long branchId;
     @Column(name = "auction_id") private Long auctionId;
@@ -23,7 +32,10 @@ public class OrderEntity {
     @Column(name = "address_lat") private Double addressLat;
     @Column(name = "address_lng") private Double addressLng;
     @Column(name = "created_at") private LocalDateTime createdAt;
-    
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<OrderItemEntity> items;
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Column#nullable#

@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java:_empty_/Order#getItems#stream#filter#findFirst#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+empty definition using pc, found symbol in pc: _empty_/Order#getItems#stream#filter#findFirst#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 13254
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
@@ -277,7 +288,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         // Buscar si el medicamento ya existe en el carrito
         Optional<OrderItem> existingItem = cart.getItems().stream()
                 .filter(item -> item.getMedicationId().equals(medicationId))
-                .findFirst();
+                .@@findFirst();
         
         if (existingItem.isPresent()) {
             // Incrementar cantidad (ESCENARIO 2: no duplicar)
@@ -356,3 +367,9 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         }
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Order#getItems#stream#filter#findFirst#

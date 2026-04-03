@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java:_empty_/Order#builder#id#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+empty definition using pc, found symbol in pc: _empty_/Order#builder#id#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 3492
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
@@ -65,7 +76,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         
         // Crear nueva Order con datos actualizados
         Order updatedCart = Order.builder()
-                .id(cart.getId())
+                .@@id(cart.getId())
                 .affiliateId(cart.getAffiliateId())
                 .branchId(cart.getBranchId())
                 .auctionId(cart.getAuctionId())
@@ -356,3 +367,9 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         }
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Order#builder#id#
