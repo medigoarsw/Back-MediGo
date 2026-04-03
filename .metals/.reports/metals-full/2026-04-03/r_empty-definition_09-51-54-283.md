@@ -1,17 +1,26 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java:java/util/ArrayList#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java
+empty definition using pc, found symbol in pc: java/util/ArrayList#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 558
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
-import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.entity.OrderEntity;
-import edu.escuelaing.arsw.medigo.orders.infrastructure.entity.OrderItemEntity;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.persistence.SpringOrderJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.@@ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,8 +76,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
 
     private OrderEntity toEntity(Order o) {
         LocalDateTime now = LocalDateTime.now();
-        
-        OrderEntity entity = OrderEntity.builder()
+        return OrderEntity.builder()
                 .id(o.getId())
                 .affiliateId(o.getAffiliateId())
                 .branchId(o.getBranchId())
@@ -85,56 +93,28 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .addressLng(o.getAddressLng())
                 .createdAt(o.getCreatedAt() != null ? o.getCreatedAt() : now)
                 .build();
-        
-        // Mapear items
-        if (o.getItems() != null && !o.getItems().isEmpty()) {
-            List<OrderItemEntity> itemEntities = o.getItems().stream()
-                    .map(item -> OrderItemEntity.builder()
-                            .order(entity)
-                            .medicationId(item.getMedicationId())
-                            .quantity(item.getQuantity())
-                            .unitPrice(item.getUnitPrice())
-                            .build())
-                    .toList();
-            entity.setItems(itemEntities);
-        } else {
-            entity.setItems(new ArrayList<>());
-        }
-        
-        return entity;
     }
 
     private Order toDomain(OrderEntity e) {
-        // Mapear items de la BD
-        List<OrderItem> items = new ArrayList<>();
-        if (e.getItems() != null && !e.getItems().isEmpty()) {
-            items = e.getItems().stream()
-                    .map(itemEntity -> OrderItem.builder()
-                            .orderId(e.getId())
-                            .medicationId(itemEntity.getMedicationId())
-                            .quantity(itemEntity.getQuantity())
-                            .unitPrice(itemEntity.getUnitPrice())
-                            .build())
-                    .toList();
-        }
-        
         return Order.builder()
                 .id(e.getId())
-                .orderNumber(e.getOrderNumber())
                 .affiliateId(e.getAffiliateId())
                 .branchId(e.getBranchId())
                 .auctionId(e.getAuctionId())
                 .finalPrice(e.getFinalPrice())
                 .totalPrice(e.getTotalPrice())
                 .status(Order.OrderStatus.valueOf(e.getStatus()))
-                .street(e.getStreet())
-                .streetNumber(e.getStreetNumber())
-                .city(e.getCity())
-                .commune(e.getCommune())
                 .addressLat(e.getAddressLat())
                 .addressLng(e.getAddressLng())
                 .createdAt(e.getCreatedAt())
-                .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar
+                .items(new ArrayList<>())  // Usar ArrayList mutable en lugar de Collections.emptyList()
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/util/ArrayList#

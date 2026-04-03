@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java:java/util/List#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+empty definition using pc, found symbol in pc: java/util/List#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1579
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
@@ -25,7 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.@@List;
 
 /**
  * Controlador REST para gestionar medicamentos y su disponibilidad
@@ -633,3 +644,10 @@ public class MedicationController {
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/util/List#

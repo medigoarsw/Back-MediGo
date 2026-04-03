@@ -1,9 +1,20 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java:edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 343
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
-import edu.escuelaing.arsw.medigo.orders.infrastructure.entity.OrderEntity;
+import edu.escuelaing.arsw.medigo.orders.infrastructure.entity.@@OrderEntity;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.entity.OrderItemEntity;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.persistence.SpringOrderJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -138,3 +149,10 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity#

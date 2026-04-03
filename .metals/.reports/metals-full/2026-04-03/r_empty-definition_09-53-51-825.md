@@ -1,6 +1,17 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java:edu/escuelaing/arsw/medigo/orders/domain/model/OrderItem#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/orders/domain/model/OrderItem#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 172
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
-import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
+import edu.escuelaing.arsw.medigo.orders.domain.model.@@OrderItem;
 import edu.escuelaing.arsw.medigo.orders.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.out.util.OrderNumberGenerator;
@@ -356,3 +367,9 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         }
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/orders/domain/model/OrderItem#

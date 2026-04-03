@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/application/LogisticsService.java:java/util/List#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/application/LogisticsService.java
+empty definition using pc, found symbol in pc: java/util/List#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 741
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/application/LogisticsService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.logistics.application;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.*;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
@@ -10,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.@@List;
 
 @Service
 @RequiredArgsConstructor
@@ -97,3 +108,9 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
         return delivery;
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/util/List#

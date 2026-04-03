@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java:_empty_/`<any>`#quantity#unitPrice#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+empty definition using pc, found symbol in pc: _empty_/`<any>`#quantity#unitPrice#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 13802
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.application;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.model.OrderItem;
@@ -289,7 +300,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
                     .orderId(item.getOrderId())
                     .medicationId(item.getMedicationId())
                     .quantity(newQuantity)
-                    .unitPrice(item.getUnitPrice())
+                    .@@unitPrice(item.getUnitPrice())
                     .build();
             
             cart.getItems().set(cart.getItems().indexOf(item), updatedItem);
@@ -356,3 +367,9 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         }
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/`<any>`#quantity#unitPrice#
