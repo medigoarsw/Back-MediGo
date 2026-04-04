@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Credenciales locales
+src/main/resources/application-local.properties
+src/test/resources/application-test.properties
+application.properties
