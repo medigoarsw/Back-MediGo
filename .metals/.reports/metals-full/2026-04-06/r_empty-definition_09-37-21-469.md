@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#anyString#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#anyString#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 2405
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
@@ -51,6 +62,14 @@ class AuthServiceTest {
         MockitoAnnotations.openMocks(this);
         // Crea el servicio con el puerto mockeado
         authService = new AuthService(userRepository, passwordEncoder);
+        
+        // Configura el mock de PasswordEncoder para comparar plaintext
+        // En tests mockeamos el comparador para que simplemente compare strings
+        when(passwordEncoder.matches(@@anyString(), anyString())).thenAnswer(invocation -> {
+            String providedPassword = invocation.getArgument(0);
+            String storedPassword = invocation.getArgument(1);
+            return providedPassword.equals(storedPassword);
+        });
     }
     
     @Test
@@ -60,8 +79,6 @@ class AuthServiceTest {
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
-        // Para tests con plaintext passwords, el encoder devuelve true si strings coinciden
-        when(passwordEncoder.matches("123", "123")).thenReturn(true);
         
         // ACT - Ejecutar caso de uso
         User result = authService.authenticate("user@example.com", "123");
@@ -96,8 +113,6 @@ class AuthServiceTest {
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
-        // Configurar para que falle cuando la contraseña es incorrecta
-        when(passwordEncoder.matches("wrongpassword", "123")).thenReturn(false);
         
         // ACT & ASSERT
         assertThrows(InvalidCredentialsException.class, () -> {
@@ -150,11 +165,6 @@ class AuthServiceTest {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
         when(userRepository.findByEmail("delivery@example.com")).thenReturn(Optional.of(delivery));
-        
-        // Configurar mocks de passwordEncoder para test con plaintext
-        when(passwordEncoder.matches("123", "123")).thenReturn(true);
-        when(passwordEncoder.matches("456", "456")).thenReturn(true);
-        when(passwordEncoder.matches("789", "789")).thenReturn(true);
         
         // ACT & ASSERT
         User userResult = authService.authenticate("user@example.com", "123");
@@ -257,3 +267,10 @@ class AuthServiceTest {
 
 
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#anyString#

@@ -1,6 +1,17 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:edu/escuelaing/arsw/medigo/users/application/service/AuthService#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthService#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 125
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
-import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
+import edu.escuelaing.arsw.medigo.users.application.service.@@AuthService;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidCredentialsException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidInputException;
@@ -257,3 +268,10 @@ class AuthServiceTest {
 
 
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthService#

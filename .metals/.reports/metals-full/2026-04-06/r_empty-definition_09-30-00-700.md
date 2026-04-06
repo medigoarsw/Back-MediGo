@@ -1,11 +1,21 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java:edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 337
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/InMemoryUserRepository.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
-import edu.escuelaing.arsw.medigo.users.infrastructure.config.TestDataConfig;
+import edu.escuelaing.arsw.medigo.users.infrastructure.config.@@TestDataConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -45,7 +55,6 @@ public class InMemoryUserRepository implements UserRepositoryPort {
     private final Map<Long, User> usersById = new HashMap<>();
     private final Map<String, User> usersByUsername = new HashMap<>();
     private final Map<String, User> usersByEmail = new HashMap<>();
-    private final PasswordEncoder passwordEncoder;
     
     // Counter para IDs
     private long nextId = 1L;
@@ -53,11 +62,8 @@ public class InMemoryUserRepository implements UserRepositoryPort {
     /**
      * Constructor: Inicializa con usuarios de prueba
      * En MVP es manual, en producción vendría de BD
-     * 
-     * @param passwordEncoder inyectado para hashear contraseñas de prueba
      */
-    public InMemoryUserRepository(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public InMemoryUserRepository() {
         initializeMockUsers();
     }
 
@@ -66,24 +72,13 @@ public class InMemoryUserRepository implements UserRepositoryPort {
      * 
      * Las credenciales reales están centralizadas en TestDataConfig
      * para mejor seguridad y auditabilidad de datos de test.
-     * 
-     * Importantemente: Hashea las contraseñas de los usuarios de prueba
-     * para que coincidan con cómo AuthService valida credenciales
      */
     private void initializeMockUsers() {
         TestDataConfig.TEST_USERS.forEach(testData -> {
-            // Crear usuario con la contraseña hasheada
-            String hashedPassword = passwordEncoder.encode(testData.getPassword());
-            User user = User.create(
-                testData.getId(),
-                testData.getUsername(),
-                testData.getEmail(),
-                hashedPassword,  // ahora es un hash bcrypt, no plaintext
-                testData.getRole()
-            );
+            User user = testData.toDomainUser();
             addUserToMaps(user);
         });
-        log.info("InMemoryUserRepository inicializado con {} usuarios de prueba (contraseñas hasheadas)", 
+        log.info("InMemoryUserRepository inicializado con {} usuarios de prueba", 
                  TestDataConfig.TEST_USERS.size());
     }
 
@@ -153,3 +148,10 @@ public class InMemoryUserRepository implements UserRepositoryPort {
         return user;
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig#
