@@ -60,8 +60,8 @@ public class AuctionController {
     // HU-17: Listar subastas activas
     @GetMapping("/active")
     public List<AuctionResponse> getActive() {
-        return queryAuctionUseCase.getActiveAuctions()
-                .stream().map(AuctionResponse::from).toList();
+        return queryAuctionUseCase.getActiveAuctionsWithCurrentPrice()
+                .stream().map(AuctionResponse::fromActive).toList();
     }
 
     // HU-17: Historial de pujas de una subasta
