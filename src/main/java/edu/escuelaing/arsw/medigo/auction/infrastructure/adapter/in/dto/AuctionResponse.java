@@ -20,20 +20,33 @@ public record AuctionResponse(
     String        closureType,
     Long          winnerId,
     String        winnerName,
-    Long          remainingSeconds  // null si la subasta ya cerró
+    Long          remainingSeconds,  // null si la subasta ya cerró
+    BigDecimal    currentPrice       // puja más alta hasta el momento
 ) {
-    /** Mapa básico: usado en listados donde no se necesita detalle enriquecido. */
+    /** Mapa básico: usado en listados. */
     public static AuctionResponse from(Auction a) {
         return new AuctionResponse(
             a.getId(), a.getMedicationId(), null, null,
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
             a.getStatus().name(), a.getClosureType().name(),
-            a.getWinnerId(), null, null
+            a.getWinnerId(), null, null, null
         );
     }
 
-    /** Mapa enriquecido: incluye datos de catálogo, tiempo restante y nombre del ganador. */
+    /** Mapa para subastas activas con currentPrice. */
+    public static AuctionResponse fromActive(QueryAuctionUseCase.AuctionWithPrice ap) {
+        Auction a = ap.auction();
+        return new AuctionResponse(
+            a.getId(), a.getMedicationId(), null, null,
+            a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
+            a.getStartTime(), a.getEndTime(),
+            a.getStatus().name(), a.getClosureType().name(),
+            a.getWinnerId(), null, null, ap.currentPrice()
+        );
+    }
+
+    /** Mapa enriquecido: incluye datos de catálogo, tiempo restante, nombre del ganador y puja actual. */
     public static AuctionResponse fromDetail(QueryAuctionUseCase.AuctionDetailView detail) {
         Auction a = detail.auction();
         Long remaining = detail.remainingTime() != null
@@ -44,7 +57,7 @@ public record AuctionResponse(
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
             a.getStatus().name(), a.getClosureType().name(),
-            a.getWinnerId(), detail.winnerName(), remaining
+            a.getWinnerId(), detail.winnerName(), remaining, detail.currentPrice()
         );
     }
 }
