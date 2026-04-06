@@ -100,6 +100,19 @@ public class AuctionService implements
     }
 
     @Override
+    public List<QueryAuctionUseCase.AuctionWithPrice> getActiveAuctionsWithCurrentPrice() {
+        return auctionRepository.findActiveAuctions()
+                .stream()
+                .map(auction -> {
+                    BigDecimal currentPrice = auctionRepository.findHighestBid(auction.getId())
+                            .map(Bid::getAmount)
+                            .orElse(null);
+                    return new QueryAuctionUseCase.AuctionWithPrice(auction, currentPrice);
+                })
+                .toList();
+    }
+
+    @Override
     public QueryAuctionUseCase.WinnerView getAuctionWinner(Long auctionId) {
         Auction auction = findOrThrow(auctionId);
 
@@ -139,13 +152,16 @@ public class AuctionService implements
         }
 
         String winnerName = null;
-        if (auction.getWinnerId() != null) {
-            winnerName = auctionRepository.findHighestBid(id)
-                    .map(Bid::getUserName)
-                    .orElse(null);
+        BigDecimal currentPrice = null;
+        var highestBid = auctionRepository.findHighestBid(id);
+        if (highestBid.isPresent()) {
+            currentPrice = highestBid.get().getAmount();
+            if (auction.getWinnerId() != null) {
+                winnerName = highestBid.get().getUserName();
+            }
         }
 
-        return new AuctionDetailView(auction, medicationName, medicationUnit, remaining, winnerName);
+        return new AuctionDetailView(auction, medicationName, medicationUnit, remaining, winnerName, currentPrice);
     }
 
     // ── HU-18: Unirse a subasta ───────────────────────────────────
