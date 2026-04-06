@@ -4339,3 +4339,482 @@ WARNING: Unmatched cancel notification for request id 203
 2026.04.03 09:59:15 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthControllerTest.java. Using fallback presentation compiler.
 2026.04.03 09:59:15 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthControllerTest.java. Using fallback presentation compiler.
 2026.04.03 09:59:16 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthControllerTest.java. Using fallback presentation compiler.
+2026.04.04 12:33:15 INFO  Started: Metals version 1.6.6 in folders 'D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo' for client Visual Studio Code 1.114.0.
+2026.04.04 12:33:15 INFO  Memory monitor started
+2026.04.04 12:33:20 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\domain\port\out\DeliveryRepositoryPort.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\application\OrderService.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\infrastructure\persistence\SpringOrderJpaRepository.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\application\LogisticsService.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\infrastructure\adapter\out\OrderJpaRepository.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\infrastructure\adapter\out\DeliveryJpaRepository.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\orders\application\OrderServiceTest.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\domain\model\OrderItem.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\shared\infrastructure\config\SecurityConfig.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\infrastructure\adapter\in\OrderController.java
+2026.04.04 12:33:23 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\infrastructure\entity\OrderEntity.java
+2026.04.04 12:33:24 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/orders/application/OrderServiceTest.java. Output:
+
+2026.04.04 12:33:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/domain/model/OrderItem.java. Output:
+
+2026.04.04 12:33:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/entity/OrderEntity.java. Output:
+
+2026.04.04 12:33:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/application/OrderService.java. Output:
+
+2026.04.04 12:33:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/persistence/SpringOrderJpaRepository.java. Output:
+
+2026.04.04 12:33:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/out/OrderJpaRepository.java. Output:
+
+2026.04.04 12:33:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/shared/infrastructure/config/SecurityConfig.java. Output:
+
+2026.04.04 12:33:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/application/LogisticsService.java. Output:
+
+2026.04.04 12:33:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/out/DeliveryJpaRepository.java. Output:
+
+2026.04.04 12:33:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java. Output:
+
+2026.04.04 12:33:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/domain/port/out/DeliveryRepositoryPort.java. Output:
+
+2026.04.04 12:38:54 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java
+2026.04.04 12:38:54 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisAuctionParticipantAdapter.java. Output:
+
+2026.04.04 12:38:54 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:55 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:55 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\dto\AuctionResponse.java
+2026.04.04 12:38:56 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/dto/AuctionResponse.java. Output:
+
+2026.04.04 12:38:55 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\dto\AuctionResponse.java. Using fallback presentation compiler.
+2026.04.04 12:38:56 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisBidLockAdapter.java. Output:
+
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\dto\AuctionResponse.java. Using fallback presentation compiler.
+2026.04.04 12:38:56 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\dto\AuctionResponse.java
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\dto\AuctionResponse.java. Using fallback presentation compiler.
+2026.04.04 12:38:55 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/dto/AuctionResponse.java. Output:
+
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisAuctionParticipantAdapter.java]
+2026.04.04 12:38:57 INFO  empty definition using pc, found symbol in pc: org/springframework/data/redis/core/StringRedisTemplate# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-04\r_empty-definition_12-38-57-000.md")
+2026.04.04 12:38:56 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java
+2026.04.04 12:38:57 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisBidLockAdapter.java. Output:
+
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisBidLockAdapter.java]
+2026.04.04 12:38:57 INFO  empty definition using pc, found symbol in pc: org/springframework/data/redis/core/StringRedisTemplate# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-04\r_empty-definition_12-38-57-268.md")
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java
+2026.04.04 12:38:57 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisAuctionParticipantAdapter.java. Output:
+
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java
+2026.04.04 12:38:57 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisBidLockAdapter.java. Output:
+
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:57 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java
+2026.04.04 12:38:59 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisAuctionParticipantAdapter.java. Output:
+
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisAuctionParticipantAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java
+2026.04.04 12:38:59 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/out/RedisBidLockAdapter.java. Output:
+
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\RedisBidLockAdapter.java. Using fallback presentation compiler.
+2026.04.04 12:38:59 INFO  QDox parse error in file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-03\r_qdox-error_09-59-11-394.md")
+2026.04.04 12:38:59 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\orders\infrastructure\adapter\in\OrderController.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java
+2026.04.04 12:39:00 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/LoginRequestDto.java. Output:
+
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginResponseDto.java
+2026.04.04 12:39:00 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/LoginResponseDto.java. Output:
+
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java
+2026.04.04 12:39:00 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto.java. Output:
+
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpResponseDto.java
+2026.04.04 12:39:00 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpResponseDto.java. Output:
+
+2026.04.04 12:39:01 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\UserResponseDto.java
+2026.04.04 12:39:01 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/UserResponseDto.java. Output:
+
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\UserResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:00 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\UserResponseDto.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.04.04 12:39:00 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.04 12:39:01 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.04.04 12:39:01 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java. Output:
+
+2026.04.04 12:39:01 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.04 12:39:01 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.04 12:41:02 INFO  Shutting down server
+2026.04.04 12:41:02 INFO  Memory monitor stopped
+2026.04.04 12:41:02 INFO  shutting down Metals
+2026.04.04 12:41:02 INFO  Exiting server
+2026.04.04 12:53:18 INFO  Started: Metals version 1.6.6 in folders 'D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo' for client Visual Studio Code 1.114.0.
+2026.04.04 12:53:18 INFO  time: initialize in 0.13s
+2026.04.04 12:53:18 INFO  Memory monitor started
+2026.04.04 12:53:24 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.04 12:53:31 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/LoginRequestDto.java. Output:
+
+2026.04.04 12:53:32 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:53:33 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.04 12:53:34 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.04 13:25:21 INFO  Shutting down server
+2026.04.04 13:25:21 INFO  Memory monitor stopped
+2026.04.04 13:25:21 INFO  shutting down Metals
+2026.04.04 13:25:22 INFO  Exiting server
+2026.04.04 13:25:22 ERROR Unexpected error initializing server: 
+org.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:214)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.lang.Thread.run(Thread.java:1583)
+
+2026.04.05 23:49:40 INFO  Started: Metals version 1.6.6 in folders 'D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo' for client Visual Studio Code 1.114.0.
+2026.04.05 23:49:40 INFO  Memory monitor started
+2026.04.05 23:49:42 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.05 23:49:47 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.04.05 23:49:47 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.04.05 23:49:47 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\util\PasswordValidator.java
+2026.04.05 23:49:49 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.05 23:49:49 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/util/PasswordValidator.java. Output:
+
+2026.04.05 23:49:50 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java. Output:
+
+2026.04.05 23:50:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:05 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java
+2026.04.05 23:50:05 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.05 23:50:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:05 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.05 23:50:05 INFO  empty definition using pc, found symbol in pc: _empty_/InvalidInputException#weakPassword# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-674.md")
+2026.04.05 23:50:06 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.05 23:50:05 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.05 23:50:06 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-686.md")
+2026.04.05 23:50:05 INFO  empty definition using pc, found symbol in pc: _empty_/Role#DELIVERY# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-697.md")
+2026.04.05 23:50:06 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java
+2026.04.05 23:50:06 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/exception/InvalidInputException.java. Output:
+
+2026.04.05 23:50:06 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:06 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:06 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:07 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:06 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java]
+2026.04.05 23:50:06 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-331.md")
+2026.04.05 23:50:06 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java]
+2026.04.05 23:50:06 INFO  empty definition using pc, found symbol in pc: _empty_/Role#DELIVERY# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-345.md")
+2026.04.05 23:50:06 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:06 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-331.md")
+2026.04.05 23:50:07 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java]
+2026.04.05 23:50:07 INFO  empty definition using pc, found symbol in pc: _empty_/Role#ADMIN# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-869.md")
+2026.04.05 23:50:07 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:24 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java
+2026.04.05 23:50:24 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto.java. Output:
+
+2026.04.05 23:50:24 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.05 23:50:24 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.05 23:50:24 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java
+2026.04.05 23:50:24 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.05 23:50:24 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto.java. Output:
+
+2026.04.05 23:50:24 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:24 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-686.md")
+2026.04.05 23:50:24 INFO  empty definition using pc, found symbol in pc: _empty_/Role#DELIVERY# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-697.md")
+2026.04.05 23:50:25 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java
+2026.04.05 23:50:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/valueobject/Role.java. Output:
+
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java. Using fallback presentation compiler.
+abr 05, 2026 11:50:25 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint fallbackResponseError
+SEVERE: Internal error: java.lang.StringIndexOutOfBoundsException: Range [-1, 597) out of bounds for length 1330
+java.util.concurrent.CompletionException: java.lang.StringIndexOutOfBoundsException: Range [-1, 597) out of bounds for length 1330
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:332)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:347)
+	at java.base/java.util.concurrent.CompletableFuture$UniAccept.tryFire(CompletableFuture.java:708)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510)
+	at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:2194)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$future$1(CancelTokens.scala:40)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$future$1$adapted(CancelTokens.scala:38)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:517)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.StringIndexOutOfBoundsException: Range [-1, 597) out of bounds for length 1330
+	at java.base/jdk.internal.util.Preconditions$1.apply(Preconditions.java:55)
+	at java.base/jdk.internal.util.Preconditions$1.apply(Preconditions.java:52)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Preconditions.java:213)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Preconditions.java:210)
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:98)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckFromToIndex(Preconditions.java:112)
+	at java.base/jdk.internal.util.Preconditions.checkFromToIndex(Preconditions.java:349)
+	at java.base/java.lang.String.checkBoundsBeginEnd(String.java:4865)
+	at java.base/java.lang.String.substring(String.java:2834)
+	at scala.meta.internal.pc.JavaMetalsGlobal.findIndentifierStartAndEnd(JavaMetalsGlobal.scala:87)
+	at scala.meta.internal.pc.JavaDefinitionProvider.$anonfun$definitionImpl$5(JavaDefinitionProvider.scala:122)
+	at scala.Option$WithFilter.map(Option.scala:242)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definitionImpl(JavaDefinitionProvider.scala:70)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definitionOffset(JavaDefinitionProvider.scala:53)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definition(JavaDefinitionProvider.scala:31)
+	at scala.meta.internal.pc.JavaPresentationCompiler.definition(JavaPresentationCompiler.scala:98)
+	at scala.meta.internal.metals.Compilers.$anonfun$definition$1(Compilers.scala:1230)
+	at scala.meta.internal.metals.Compilers.$anonfun$withPCAndAdjustLsp$4(Compilers.scala:1543)
+	at scala.Option.map(Option.scala:242)
+	at scala.meta.internal.metals.Compilers.$anonfun$withPCAndAdjustLsp$3(Compilers.scala:1543)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.Compilers.withPCAndAdjustLsp(Compilers.scala:1535)
+	at scala.meta.internal.metals.Compilers.definition(Compilers.scala:1221)
+	at scala.meta.internal.metals.Compilers.definition(Compilers.scala:1182)
+	at scala.meta.internal.metals.DefinitionProvider.fromCompiler$1(DefinitionProvider.scala:97)
+	at scala.meta.internal.metals.DefinitionProvider.$anonfun$definition$10(DefinitionProvider.scala:146)
+	at scala.meta.internal.metals.DefinitionProvider.$anonfun$definition$15(DefinitionProvider.scala:153)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:503)
+	... 3 more
+
+abr 05, 2026 11:50:25 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint fallbackResponseError
+SEVERE: Internal error: java.lang.StringIndexOutOfBoundsException: Range [-1, 645) out of bounds for length 1330
+java.util.concurrent.CompletionException: java.lang.StringIndexOutOfBoundsException: Range [-1, 645) out of bounds for length 1330
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:332)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:347)
+	at java.base/java.util.concurrent.CompletableFuture$UniAccept.tryFire(CompletableFuture.java:708)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510)
+	at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:2194)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$future$1(CancelTokens.scala:40)
+	at scala.meta.internal.metals.CancelTokens$.$anonfun$future$1$adapted(CancelTokens.scala:38)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:517)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.StringIndexOutOfBoundsException: Range [-1, 645) out of bounds for length 1330
+	at java.base/jdk.internal.util.Preconditions$1.apply(Preconditions.java:55)
+	at java.base/jdk.internal.util.Preconditions$1.apply(Preconditions.java:52)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Preconditions.java:213)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Preconditions.java:210)
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:98)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckFromToIndex(Preconditions.java:112)
+	at java.base/jdk.internal.util.Preconditions.checkFromToIndex(Preconditions.java:349)
+	at java.base/java.lang.String.checkBoundsBeginEnd(String.java:4865)
+	at java.base/java.lang.String.substring(String.java:2834)
+	at scala.meta.internal.pc.JavaMetalsGlobal.findIndentifierStartAndEnd(JavaMetalsGlobal.scala:87)
+	at scala.meta.internal.pc.JavaDefinitionProvider.$anonfun$definitionImpl$5(JavaDefinitionProvider.scala:122)
+	at scala.Option$WithFilter.map(Option.scala:242)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definitionImpl(JavaDefinitionProvider.scala:70)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definitionOffset(JavaDefinitionProvider.scala:53)
+	at scala.meta.internal.pc.JavaDefinitionProvider.definition(JavaDefinitionProvider.scala:31)
+	at scala.meta.internal.pc.JavaPresentationCompiler.definition(JavaPresentationCompiler.scala:98)
+	at scala.meta.internal.metals.Compilers.$anonfun$definition$1(Compilers.scala:1230)
+	at scala.meta.internal.metals.Compilers.$anonfun$withPCAndAdjustLsp$4(Compilers.scala:1543)
+	at scala.Option.map(Option.scala:242)
+	at scala.meta.internal.metals.Compilers.$anonfun$withPCAndAdjustLsp$3(Compilers.scala:1543)
+	at scala.Option.flatMap(Option.scala:283)
+	at scala.meta.internal.metals.Compilers.withPCAndAdjustLsp(Compilers.scala:1535)
+	at scala.meta.internal.metals.Compilers.definition(Compilers.scala:1221)
+	at scala.meta.internal.metals.Compilers.definition(Compilers.scala:1182)
+	at scala.meta.internal.metals.DefinitionProvider.fromCompiler$1(DefinitionProvider.scala:97)
+	at scala.meta.internal.metals.DefinitionProvider.$anonfun$definition$10(DefinitionProvider.scala:146)
+	at scala.meta.internal.metals.DefinitionProvider.$anonfun$definition$15(DefinitionProvider.scala:153)
+	at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:503)
+	... 3 more
+
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\valueobject\Role.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java
+2026.04.05 23:50:25 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig.java. Output:
+
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig.java]
+2026.04.05 23:50:25 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-25-912.md")
+2026.04.05 23:50:25 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig.java]
+2026.04.05 23:50:25 INFO  empty definition using pc, found symbol in pc: _empty_/Role#DELIVERY# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-25-925.md")
+2026.04.05 23:50:25 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java
+2026.04.05 23:50:26 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:25 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java. Using fallback presentation compiler.
+2026.04.05 23:50:26 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:26 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:26 INFO  empty definition using pc, found symbol in pc: _empty_/Role#DELIVERY# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-345.md")
+2026.04.05 23:50:25 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-331.md")
+2026.04.05 23:50:26 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.05 23:50:26 INFO  empty definition using pc, found symbol in pc: _empty_/InvalidInputException# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-26-918.md")
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:27 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java
+2026.04.05 23:50:27 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:27 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java
+2026.04.05 23:50:27 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/exception/InvalidInputException.java. Output:
+
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:27 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:27 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/exception/InvalidInputException.java. Output:
+
+2026.04.05 23:50:27 INFO  empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-07-331.md")
+2026.04.05 23:50:27 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.05 23:50:31 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java
+2026.04.05 23:50:31 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/exception/InvalidInputException.java. Output:
+
+2026.04.05 23:50:32 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:50:31 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java
+2026.04.05 23:50:31 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/exception/InvalidInputException.java. Output:
+
+2026.04.05 23:50:38 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:38 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.04.05 23:50:38 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.05 23:50:45 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.05 23:50:45 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.04.05 23:50:45 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java. Output:
+
+2026.04.05 23:50:50 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:50:50 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.04.05 23:50:50 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.05 23:51:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:51:13 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.05 23:51:13 INFO  empty definition using pc, found symbol in pc: _empty_/InvalidInputException#invalidRole# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-51-13-532.md")
+2026.04.05 23:51:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:51:14 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:51:14 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.05 23:51:14 INFO  empty definition using pc, found symbol in pc: _empty_/InvalidInputException# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-26-918.md")
+2026.04.05 23:51:14 INFO  empty definition using pc, found symbol in pc: _empty_/InvalidInputException#weakPassword# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-05\r_empty-definition_23-50-06-674.md")
+2026.04.05 23:51:14 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:51:15 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\exception\InvalidInputException.java. Using fallback presentation compiler.
+2026.04.05 23:52:40 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\util\PasswordValidator.java. Using fallback presentation compiler.
+2026.04.06 00:30:41 INFO  Shutting down server
+2026.04.06 00:30:41 INFO  Memory monitor stopped
+2026.04.06 00:30:41 INFO  shutting down Metals
+2026.04.06 00:30:41 INFO  Exiting server
+2026.04.06 08:54:52 INFO  Started: Metals version 1.6.6 in folders 'D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo' for client Visual Studio Code 1.114.0.
+2026.04.06 08:54:52 INFO  Memory monitor started
+2026.04.06 08:54:55 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.04.06 08:56:15 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 08:56:16 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java
+2026.04.06 08:56:20 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/PasswordHashGenerator.java. Output:
+
+2026.04.06 09:18:32 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:33 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java
+abr 06, 2026 9:18:33 A. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1
+2026.04.06 09:18:34 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:34 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:35 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:39 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:46 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.06 09:18:46 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:18:58 INFO  no build target found for d:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+2026.04.06 09:18:58 INFO  no build target found for d:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\PasswordHashGenerator.java. Using fallback presentation compiler.
+abr 06, 2026 9:18:58 A. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 15
+2026.04.06 09:19:02 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:02 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:02 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.06 09:19:02 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-03-303.md")
+2026.04.06 09:19:02 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.06 09:19:02 INFO  empty definition using pc, found symbol in pc: _empty_/User#credentialsMatch# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-03-444.md")
+2026.04.06 09:19:04 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.06 09:19:04 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:04 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java. Output:
+
+2026.04.06 09:19:04 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java. Using fallback presentation compiler.
+2026.04.06 09:19:04 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:04 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java. Using fallback presentation compiler.
+2026.04.06 09:19:05 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java]
+2026.04.06 09:19:05 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-05-003.md")
+2026.04.06 09:19:04 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-03-303.md")
+2026.04.06 09:19:04 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:05 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.06 09:19:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:05 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-05-003.md")
+2026.04.06 09:19:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:09 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:09 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-03-303.md")
+2026.04.06 09:19:10 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java. Output:
+
+2026.04.06 09:19:10 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:10 INFO  empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-05-003.md")
+2026.04.06 09:19:10 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\application\service\AuthServiceTest.java. Using fallback presentation compiler.
+2026.04.06 09:19:14 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:14 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java
+2026.04.06 09:19:14 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java. Output:
+
+2026.04.06 09:19:20 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/domain/model/Delivery.java. Output:
+
+2026.04.06 09:19:20 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\domain\model\Delivery.java. Using fallback presentation compiler.
+2026.04.06 09:19:20 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/domain/model/Delivery.java]
+2026.04.06 09:19:20 INFO  empty definition using pc, found symbol in pc: _empty_/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-20-151.md")
+2026.04.06 09:19:20 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\domain\model\Delivery.java. Using fallback presentation compiler.
+2026.04.06 09:19:20 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/entity/DeliveryEntity.java. Output:
+
+2026.04.06 09:19:20 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\infrastructure\entity\DeliveryEntity.java. Using fallback presentation compiler.
+2026.04.06 09:19:20 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/entity/DeliveryEntity.java]
+2026.04.06 09:19:20 INFO  empty definition using pc, found symbol in pc: _empty_/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-20-547.md")
+2026.04.06 09:19:20 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\logistics\infrastructure\entity\DeliveryEntity.java. Using fallback presentation compiler.
+2026.04.06 09:19:21 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/LoginRequestDto.java. Output:
+
+2026.04.06 09:19:21 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:21 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/LoginRequestDto.java]
+2026.04.06 09:19:21 INFO  empty definition using pc, found symbol in pc: lombok/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-21-323.md")
+2026.04.06 09:19:21 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\LoginRequestDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:21 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto.java. Output:
+
+2026.04.06 09:19:21 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:21 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpRequestDto.java]
+2026.04.06 09:19:21 INFO  empty definition using pc, found symbol in pc: _empty_/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-21-844.md")
+2026.04.06 09:19:21 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpRequestDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:21 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpResponseDto.java. Output:
+
+2026.04.06 09:19:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpResponseDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:22 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/dto/SignUpResponseDto.java]
+2026.04.06 09:19:22 INFO  empty definition using pc, found symbol in pc: _empty_/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-22-153.md")
+2026.04.06 09:19:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\dto\SignUpResponseDto.java. Using fallback presentation compiler.
+2026.04.06 09:19:22 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java. Output:
+
+2026.04.06 09:19:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java. Using fallback presentation compiler.
+2026.04.06 09:19:22 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/domain/model/User.java]
+2026.04.06 09:19:22 INFO  empty definition using pc, found symbol in pc: lombok/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-22-515.md")
+2026.04.06 09:19:22 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig.java. Output:
+
+2026.04.06 09:19:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java. Using fallback presentation compiler.
+2026.04.06 09:19:23 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/TestDataConfig.java]
+2026.04.06 09:19:23 INFO  empty definition using pc, found symbol in pc: _empty_/Getter# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-23-067.md")
+2026.04.06 09:19:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\config\TestDataConfig.java. Using fallback presentation compiler.
+2026.04.06 09:19:49 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:49 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java]
+2026.04.06 09:19:49 INFO  empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/model/User# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\.metals\.reports\metals-full\2026-04-06\r_empty-definition_09-19-49-419.md")
+2026.04.06 09:19:49 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:19:49 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java. Using fallback presentation compiler.
+2026.04.06 09:19:49 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\application\service\AuthService.java. Using fallback presentation compiler.
+2026.04.06 09:22:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\domain\model\User.java. Using fallback presentation compiler.
+2026.04.06 09:22:20 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\domain\model\UserTest.java. Using fallback presentation compiler.
