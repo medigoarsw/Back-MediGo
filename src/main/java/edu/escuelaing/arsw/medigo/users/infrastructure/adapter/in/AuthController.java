@@ -123,13 +123,13 @@ public class AuthController {
      * POST /api/auth/register
      * 
      * Registra un nuevo usuario
-     * Solo permite roles: USUARIO, REPARTIDOR
-     * Los administradores son creados por otros administradores
+     * Solo permite roles: AFFILIATE (Usuario/Cliente) y DELIVERY (Repartidor)
+     * Los usuarios ADMIN son creados únicamente por otros administradores
      */
     @PostMapping("/register")
     @Operation(
         summary = "Registrar nuevo usuario",
-        description = "Crea una nueva cuenta de usuario. Solo se permiten los roles USUARIO y REPARTIDOR.",
+        description = "Crea una nueva cuenta de usuario. Solo se permiten los roles AFFILIATE (Usuario/Cliente) y DELIVERY (Repartidor). Los administradores deben ser creados por otros admins.",
         tags = {"Authentication"}
     )
     @ApiResponses(value = {

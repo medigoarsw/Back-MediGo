@@ -1,6 +1,17 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:edu/escuelaing/arsw/medigo/users/domain/model/User#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/model/User#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 118
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
-import edu.escuelaing.arsw.medigo.users.domain.model.User;
+import edu.escuelaing.arsw.medigo.users.domain.model.@@User;
 import edu.escuelaing.arsw.medigo.users.domain.exception.*;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
@@ -243,3 +254,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/domain/model/User#

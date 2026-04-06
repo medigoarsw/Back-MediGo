@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#when#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#when#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 2469
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
@@ -58,7 +69,7 @@ class AuthServiceTest {
     void testAuthenticateSuccess() {
         // ARRANGE - Preparar datos
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
-        when(userRepository.findByEmail("user@example.com"))
+        @@when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
         // Para tests con plaintext passwords, el encoder devuelve true si strings coinciden
         when(passwordEncoder.matches("123", "123")).thenReturn(true);
@@ -257,3 +268,10 @@ class AuthServiceTest {
 
 
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest#when#
