@@ -143,4 +143,27 @@ class AuthControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.role").value("DELIVERY"));
     }
+
+            @Test
+            @DisplayName("POST /api/auth/register debe crear usuario con phone y timestamps")
+            void testRegisterSuccessWithPhone() throws Exception {
+            String requestJson = """
+                {
+                  "name": "nuevo",
+                  "email": "nuevo@example.com",
+                  "password": "Password123",
+                  "phone": "+57-322-5555555",
+                  "role": "AFFILIATE"
+                }
+                """;
+
+            mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.email").value("nuevo@example.com"))
+                .andExpect(jsonPath("$.phone").value("+57-322-5555555"))
+                .andExpect(jsonPath("$.createdAt").exists())
+                .andExpect(jsonPath("$.updatedAt").exists());
+            }
 }

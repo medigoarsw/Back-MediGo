@@ -58,8 +58,11 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .passwordHash(user.getPassword())
+            .phone(user.getPhone())
                 .role(user.getRole().getCode())
                 .active(user.isActive())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
                 .build();
         
         // Guardar en BD
@@ -73,12 +76,16 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * Traduce UserEntity (infraestructura/BD) a User (dominio)
      */
     private User toDomainUser(UserEntity entity) {
-        return User.create(
+        return User.fromPersistence(
             entity.getId(),
             entity.getName(),
             entity.getEmail(),
             entity.getPasswordHash(),
-            Role.valueOf(entity.getRole().toUpperCase())
+            entity.getPhone(),
+            Role.valueOf(entity.getRole().toUpperCase()),
+            entity.isActive(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
         );
     }
 }

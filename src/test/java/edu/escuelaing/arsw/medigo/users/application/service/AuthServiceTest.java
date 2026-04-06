@@ -7,7 +7,6 @@ import edu.escuelaing.arsw.medigo.users.domain.exception.InvalidInputException;
 import edu.escuelaing.arsw.medigo.users.domain.exception.UserAlreadyExistsException;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
@@ -174,6 +173,7 @@ class AuthServiceTest {
         signUpRequest.setName("newuser");
         signUpRequest.setEmail("newuser@example.com");
         signUpRequest.setPassword("Password123!");
+        signUpRequest.setPhone("+57-322-5555555");
         signUpRequest.setRole("AFFILIATE");
         
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
@@ -194,6 +194,34 @@ class AuthServiceTest {
     }
 
     @Test
+    @DisplayName("Debe registrar usuario nuevo sin teléfono")
+    void testSignUpSuccessWithoutPhone() {
+        // ARRANGE
+        SignUpRequestDto signUpRequest = new SignUpRequestDto();
+        signUpRequest.setName("newuser2");
+        signUpRequest.setEmail("newuser2@example.com");
+        signUpRequest.setPassword("Password123!");
+        signUpRequest.setPhone("");
+        signUpRequest.setRole("AFFILIATE");
+
+        when(userRepository.findByUsername("newuser2")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("newuser2@example.com")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
+
+        User savedUser = User.create(11L, "newuser2", "newuser2@example.com", "encodedPassword", Role.AFFILIATE);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // ACT
+        User result = authService.signUp(signUpRequest);
+
+        // ASSERT
+        assertNotNull(result);
+        assertEquals("newuser2", result.getUsername());
+        assertEquals("newuser2@example.com", result.getEmail());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
     @DisplayName("Debe fallar cuando el username ya existe")
     void testSignUpUsernameTaken() {
         // ARRANGE
@@ -201,6 +229,7 @@ class AuthServiceTest {
         signUpRequest.setName("existing");
         signUpRequest.setEmail("new@example.com");
         signUpRequest.setPassword("Password123!");
+        signUpRequest.setPhone("+57-322-5555555");
         signUpRequest.setRole("AFFILIATE");
         
         User existingUser = User.create(1L, "existing", "existing@example.com", "pass", Role.AFFILIATE);
@@ -220,6 +249,7 @@ class AuthServiceTest {
         signUpRequest.setName("newuser");
         signUpRequest.setEmail("existing@example.com");
         signUpRequest.setPassword("Password123!");
+        signUpRequest.setPhone("+57-322-5555555");
         signUpRequest.setRole("AFFILIATE");
         
         User existingUser = User.create(1L, "existinguser", "existing@example.com", "pass", Role.AFFILIATE);
@@ -235,16 +265,18 @@ class AuthServiceTest {
     @ParameterizedTest
     @DisplayName("SignUp debe fallar con datos inválidos")
     @CsvSource({
-        "'', 'newuser@example.com', 'Password123!', 'AFFILIATE', 'username vacío'",
-        "'newuser', 'invalid-email', 'Password123!', 'AFFILIATE', 'email inválido'",
-        "'newuser', 'newuser@example.com', 'weak', 'AFFILIATE', 'contraseña débil'"
+        "'', 'newuser@example.com', 'Password123!', '+57-322-5555555', 'AFFILIATE', 'username vacío'",
+        "'newuser', 'invalid-email', 'Password123!', '+57-322-5555555', 'AFFILIATE', 'email inválido'",
+        "'newuser', 'newuser@example.com', 'weak', '+57-322-5555555', 'AFFILIATE', 'contraseña débil'",
+        "'newuser', 'newuser@example.com', 'Password123!', '3225555555', 'AFFILIATE', 'teléfono inválido'"
     })
-    void testSignUpWithInvalidData(String name, String email, String password, String role, String reason) {
+    void testSignUpWithInvalidData(String name, String email, String password, String phone, String role, String reason) {
         // ARRANGE
         SignUpRequestDto signUpRequest = new SignUpRequestDto();
         signUpRequest.setName(name);
         signUpRequest.setEmail(email);
         signUpRequest.setPassword(password);
+        signUpRequest.setPhone(phone);
         signUpRequest.setRole(role);
         
         // ACT & ASSERT

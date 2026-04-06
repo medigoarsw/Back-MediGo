@@ -47,7 +47,18 @@ class UserTest {
     @Test
     void testInactiveUserCannotLogin() {
         // ARRANGE
-        User user = new User(1L, "user@example.com", "password123", "user", Role.AFFILIATE, false, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        User user = User.fromPersistence(
+            1L,
+            "user",
+            "user@example.com",
+            "password123",
+            "+57-300-1234567",
+            Role.AFFILIATE,
+            false,
+            now,
+            now
+        );
         
         // ACT
         boolean result = user.credentialsMatch("password123");
