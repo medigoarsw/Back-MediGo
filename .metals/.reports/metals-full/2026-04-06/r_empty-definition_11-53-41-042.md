@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java:edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest#jsonPath#exists#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest#jsonPath#exists#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 2811
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +68,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.access_token").exists())
+            .andExpect(jsonPath("$.access_token").@@exists())
             .andExpect(jsonPath("$.user_id").value(2))
             .andExpect(jsonPath("$.username").value("user"))
             .andExpect(jsonPath("$.role").value("AFFILIATE"));
@@ -167,3 +178,9 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.updatedAt").exists());
             }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthControllerTest#jsonPath#exists#

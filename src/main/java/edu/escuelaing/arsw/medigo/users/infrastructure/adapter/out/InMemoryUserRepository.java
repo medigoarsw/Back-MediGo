@@ -130,8 +130,18 @@ public class InMemoryUserRepository implements UserRepositoryPort {
     public User save(User user) {
         // Si no tiene ID, asignar uno
         if (user.getId() == null) {
-            // Crear nuevo User con ID asignado
-            User userWithId = User.create(nextId++, user.getUsername(), user.getEmail(), user.getPassword(), user.getRole());
+            // Crear nuevo User con ID asignado preservando campos de dominio
+            User userWithId = User.fromPersistence(
+                    nextId++,
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getPhone(),
+                    user.getRole(),
+                    user.isActive(),
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()
+            );
             addUserToMaps(userWithId);
             log.info("Usuario guardado en memoria: {}", userWithId.getEmail());
             return userWithId;

@@ -20,6 +20,9 @@ public class SignUpRequestDto {
     
     @NotBlank(message = "La contraseña es requerida")
     private String password;
+
+    @Pattern(regexp = "^$|^\\+\\d{1,3}-\\d{3}-\\d{7}$", message = "El teléfono debe tener formato +57-322-5555555")
+    private String phone;
     
     @NotBlank(message = "El rol es requerido")
     private String role;

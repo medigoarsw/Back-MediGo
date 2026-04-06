@@ -1,9 +1,20 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/JpaUserRepositoryAdapter.java:edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/JpaUserRepositoryAdapter.java
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 337
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/out/JpaUserRepositoryAdapter.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
-import edu.escuelaing.arsw.medigo.users.infrastructure.entity.UserEntity;
+import edu.escuelaing.arsw.medigo.users.infrastructure.entity.@@UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -58,11 +69,8 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .passwordHash(user.getPassword())
-            .phone(user.getPhone())
                 .role(user.getRole().getCode())
                 .active(user.isActive())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
                 .build();
         
         // Guardar en BD
@@ -76,16 +84,19 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * Traduce UserEntity (infraestructura/BD) a User (dominio)
      */
     private User toDomainUser(UserEntity entity) {
-        return User.fromPersistence(
+        return User.create(
             entity.getId(),
             entity.getName(),
             entity.getEmail(),
             entity.getPasswordHash(),
-            entity.getPhone(),
-            Role.valueOf(entity.getRole().toUpperCase()),
-            entity.isActive(),
-            entity.getCreatedAt(),
-            entity.getUpdatedAt()
+            Role.valueOf(entity.getRole().toUpperCase())
         );
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity#

@@ -129,7 +129,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(
         summary = "Registrar nuevo usuario",
-        description = "Crea una nueva cuenta de usuario. Solo se permiten los roles AFFILIATE (Usuario/Cliente) y DELIVERY (Repartidor). Los administradores deben ser creados por otros admins.",
+        description = "Crea una nueva cuenta de usuario. El teléfono es opcional; si se envía debe cumplir formato +57-322-5555555. Solo se permiten los roles AFFILIATE (Usuario/Cliente) y DELIVERY (Repartidor). Los administradores deben ser creados por otros admins.",
         tags = {"Authentication"}
     )
     @ApiResponses(value = {
@@ -332,8 +332,10 @@ public class AuthController {
                 .id(user.getId())
                 .name(user.getUsername())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .role(user.getRole().getCode())
                 .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .message("Usuario registrado exitosamente")
                 .build();
     }

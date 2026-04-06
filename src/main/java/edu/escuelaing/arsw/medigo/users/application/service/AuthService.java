@@ -123,6 +123,7 @@ public class AuthService implements AuthUseCase {
      * 
      * LÓGICA DE NEGOCIO:
      * 1. Validar campos (username, email, password no vacíos)
+    * 1.1 Validar teléfono opcional (si viene, formato +57-322-5555555)
      * 2. Validar email válido (formato)
      * 3. Validar que el username no esté registrado
      * 4. Validar que el email no esté registrado
@@ -150,6 +151,12 @@ public class AuthService implements AuthUseCase {
         if (signUpRequest.getPassword() == null || signUpRequest.getPassword().isEmpty()) {
             log.warn("SignUp failed: empty password");
             throw InvalidInputException.emptyField("password");
+        }
+
+        String normalizedPhone = normalizePhone(signUpRequest.getPhone());
+        if (normalizedPhone != null && !isValidPhone(normalizedPhone)) {
+            log.warn("SignUp failed: invalid phone format");
+            throw InvalidInputException.invalidPhone(signUpRequest.getPhone());
         }
         
         // VALIDACIÓN 2: Email válido (formato)
@@ -197,6 +204,7 @@ public class AuthService implements AuthUseCase {
             signUpRequest.getName(),
             signUpRequest.getEmail(),
             encryptedPassword,
+            normalizedPhone,
             roleEnum
         );
         
@@ -240,6 +248,21 @@ public class AuthService implements AuthUseCase {
         boolean hasDigit = password.chars().anyMatch(Character::isDigit);
         
         return hasUppercase && hasLowercase && hasDigit;
+    }
+
+    /**
+     * Valida teléfono internacional con formato: +57-322-5555555
+     */
+    private boolean isValidPhone(String phone) {
+        return phone != null && phone.matches("^\\+\\d{1,3}-\\d{3}-\\d{7}$");
+    }
+
+    private String normalizePhone(String phone) {
+        if (phone == null) {
+            return null;
+        }
+        String trimmed = phone.strip();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }
 

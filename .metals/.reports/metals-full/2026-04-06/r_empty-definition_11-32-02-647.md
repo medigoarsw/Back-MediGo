@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity.java:_empty_/Column#nullable#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity.java
+empty definition using pc, found symbol in pc: _empty_/Column#nullable#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 363
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/entity/UserEntity.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.entity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,7 +18,7 @@ import java.time.LocalDateTime;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-    @Column(nullable = false, unique = true) private String email;
+    @Column(@@nullable = false, unique = true) private String email;
     @Column(name = "password_hash", nullable = false) private String passwordHash;
     @Column(nullable = false) private String name;
     @Column(name = "phone", nullable = true, length = 20) private String phone;
@@ -28,3 +39,9 @@ public class UserEntity {
         this.updatedAt = LocalDateTime.now();
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Column#nullable#
