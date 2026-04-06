@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:_empty_/InvalidInputException#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 5034
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -73,9 +84,8 @@ public class AuthService implements AuthUseCase {
         // Obtengo el usuario
         User foundUser = user.get();
         
-        // Valido credenciales usando PasswordEncoder (para hashes bcrypt)
-        // En lugar de user.credentialsMatch() que solo funciona con texto plano
-        if (!foundUser.isActive() || !passwordEncoder.matches(password, foundUser.getPassword())) {
+        // Valido credenciales usando lógica del dominio
+        if (!foundUser.credentialsMatch(password)) {
             log.warn("Authentication failed: invalid credentials");
             throw InvalidCredentialsException.withMessage(email);
         }
@@ -126,8 +136,8 @@ public class AuthService implements AuthUseCase {
      * 2. Validar email válido (formato)
      * 3. Validar que el username no esté registrado
      * 4. Validar que el email no esté registrado
-     * 5. Validar que la contraseña sea fuerte (8+ chars, mayús, minús, dígito)
-     * 6. Validar rol (solo AFFILIATE o DELIVERY - ADMIN se crea por admins)
+     * 5. Validar que la contraseña sea fuerte
+     * 6. Validar rol (solo USUARIO o REPARTIDOR)
      * 7. Encriptar la contraseña
      * 8. Crear el usuario
      * 9. Guardar en el repositorio
@@ -139,7 +149,7 @@ public class AuthService implements AuthUseCase {
         // VALIDACIÓN 1: Campos no vacíos
         if (signUpRequest.getName() == null || signUpRequest.getName().strip().isEmpty()) {
             log.warn("SignUp failed: empty username");
-            throw InvalidInputException.emptyField("username");
+            throw @@InvalidInputException.emptyField("username");
         }
         
         if (signUpRequest.getEmail() == null || signUpRequest.getEmail().strip().isEmpty()) {
@@ -185,7 +195,7 @@ public class AuthService implements AuthUseCase {
             }
         } catch (Exception e) {
             log.warn("SignUp failed: invalid role {}", signUpRequest.getRole());
-            throw InvalidInputException.invalidRole(signUpRequest.getRole());
+            throw InvalidInputException.weakPassword();
         }
         
         // CIFRADO: Encriptar la contraseña
@@ -243,3 +253,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#

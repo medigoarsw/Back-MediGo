@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java:org/springframework/security/crypto/password/PasswordEncoder#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 714
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/config/AuthConfig.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.config;
 
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
@@ -8,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.@@PasswordEncoder;
 
 @Configuration
 public class AuthConfig {
@@ -36,8 +47,8 @@ public class AuthConfig {
      */
     @Bean
     @Profile({"ci", "test"})
-    public UserRepositoryPort testUserRepository(PasswordEncoder passwordEncoder) {
-        return new InMemoryUserRepository(passwordEncoder);
+    public UserRepositoryPort testUserRepository() {
+        return new InMemoryUserRepository();
     }
     
     /**
@@ -51,3 +62,10 @@ public class AuthConfig {
         return new JpaUserRepositoryAdapter(userJpaRepository);
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/security/crypto/password/PasswordEncoder#

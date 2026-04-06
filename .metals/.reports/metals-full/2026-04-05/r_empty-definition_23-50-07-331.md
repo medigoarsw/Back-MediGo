@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java:_empty_/Role#AFFILIATE#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 3750
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/test/java/edu/escuelaing/arsw/medigo/users/application/service/AuthServiceTest.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
@@ -60,8 +71,6 @@ class AuthServiceTest {
         User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
         when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
-        // Para tests con plaintext passwords, el encoder devuelve true si strings coinciden
-        when(passwordEncoder.matches("123", "123")).thenReturn(true);
         
         // ACT - Ejecutar caso de uso
         User result = authService.authenticate("user@example.com", "123");
@@ -93,11 +102,9 @@ class AuthServiceTest {
     @DisplayName("Debe lanzar excepción con contraseña incorrecta")
     void testAuthenticateInvalidPassword() {
         // ARRANGE
-        User user = User.create(1L, "user", "user@example.com", "123", Role.AFFILIATE);
+        User user = User.create(1L, "user", "user@example.com", "123", Role.@@AFFILIATE);
         when(userRepository.findByEmail("user@example.com"))
             .thenReturn(Optional.of(user));
-        // Configurar para que falle cuando la contraseña es incorrecta
-        when(passwordEncoder.matches("wrongpassword", "123")).thenReturn(false);
         
         // ACT & ASSERT
         assertThrows(InvalidCredentialsException.class, () -> {
@@ -150,11 +157,6 @@ class AuthServiceTest {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
         when(userRepository.findByEmail("delivery@example.com")).thenReturn(Optional.of(delivery));
-        
-        // Configurar mocks de passwordEncoder para test con plaintext
-        when(passwordEncoder.matches("123", "123")).thenReturn(true);
-        when(passwordEncoder.matches("456", "456")).thenReturn(true);
-        when(passwordEncoder.matches("789", "789")).thenReturn(true);
         
         // ACT & ASSERT
         User userResult = authService.authenticate("user@example.com", "123");
@@ -257,3 +259,10 @@ class AuthServiceTest {
 
 
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Role#AFFILIATE#

@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java:_empty_/InvalidInputException#invalidRole#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#invalidRole#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 7225
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/application/service/AuthService.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.application.service;
 
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
@@ -73,9 +84,8 @@ public class AuthService implements AuthUseCase {
         // Obtengo el usuario
         User foundUser = user.get();
         
-        // Valido credenciales usando PasswordEncoder (para hashes bcrypt)
-        // En lugar de user.credentialsMatch() que solo funciona con texto plano
-        if (!foundUser.isActive() || !passwordEncoder.matches(password, foundUser.getPassword())) {
+        // Valido credenciales usando lógica del dominio
+        if (!foundUser.credentialsMatch(password)) {
             log.warn("Authentication failed: invalid credentials");
             throw InvalidCredentialsException.withMessage(email);
         }
@@ -185,7 +195,7 @@ public class AuthService implements AuthUseCase {
             }
         } catch (Exception e) {
             log.warn("SignUp failed: invalid role {}", signUpRequest.getRole());
-            throw InvalidInputException.invalidRole(signUpRequest.getRole());
+            throw InvalidInputException.@@invalidRole(signUpRequest.getRole());
         }
         
         // CIFRADO: Encriptar la contraseña
@@ -243,3 +253,10 @@ public class AuthService implements AuthUseCase {
     }
 }
 
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/InvalidInputException#invalidRole#
