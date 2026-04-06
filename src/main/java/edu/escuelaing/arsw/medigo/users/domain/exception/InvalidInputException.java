@@ -20,6 +20,10 @@ public class InvalidInputException extends DomainException {
     public static InvalidInputException weakPassword() {
         return new InvalidInputException("La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula y número");
     }
+
+    public static InvalidInputException invalidPhone(String phone) {
+        return new InvalidInputException("El teléfono '" + phone + "' no es válido. Use el formato +57-322-5555555");
+    }
     
     public static InvalidInputException invalidRole(String role) {
         return new InvalidInputException("El rol '" + role + "' no es válido. Solo se permiten: AFFILIATE (Usuario/Cliente), DELIVERY (Repartidor). ADMIN se crea por administradores.");

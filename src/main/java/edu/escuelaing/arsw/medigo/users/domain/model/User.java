@@ -27,16 +27,43 @@ public class User {
     private String email;
     private String password;  // En producción: passwordHash
     private String username;
+    private String phone;
     private Role role;
     private boolean active;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     /**
      * Factory method para crear usuarios
      * Recomendado en arquitectura hexagonal
      */
     public static User create(Long id, String username, String email, String password, Role role) {
-        return new User(id, email, password, username, role, true, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        return new User(id, email, password, username, null, role, true, now, now);
+    }
+
+    /**
+     * Factory method para crear usuarios con teléfono
+     */
+    public static User create(Long id, String username, String email, String password, String phone, Role role) {
+        LocalDateTime now = LocalDateTime.now();
+        return new User(id, email, password, username, phone, role, true, now, now);
+    }
+
+    /**
+     * Factory method para reconstruir usuarios desde persistencia
+     */
+    public static User fromPersistence(
+            Long id,
+            String username,
+            String email,
+            String password,
+            String phone,
+            Role role,
+            boolean active,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
+        return new User(id, email, password, username, phone, role, active, createdAt, updatedAt);
     }
 
     /**
@@ -76,9 +103,11 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
                 ", role=" + role +
                 ", active=" + active +
                 ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
