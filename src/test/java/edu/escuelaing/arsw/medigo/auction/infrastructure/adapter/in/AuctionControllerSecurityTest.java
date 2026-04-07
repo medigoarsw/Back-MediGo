@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Bid;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.config.SecurityConfig;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.AuthenticatedUserResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,7 @@ class AuctionControllerSecurityTest {
     @MockBean private PlaceBidUseCase      placeBidUseCase;
     @MockBean private QueryAuctionUseCase  queryAuctionUseCase;
     @MockBean private JoinAuctionUseCase   joinAuctionUseCase;
+    @MockBean private AuthenticatedUserResolver authenticatedUserResolver;
 
     // ── Tokens de prueba ──────────────────────────────────────────────
     private static final String ADMIN_TOKEN     = "Bearer fake-jwt.1.ADMIN.1700000000000";
@@ -66,6 +68,9 @@ class AuctionControllerSecurityTest {
         when(queryAuctionUseCase.getAuctionDetail(anyLong())).thenReturn(detalle);
         when(queryAuctionUseCase.getActiveAuctions()).thenReturn(List.of());
         when(queryAuctionUseCase.getBidHistory(anyLong())).thenReturn(List.of());
+        when(authenticatedUserResolver.getAuthenticatedUserId()).thenReturn(2L);
+        when(queryAuctionUseCase.getWonAuctionsByAffiliate(anyLong(), anyInt(), anyInt()))
+            .thenReturn(new QueryAuctionUseCase.WonAuctionsPageView(List.of(), 0, 20, 0, 0));
         when(createAuctionUseCase.createAuction(any())).thenReturn(subasta);
         when(updateAuctionUseCase.updateAuction(anyLong(), any())).thenReturn(subasta);
         when(placeBidUseCase.placeBid(anyLong(), anyLong(), anyString(), any()))
@@ -89,6 +94,14 @@ class AuctionControllerSecurityTest {
     @DisplayName("DELIVERY | GET /api/auctions/active → 403")
     void delivery_getActive_retorna403() throws Exception {
         mvc.perform(get("/api/auctions/active")
+                .header("Authorization", DELIVERY_TOKEN))
+           .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("DELIVERY | GET /api/auctions/won → 403")
+    void delivery_getWon_retorna403() throws Exception {
+        mvc.perform(get("/api/auctions/won")
                 .header("Authorization", DELIVERY_TOKEN))
            .andExpect(status().isForbidden());
     }
@@ -185,6 +198,14 @@ class AuctionControllerSecurityTest {
     }
 
     @Test
+    @DisplayName("AFFILIATE | GET /api/auctions/won → 200")
+    void affiliate_getWon_retorna200() throws Exception {
+        mvc.perform(get("/api/auctions/won")
+                .header("Authorization", AFFILIATE_TOKEN))
+           .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("AFFILIATE | GET /api/auctions/{id}/bids → 200")
     void affiliate_getBids_retorna200() throws Exception {
         mvc.perform(get("/api/auctions/1/bids")
@@ -239,6 +260,14 @@ class AuctionControllerSecurityTest {
     @DisplayName("ADMIN | GET /api/auctions/{id} → 200")
     void admin_getById_retorna200() throws Exception {
         mvc.perform(get("/api/auctions/1")
+                .header("Authorization", ADMIN_TOKEN))
+           .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("ADMIN | GET /api/auctions/won → 200")
+    void admin_getWon_retorna200() throws Exception {
+        mvc.perform(get("/api/auctions/won")
                 .header("Authorization", ADMIN_TOKEN))
            .andExpect(status().isOk());
     }

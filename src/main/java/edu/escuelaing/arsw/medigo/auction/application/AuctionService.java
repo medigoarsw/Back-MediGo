@@ -126,6 +126,44 @@ public class AuctionService implements
                 .orElse(new QueryAuctionUseCase.WinnerView(auctionId, auction.getWinnerId(), null, null));
     }
 
+            @Override
+            public WonAuctionsPageView getWonAuctionsByAffiliate(Long affiliateId, int page, int size) {
+            AuctionRepositoryPort.WonAuctionsPage wonPage =
+                auctionRepository.findWonAuctionsByWinnerId(affiliateId, page, size);
+
+            List<WonAuctionView> content = wonPage.content().stream()
+                .map(record -> {
+                    Auction auction = record.auction();
+                    Bid winningBid = record.winningBid();
+
+                    String medicationName = auctionCatalogPort.getMedicationInfo(auction.getMedicationId())
+                        .map(AuctionCatalogPort.MedicationInfo::name)
+                        .orElse(null);
+
+                    return new WonAuctionView(
+                        auction.getId(),
+                        medicationName,
+                        "Lote #" + auction.getId() + " - Sede " + auction.getBranchId(),
+                        auction.getBranchId(),
+                        winningBid != null ? winningBid.getAmount() : auction.getBasePrice(),
+                        winningBid != null
+                            ? winningBid.getPlacedAt()
+                            : (auction.getLastBidAt() != null ? auction.getLastBidAt() : auction.getEndTime()),
+                        "WON",
+                        auction.getClosureType() != null ? auction.getClosureType().name() : null
+                    );
+                })
+                .toList();
+
+            return new WonAuctionsPageView(
+                content,
+                wonPage.page(),
+                wonPage.size(),
+                wonPage.totalElements(),
+                wonPage.totalPages()
+            );
+            }
+
     @Override
     public List<Bid> getBidHistory(Long auctionId) {
         return auctionRepository.findBidsByAuction(auctionId);

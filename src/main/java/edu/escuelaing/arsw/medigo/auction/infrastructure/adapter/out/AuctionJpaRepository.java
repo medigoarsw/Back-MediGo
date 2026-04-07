@@ -8,6 +8,8 @@ import edu.escuelaing.arsw.medigo.auction.infrastructure.entity.BidEntity;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.persistence.SpringAuctionJpaRepository;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.persistence.SpringBidJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -109,6 +111,32 @@ public class AuctionJpaRepository implements AuctionRepositoryPort {
     public Optional<Bid> findSecondHighestBid(Long auctionId, Long excludeUserId) {
         return bidRepo.findSecondHighestBid(auctionId, excludeUserId).map(this::toBidDomain);
     }
+
+        @Override
+        public WonAuctionsPage findWonAuctionsByWinnerId(Long winnerId, int page, int size) {
+        Page<AuctionEntity> result = auctionRepo.findWonAuctionsByWinnerId(
+            winnerId,
+            PageRequest.of(page, size)
+        );
+
+        List<WonAuctionRecord> content = result.getContent().stream()
+            .map(entity -> {
+                Auction auction = toDomain(entity);
+                Bid winningBid = bidRepo.findHighestBid(entity.getId())
+                    .map(this::toBidDomain)
+                    .orElse(null);
+                return new WonAuctionRecord(auction, winningBid);
+            })
+            .toList();
+
+        return new WonAuctionsPage(
+            content,
+            result.getNumber(),
+            result.getSize(),
+            result.getTotalElements(),
+            result.getTotalPages()
+        );
+        }
 
     // ── Mappers ───────────────────────────────────────────────────
 

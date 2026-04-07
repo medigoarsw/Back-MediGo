@@ -3,6 +3,7 @@ package edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in.dto.*;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.AuthenticatedUserResolver;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class AuctionController {
     private final PlaceBidUseCase       placeBidUseCase;
     private final QueryAuctionUseCase   queryAuctionUseCase;
     private final JoinAuctionUseCase    joinAuctionUseCase;
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     // HU-15: Crear subasta (solo ADMIN)
     @PostMapping
@@ -80,6 +82,20 @@ public class AuctionController {
         }
         return ResponseEntity.ok(new WinnerResponse(
                 view.auctionId(), view.winnerId(), view.winnerName(), view.winningAmount()));
+    }
+
+    @GetMapping("/won")
+    public WonAuctionsPageResponse getWonAuctions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        int safePage = Math.max(0, page);
+        int safeSize = Math.max(1, Math.min(size, 100));
+
+        Long affiliateId = authenticatedUserResolver.getAuthenticatedUserId();
+        QueryAuctionUseCase.WonAuctionsPageView wonPage =
+                queryAuctionUseCase.getWonAuctionsByAffiliate(affiliateId, safePage, safeSize);
+
+        return WonAuctionsPageResponse.from(wonPage, "/api/auctions/won");
     }
 
     // HU-18: Unirse a subasta

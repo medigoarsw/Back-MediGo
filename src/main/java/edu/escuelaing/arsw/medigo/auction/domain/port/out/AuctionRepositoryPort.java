@@ -20,4 +20,18 @@ public interface AuctionRepositoryPort {
     void              updateLastBidAt(Long auctionId, java.time.LocalDateTime ts);
     // Segundo lugar: la puja más alta excluyendo al ganador original
     Optional<Bid>     findSecondHighestBid(Long auctionId, Long excludeUserId);
+    WonAuctionsPage   findWonAuctionsByWinnerId(Long winnerId, int page, int size);
+
+    record WonAuctionRecord(
+        Auction auction,
+        Bid     winningBid
+    ) {}
+
+    record WonAuctionsPage(
+        List<WonAuctionRecord> content,
+        int                    page,
+        int                    size,
+        long                   totalElements,
+        int                    totalPages
+    ) {}
 }
