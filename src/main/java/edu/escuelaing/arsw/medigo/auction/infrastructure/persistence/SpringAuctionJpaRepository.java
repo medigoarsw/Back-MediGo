@@ -1,6 +1,8 @@
 package edu.escuelaing.arsw.medigo.auction.infrastructure.persistence;
 
 import edu.escuelaing.arsw.medigo.auction.infrastructure.entity.AuctionEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +26,10 @@ public interface SpringAuctionJpaRepository extends JpaRepository<AuctionEntity,
            "WHERE a.medicationId = :medicationId " +
            "AND a.status IN ('ACTIVE', 'SCHEDULED')")
     boolean existsActiveOrScheduledForMedication(@Param("medicationId") Long medicationId);
+
+        @Query("SELECT a FROM AuctionEntity a " +
+            "WHERE a.status = 'CLOSED' AND a.winnerId = :winnerId " +
+            "ORDER BY COALESCE(a.lastBidAt, a.endTime) DESC")
+        Page<AuctionEntity> findWonAuctionsByWinnerId(@Param("winnerId") Long winnerId,
+                                  Pageable pageable);
 }
