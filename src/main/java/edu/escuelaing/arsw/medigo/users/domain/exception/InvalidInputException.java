@@ -21,6 +21,10 @@ public class InvalidInputException extends DomainException {
         return new InvalidInputException("La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula y número");
     }
 
+    public static InvalidInputException compromisedPassword() {
+        return new InvalidInputException("La contraseña elegida aparece en brechas de seguridad conocidas. Elige una diferente.");
+    }
+
     public static InvalidInputException invalidPhone(String phone) {
         return new InvalidInputException("El teléfono '" + phone + "' no es válido. Use el formato +57-322-5555555");
     }

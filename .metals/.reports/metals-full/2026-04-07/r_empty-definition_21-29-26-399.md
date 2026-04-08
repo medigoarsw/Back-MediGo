@@ -1,9 +1,19 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java:_empty_/`<any>`#medicationName#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+empty definition using pc, found symbol in pc: _empty_/`<any>`#medicationName#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 9108
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
-import edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.CreateMedicationUseCase;
@@ -26,9 +36,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,117 +52,6 @@ public class MedicationController {
     private final UpdateStockUseCase updateUseCase;
     private final CreateMedicationUseCase createUseCase;  // HU-07: Inyectar CreateMedicationUseCase
     private final MedicationJpaRepository medicationRepository;
-
-    private static final int LOW_STOCK_THRESHOLD = 20;
-
-    /**
-     * Listado paginado para inventario administrativo.
-     */
-    @GetMapping
-    @Operation(
-        summary = "Listar inventario (admin dashboard)",
-        description = "Retorna inventario paginado, opcionalmente filtrado por sede y/o término de búsqueda"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Inventario consultado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Parámetros inválidos")
-    })
-    public ResponseEntity<InventoryListResponse> listInventory(
-            @RequestParam(required = false) Long branchId,
-            @RequestParam(required = false) String q,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int limit) {
-
-        int safePage = Math.max(page, 1);
-        int safeLimit = Math.min(Math.max(limit, 1), 200);
-
-        List<InventoryMedicationAggregate> allRows = medicationRepository.findInventoryAggregate(branchId, q);
-        int totalItems = allRows.size();
-
-        int fromIndex = Math.min((safePage - 1) * safeLimit, totalItems);
-        int toIndex = Math.min(fromIndex + safeLimit, totalItems);
-
-        List<InventoryMedicationItemResponse> items = totalItems == 0
-                ? Collections.emptyList()
-                : allRows.subList(fromIndex, toIndex).stream()
-                .map(this::toInventoryItemResponse)
-                .toList();
-
-        int totalPages = totalItems == 0 ? 1 : (int) Math.ceil((double) totalItems / safeLimit);
-
-        PaginationMeta meta = PaginationMeta.builder()
-                .page(safePage)
-                .limit(safeLimit)
-                .totalItems(totalItems)
-                .totalPages(totalPages)
-                .hasNext(safePage < totalPages)
-                .hasPrevious(safePage > 1)
-                .build();
-
-        return ResponseEntity.ok(InventoryListResponse.builder()
-                .items(items)
-                .meta(meta)
-                .build());
-    }
-
-    /**
-     * Métricas para el dashboard de inventario administrativo.
-     */
-    @GetMapping("/stats")
-    @Operation(
-        summary = "Métricas de inventario (admin dashboard)",
-        description = "Retorna métricas agregadas de inventario por todas las sedes o por sede específica"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Métricas calculadas exitosamente")
-    })
-    public ResponseEntity<InventoryStatsResponse> getInventoryStats(
-            @RequestParam(required = false) Long branchId) {
-
-        List<InventoryMedicationAggregate> rows = medicationRepository.findInventoryAggregate(branchId, null);
-
-        int totalMedications = rows.size();
-        int totalUnits = rows.stream().mapToInt(r -> safeInt(r.getQuantity())).sum();
-        int outOfStockCount = (int) rows.stream().filter(r -> safeInt(r.getQuantity()) <= 0).count();
-        int lowStockCount = (int) rows.stream()
-                .filter(r -> safeInt(r.getQuantity()) > 0 && safeInt(r.getQuantity()) <= LOW_STOCK_THRESHOLD)
-                .count();
-        int activeLots = (int) rows.stream().filter(r -> safeInt(r.getQuantity()) > 0).count();
-
-        BigDecimal totalInventoryValue = rows.stream()
-                .map(r -> safePrice(r.getUnitPrice()).multiply(BigDecimal.valueOf(safeInt(r.getQuantity()))))
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(2, RoundingMode.HALF_UP);
-
-        InventoryStatsResponse response = InventoryStatsResponse.builder()
-                .totalInventoryValue(totalInventoryValue)
-                .deltaPct(0.0)
-                .activeLots(activeLots)
-                .allVerified(Boolean.TRUE)
-                .totalMedications(totalMedications)
-                .totalUnits(totalUnits)
-                .lowStockCount(lowStockCount)
-                .outOfStockCount(outOfStockCount)
-                .build();
-
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Detalle de medicamento por ID.
-     */
-    @GetMapping("/{id}")
-    @Operation(summary = "Obtener medicamento por id")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Medicamento encontrado"),
-        @ApiResponse(responseCode = "404", description = "Medicamento no encontrado")
-    })
-    public ResponseEntity<MedicationResponse> getById(@PathVariable Long id) {
-        Medication medication = searchUseCase.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Medicamento no encontrado con ID: " + id));
-
-        return ResponseEntity.ok(toMedicationResponse(medication));
-    }
 
     /**
      * Buscar medicamentos por nombre (búsqueda parcial)
@@ -340,7 +236,7 @@ public class MedicationController {
         List<MedicationBranchStockResponse> responses = stocks.stream()
                 .map(stock -> MedicationBranchStockResponse.builder()
                         .medicationId(stock.getMedicationId())
-                        .medicationName(stock.getMedicationName())
+                        .@@medicationName(stock.getMedicationName())
                         .description(stock.getDescription())
                         .unit(stock.getMedicationUnit())
                         .quantity(stock.getQuantity())
@@ -734,28 +630,6 @@ public class MedicationController {
                 .build();
     }
 
-    private InventoryMedicationItemResponse toInventoryItemResponse(InventoryMedicationAggregate aggregate) {
-        int quantity = safeInt(aggregate.getQuantity());
-
-        return InventoryMedicationItemResponse.builder()
-                .medicationId(aggregate.getMedicationId())
-                .medicationName(aggregate.getMedicationName())
-                .description(aggregate.getDescription())
-                .unit(aggregate.getUnit())
-                .unitPrice(safePrice(aggregate.getUnitPrice()))
-                .quantity(quantity)
-                .isAvailable(quantity > 0)
-                .build();
-    }
-
-    private int safeInt(Integer value) {
-        return value == null ? 0 : value;
-    }
-
-    private BigDecimal safePrice(BigDecimal value) {
-        return value == null ? BigDecimal.ZERO : value;
-    }
-
     /**
      * Mapea un DTO de dominio de StockWithMedicationInfo a su DTO de respuesta REST
      */
@@ -770,3 +644,10 @@ public class MedicationController {
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/`<any>`#medicationName#

@@ -8,6 +8,7 @@ import edu.escuelaing.arsw.medigo.users.domain.exception.UserAlreadyExistsExcept
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
+import edu.escuelaing.arsw.medigo.users.domain.port.out.PasswordBreachCheckerPort;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ class AuthServiceTest {
     
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private PasswordBreachCheckerPort passwordBreachChecker;
     
     private AuthService authService;
     
@@ -49,7 +53,7 @@ class AuthServiceTest {
         // Inicializa los mocks de Mockito
         MockitoAnnotations.openMocks(this);
         // Crea el servicio con el puerto mockeado
-        authService = new AuthService(userRepository, passwordEncoder);
+        authService = new AuthService(userRepository, passwordEncoder, passwordBreachChecker);
     }
     
     @Test
@@ -178,6 +182,7 @@ class AuthServiceTest {
         
         when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newuser@example.com")).thenReturn(Optional.empty());
+        when(passwordBreachChecker.isCompromised("Password123!")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         
         User savedUser = User.create(1L, "newuser", "newuser@example.com", "encodedPassword", Role.AFFILIATE);
@@ -206,6 +211,7 @@ class AuthServiceTest {
 
         when(userRepository.findByUsername("newuser2")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newuser2@example.com")).thenReturn(Optional.empty());
+        when(passwordBreachChecker.isCompromised("Password123!")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
 
         User savedUser = User.create(11L, "newuser2", "newuser2@example.com", "encodedPassword", Role.AFFILIATE);
@@ -283,6 +289,25 @@ class AuthServiceTest {
         assertThrows(InvalidInputException.class, () -> {
             authService.signUp(signUpRequest);
         }, "Debe fallar cuando " + reason);
+    }
+
+    @Test
+    @DisplayName("Debe fallar cuando la contraseña está comprometida")
+    void testSignUpCompromisedPassword() {
+        SignUpRequestDto signUpRequest = new SignUpRequestDto();
+        signUpRequest.setName("newuser3");
+        signUpRequest.setEmail("newuser3@example.com");
+        signUpRequest.setPassword("Password123!");
+        signUpRequest.setPhone("+57-322-5555555");
+        signUpRequest.setRole("AFFILIATE");
+
+        when(userRepository.findByUsername("newuser3")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("newuser3@example.com")).thenReturn(Optional.empty());
+        when(passwordBreachChecker.isCompromised("Password123!")).thenReturn(true);
+
+        InvalidInputException ex = assertThrows(InvalidInputException.class, () -> authService.signUp(signUpRequest));
+        assertTrue(ex.getMessage().toLowerCase().contains("brechas"));
+        verify(userRepository, never()).save(any(User.class));
     }
 }
 

@@ -151,7 +151,7 @@ class AuthControllerTest {
                 {
                   "name": "nuevo",
                   "email": "nuevo@example.com",
-                  "password": "Password123",
+                                    "password": "MediGoStrong!9Zx",
                   "phone": "+57-322-5555555",
                   "role": "AFFILIATE"
                 }

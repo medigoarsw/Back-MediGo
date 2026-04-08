@@ -1,6 +1,7 @@
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.repository;
 
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchStockEntity;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -75,5 +76,45 @@ public interface BranchStockSpringDataRepository extends JpaRepository<BranchSto
      * Eliminar stock específico
      */
     void deleteByBranchIdAndMedicationId(Long branchId, Long medicationId);
+
+    /**
+     * Inventario agregado para todas las sucursales (MVP admin inventory page).
+     */
+    @Query("""
+            SELECT new edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate(
+                m.id,
+                m.name,
+                m.description,
+                m.unit,
+                m.price,
+                CAST(COALESCE(SUM(bs.quantity), 0) AS integer)
+            )
+            FROM MedicationEntity m
+            LEFT JOIN BranchStockEntity bs ON bs.medicationId = m.id
+            WHERE (:q IS NULL OR :q = '' OR LOWER(m.name) LIKE LOWER(CONCAT('%', :q, '%')))
+            GROUP BY m.id, m.name, m.description, m.unit, m.price
+            ORDER BY m.name ASC
+            """)
+    List<InventoryMedicationAggregate> findInventoryAggregateAllBranches(@Param("q") String q);
+
+    /**
+     * Inventario agregado para una sucursal específica.
+     */
+    @Query("""
+            SELECT new edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate(
+                m.id,
+                m.name,
+                m.description,
+                m.unit,
+                m.price,
+                CAST(COALESCE(bs.quantity, 0) AS integer)
+            )
+            FROM MedicationEntity m
+            LEFT JOIN BranchStockEntity bs ON bs.medicationId = m.id AND bs.branchId = :branchId
+            WHERE (:q IS NULL OR :q = '' OR LOWER(m.name) LIKE LOWER(CONCAT('%', :q, '%')))
+            ORDER BY m.name ASC
+            """)
+    List<InventoryMedicationAggregate> findInventoryAggregateByBranch(@Param("branchId") Long branchId,
+                                                                      @Param("q") String q);
 }
 
