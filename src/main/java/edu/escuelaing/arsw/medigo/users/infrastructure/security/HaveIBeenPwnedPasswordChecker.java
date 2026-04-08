@@ -86,7 +86,10 @@ public class HaveIBeenPwnedPasswordChecker implements PasswordBreachCheckerPort 
         return false;
     }
 
+    @SuppressWarnings("java:S4790")
     private String sha1Hex(String value) throws Exception {
+        // HIBP k-anonymity API requiere SHA-1 para construir prefix/suffix.
+        // No se usa para almacenamiento local de contraseñas ni para firmas.
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
         byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder(hash.length * 2);
