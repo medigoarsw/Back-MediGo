@@ -19,6 +19,8 @@ public class SedeResponse {
     private String especialidad;
     private String telefono;
     private Integer capacidad;
+    private Double latitude;
+    private Double longitude;
 
     @JsonProperty("name")
     public String getName() {
@@ -43,5 +45,15 @@ public class SedeResponse {
     @JsonProperty("capacity")
     public Integer getCapacity() {
         return capacidad;
+    }
+
+    @JsonProperty("lat")
+    public Double getLat() {
+        return latitude;
+    }
+
+    @JsonProperty("lng")
+    public Double getLng() {
+        return longitude;
     }
 }
