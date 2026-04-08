@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java:
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 5854
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
@@ -124,7 +135,7 @@ public class MedicationController {
 
         BigDecimal totalInventoryValue = rows.stream()
                 .map(r -> safePrice(r.getUnitPrice()).multiply(BigDecimal.valueOf(safeInt(r.getQuantity()))))
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .reduce(BigDecimal.ZERO, BigDecimal::@@add)
                 .setScale(2, RoundingMode.HALF_UP);
 
         InventoryStatsResponse response = InventoryStatsResponse.builder()
@@ -770,3 +781,10 @@ public class MedicationController {
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 
