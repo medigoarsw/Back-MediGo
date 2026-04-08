@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.MedicationEntity;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchStockEntity;
@@ -243,5 +244,18 @@ public class MedicationJpaRepository implements MedicationRepositoryPort {
         log.debug("Buscando stock enriquecido del medicamento {} con información de sucursal", medicationId);
         
         return branchStockSpringDataRepository.findStockByMedicationWithBranchInfo(medicationId);
+    }
+
+    /**
+     * Obtiene inventario agregado para administración.
+     */
+    public List<InventoryMedicationAggregate> findInventoryAggregate(Long branchId, String q) {
+        String safeQuery = q == null ? "" : q.trim();
+
+        if (branchId != null) {
+            return branchStockSpringDataRepository.findInventoryAggregateByBranch(branchId, safeQuery);
+        }
+
+        return branchStockSpringDataRepository.findInventoryAggregateAllBranches(safeQuery);
     }
 }

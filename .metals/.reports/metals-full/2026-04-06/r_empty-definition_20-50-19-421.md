@@ -1,3 +1,14 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/entity/BranchEntity.java:_empty_/Table#name#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/entity/BranchEntity.java
+empty definition using pc, found symbol in pc: _empty_/Table#name#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 160
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/entity/BranchEntity.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.entity;
 
 import jakarta.persistence.*;
@@ -5,7 +16,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "branches")
+@Table(@@name = "branches")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,3 +61,10 @@ public class BranchEntity {
         }
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Table#name#

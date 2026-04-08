@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.InventoryMedicationAggregate;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
@@ -18,7 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -704,5 +707,130 @@ class MedicationControllerTest {
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () ->
                 controller.getAvailabilityInAllBranches(medicationId));
+    }
+
+    // ======================== INVENTORY ADMIN ENDPOINTS ========================
+
+    @Test
+    @DisplayName("Debería retornar inventario paginado para dashboard admin")
+    void testListInventoryPagedSuccess() {
+        // Arrange
+        Long branchId = 1L;
+        List<InventoryMedicationAggregate> rows = List.of(
+                InventoryMedicationAggregate.builder()
+                        .medicationId(1L)
+                        .medicationName("Paracetamol 500mg")
+                        .description("Analgésico")
+                        .unit("tableta")
+                        .unitPrice(new BigDecimal("5000.00"))
+                        .quantity(40)
+                        .build(),
+                InventoryMedicationAggregate.builder()
+                        .medicationId(2L)
+                        .medicationName("Ibuprofeno 400mg")
+                        .description("Antiinflamatorio")
+                        .unit("tableta")
+                        .unitPrice(new BigDecimal("6200.00"))
+                        .quantity(10)
+                        .build()
+        );
+
+        when(medicationRepository.findInventoryAggregate(branchId, "para"))
+                .thenReturn(rows);
+
+        // Act
+        ResponseEntity<?> response = controller.listInventory(branchId, "para", 1, 10);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(medicationRepository).findInventoryAggregate(branchId, "para");
+    }
+
+    @Test
+    @DisplayName("Debería retornar inventario vacío cuando no hay resultados")
+    void testListInventoryEmptyResults() {
+        // Arrange
+        when(medicationRepository.findInventoryAggregate(null, "zzzz"))
+                .thenReturn(List.of());
+
+        // Act
+        ResponseEntity<?> response = controller.listInventory(null, "zzzz", 1, 20);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(medicationRepository).findInventoryAggregate(null, "zzzz");
+    }
+
+    @Test
+    @DisplayName("Debería calcular métricas de inventario para dashboard admin")
+    void testGetInventoryStatsSuccess() {
+        // Arrange
+        List<InventoryMedicationAggregate> rows = List.of(
+                InventoryMedicationAggregate.builder()
+                        .medicationId(1L)
+                        .medicationName("Paracetamol 500mg")
+                        .unitPrice(new BigDecimal("5000.00"))
+                        .quantity(10)
+                        .build(),
+                InventoryMedicationAggregate.builder()
+                        .medicationId(2L)
+                        .medicationName("Ibuprofeno 400mg")
+                        .unitPrice(new BigDecimal("7000.00"))
+                        .quantity(0)
+                        .build(),
+                InventoryMedicationAggregate.builder()
+                        .medicationId(3L)
+                        .medicationName("Omeprazol")
+                        .unitPrice(new BigDecimal("1000.00"))
+                        .quantity(25)
+                        .build()
+        );
+
+        when(medicationRepository.findInventoryAggregate(1L, null))
+                .thenReturn(rows);
+
+        // Act
+        ResponseEntity<?> response = controller.getInventoryStats(1L);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(medicationRepository).findInventoryAggregate(1L, null);
+    }
+
+    @Test
+    @DisplayName("Debería retornar detalle de medicamento por id")
+    void testGetByIdSuccess() {
+        // Arrange
+        Medication medication = Medication.builder()
+                .id(99L)
+                .name("Amoxicilina")
+                .description("Antibiótico")
+                .unit("cápsula")
+                .price(new BigDecimal("12000.00"))
+                .build();
+
+        when(searchUseCase.findById(99L)).thenReturn(Optional.of(medication));
+
+        // Act
+        ResponseEntity<?> response = controller.getById(99L);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(searchUseCase).findById(99L);
+    }
+
+    @Test
+    @DisplayName("Debería lanzar excepción cuando no existe medicamento por id")
+    void testGetByIdNotFound() {
+        // Arrange
+        when(searchUseCase.findById(404L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> controller.getById(404L));
+        verify(searchUseCase).findById(404L);
     }
 }
