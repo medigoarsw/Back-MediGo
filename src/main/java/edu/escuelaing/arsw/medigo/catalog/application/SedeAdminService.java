@@ -67,6 +67,8 @@ public class SedeAdminService {
                 .specialty(especialidad)
                 .phone(telefono)
                 .capacity(request.getCapacidad())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
                 .active(true)
                 .build();
 
@@ -101,6 +103,14 @@ public class SedeAdminService {
 
         if (request.getCapacidad() != null) {
             entity.setCapacity(request.getCapacidad());
+        }
+
+        if (request.getLatitude() != null) {
+            entity.setLatitude(request.getLatitude());
+        }
+
+        if (request.getLongitude() != null) {
+            entity.setLongitude(request.getLongitude());
         }
 
         BranchEntity saved = branchRepository.save(entity);
