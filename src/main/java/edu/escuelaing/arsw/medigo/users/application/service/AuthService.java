@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.exception.*;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
+import edu.escuelaing.arsw.medigo.users.domain.port.out.PasswordBreachCheckerPort;
 import edu.escuelaing.arsw.medigo.users.domain.port.out.UserRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.domain.util.PasswordValidator;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
@@ -47,6 +48,7 @@ public class AuthService implements AuthUseCase {
     // En futuro: JpaUserRepository (SIN cambiar este código)
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordBreachCheckerPort passwordBreachChecker;
 
     /**
      * Autentica un usuario
@@ -181,6 +183,12 @@ public class AuthService implements AuthUseCase {
         if (!isStrongPassword(signUpRequest.getPassword())) {
             log.warn("SignUp failed: weak password");
             throw InvalidInputException.weakPassword();
+        }
+
+        // VALIDACIÓN 5.1: Contraseña no comprometida en brechas conocidas
+        if (passwordBreachChecker.isCompromised(signUpRequest.getPassword())) {
+            log.warn("SignUp failed: compromised password detected for email {}", signUpRequest.getEmail());
+            throw InvalidInputException.compromisedPassword();
         }
         
         // VALIDACIÓN 6: Rol válido (solo AFFILIATE o REPARTIDOR)
