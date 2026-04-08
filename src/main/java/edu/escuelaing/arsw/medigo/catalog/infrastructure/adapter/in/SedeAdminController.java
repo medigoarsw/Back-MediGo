@@ -162,6 +162,8 @@ public class SedeAdminController {
                 .especialidad(entity.getSpecialty())
                 .telefono(entity.getPhone())
                 .capacidad(entity.getCapacity())
+                                .latitude(entity.getLatitude())
+                                .longitude(entity.getLongitude())
                 .build();
     }
 

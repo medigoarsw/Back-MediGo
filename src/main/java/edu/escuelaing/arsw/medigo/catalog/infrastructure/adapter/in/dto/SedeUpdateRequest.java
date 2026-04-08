@@ -1,6 +1,8 @@
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -31,4 +33,14 @@ public class SedeUpdateRequest {
     @Max(value = 100000, message = "capacidad fuera de rango")
     @Schema(example = "180")
     private Integer capacidad;
+
+    @DecimalMin(value = "-90.0", message = "latitude fuera de rango")
+    @DecimalMax(value = "90.0", message = "latitude fuera de rango")
+    @Schema(example = "4.7110")
+    private Double latitude;
+
+    @DecimalMin(value = "-180.0", message = "longitude fuera de rango")
+    @DecimalMax(value = "180.0", message = "longitude fuera de rango")
+    @Schema(example = "-74.0721")
+    private Double longitude;
 }
