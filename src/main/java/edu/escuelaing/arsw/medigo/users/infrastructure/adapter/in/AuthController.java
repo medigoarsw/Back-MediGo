@@ -88,7 +88,7 @@ public class AuthController {
             description = "Error interno del servidor"
         )
     })
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDto request) {
         try {
             log.debug("Authentication request received");
             
@@ -106,16 +106,20 @@ public class AuthController {
             
         } catch (UserNotFoundException e) {
             log.debug("Authentication failed: user not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Correo o contraseña incorrectos."));
         } catch (InvalidCredentialsException e) {
             log.debug("Authentication failed: invalid credentials");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Correo o contraseña incorrectos."));
         } catch (DomainException e) {
             log.debug("Authentication failed: domain error");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Correo o contraseña incorrectos."));
         } catch (Exception e) {
             log.error("Unexpected error during authentication", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("No fue posible iniciar sesión. Intenta nuevamente."));
         }
     }
 
@@ -162,11 +166,11 @@ public class AuthController {
             
         } catch (DomainException e) {
             log.debug("Registration failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new ErrorResponse(resolveSafeRegisterMessage(e.getMessage())));
         } catch (Exception e) {
             log.error("Unexpected error during registration", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Error al registrar usuario"));
+                    .body(new ErrorResponse("No fue posible registrar la cuenta. Intenta nuevamente."));
         }
     }
 
@@ -338,6 +342,32 @@ public class AuthController {
                 .updatedAt(user.getUpdatedAt())
                 .message("Usuario registrado exitosamente")
                 .build();
+    }
+
+    private String resolveSafeRegisterMessage(String message) {
+        String normalized = String.valueOf(message).toLowerCase();
+
+        if (normalized.contains("email") && (normalized.contains("válido") || normalized.contains("valido") || normalized.contains("formato"))) {
+            return "El correo no tiene un formato válido.";
+        }
+
+        if (normalized.contains("phone") || normalized.contains("teléfono") || normalized.contains("telefono")) {
+            return "El teléfono no es válido. Usa el formato +57-322-5555555.";
+        }
+
+        if (normalized.contains("password") || normalized.contains("contraseña") || normalized.contains("weak")) {
+            return "La contraseña no cumple los requisitos de seguridad.";
+        }
+
+        if (normalized.contains("rol") || normalized.contains("role")) {
+            return "El rol seleccionado no es válido para el registro.";
+        }
+
+        if (normalized.contains("registrado") || normalized.contains("ya existe") || normalized.contains("already")) {
+            return "No fue posible crear la cuenta con los datos ingresados.";
+        }
+
+        return "No fue posible procesar el registro. Verifica los datos e intenta nuevamente.";
     }
 }
 
