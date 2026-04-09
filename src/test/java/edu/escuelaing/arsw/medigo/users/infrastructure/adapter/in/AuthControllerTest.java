@@ -77,7 +77,7 @@ class AuthControllerTest {
     }
     
     @Test
-    @DisplayName("POST /api/auth/login debe retornar 404 cuando usuario no existe")
+        @DisplayName("POST /api/auth/login debe retornar 401 cuando usuario no existe")
     void testLoginUserNotFound() throws Exception {
         // ARRANGE - Usuario que no existe en el repositorio
         LoginRequestDto request = new LoginRequestDto("nonexistent@medigo.com", "123");
@@ -86,7 +86,8 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value("Correo o contraseña incorrectos."));
     }
     
     @Test
