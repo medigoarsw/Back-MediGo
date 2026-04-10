@@ -6112,3 +6112,54 @@ INFO: Unsupported notification method: $/setTrace
 2026.04.09 17:52:26 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\shared\infrastructure\exception\GlobalExceptionHandler.java. Using fallback presentation compiler.
 2026.04.09 17:52:38 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java. Using fallback presentation compiler.
 2026.04.09 17:52:38 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\in\AuctionController.java. Using fallback presentation compiler.
+2026.04.09 18:17:44 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\entity\AuctionEntity.java. Using fallback presentation compiler.
+2026.04.09 18:17:44 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\entity\BidEntity.java. Using fallback presentation compiler.
+2026.04.09 18:34:02 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+2026.04.09 18:34:02 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+abr 09, 2026 6:34:02 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 21
+2026.04.09 18:34:02 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+2026.04.09 18:34:03 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+2026.04.09 18:34:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+2026.04.09 18:34:05 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+abr 09, 2026 6:34:06 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 31
+2026.04.09 18:34:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\catalog\application\CatalogService.java. Using fallback presentation compiler.
+2026.04.09 18:34:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.09 18:34:13 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.04.09 18:34:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.09 18:34:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.09 18:34:13 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+abr 09, 2026 6:34:14 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 40
+2026.04.09 18:34:15 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+2026.04.09 18:34:22 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java. Using fallback presentation compiler.
+abr 09, 2026 6:34:22 P. M. org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 56
+2026.04.09 18:34:36 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\AuthGatewayService.java. Using fallback presentation compiler.
+2026.04.09 18:34:36 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\AuthGatewayService.java
+2026.04.09 18:34:36 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\AuthGatewayService.java. Using fallback presentation compiler.
+2026.04.09 18:34:36 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\AuthGatewayService.java. Using fallback presentation compiler.
+2026.04.09 18:37:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java
+2026.04.09 18:37:11 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/APIGATEWAY_MEDIGO/src/main/java/com/medigo/gateway/application/service/ValidationService.java. Output:
+
+2026.04.09 18:37:11 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java. Using fallback presentation compiler.
+2026.04.09 18:37:11 INFO  Created report: Optional[file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/APIGATEWAY_MEDIGO/src/main/java/com/medigo/gateway/application/service/ValidationService.java]
+2026.04.09 18:37:11 INFO  empty definition using pc, found symbol in pc: _empty_/log# (full report at: "D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\.metals\.reports\metals-full\2026-04-09\r_empty-definition_18-37-11-458.md")
+2026.04.09 18:37:11 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java. Using fallback presentation compiler.
+2026.04.09 18:37:11 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java
+2026.04.09 18:37:11 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\ValidationService.java. Using fallback presentation compiler.
+2026.04.09 18:37:11 WARN  Running javac-semanticdb failed for file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/APIGATEWAY_MEDIGO/src/main/java/com/medigo/gateway/application/service/ValidationService.java. Output:
+
+2026.04.09 18:37:23 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\shared\infrastructure\config\WebSocketConfig.java. Using fallback presentation compiler.
+2026.04.09 18:37:44 INFO  no build target found for D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\websocket\dto\AuctionPriceUpdateMessage.java. Using fallback presentation compiler.
+2026.04.09 18:38:38 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\application\service\AuthGatewayService.java
+2026.04.09 18:38:38 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\WebSocketAuctionEventPublisher.java
+2026.04.09 18:38:39 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthControllerTest.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\users\infrastructure\adapter\in\AuthController.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\test\java\edu\escuelaing\arsw\medigo\auction\infrastructure\adapter\out\WebSocketAuctionEventPublisherTest.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\infrastructure\adapter\in\AuctionController.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\infrastructure\adapter\out\RestTemplateBackendClient.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\Back-MediGo\src\main\java\edu\escuelaing\arsw\medigo\auction\infrastructure\config\AuctionStompEndpointConfig.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\infrastructure\config\RestTemplateConfig.java
+2026.04.09 18:38:40 WARN  no build target for: D:\ander\Documents\SEMESTRE 7\ARSW\PROYECTO OFICIAL\APIGATEWAY_MEDIGO\src\main\java\com\medigo\gateway\infrastructure\common\RoleMapper.java

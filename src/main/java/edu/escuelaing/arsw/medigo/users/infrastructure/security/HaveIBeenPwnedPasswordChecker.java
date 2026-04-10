@@ -59,6 +59,10 @@ public class HaveIBeenPwnedPasswordChecker implements PasswordBreachCheckerPort 
             }
 
             return containsSuffix(response.body(), suffix);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            log.warn("HIBP password check interrupted, continuing without external validation");
+            return false;
         } catch (Exception ex) {
             // Fail-open para no bloquear registro por conectividad externa.
             log.warn("HIBP password check failed, continuing without external validation: {}", ex.getMessage());
