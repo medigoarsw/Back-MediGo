@@ -132,6 +132,7 @@ public class MedicationJpaRepository implements MedicationRepositoryPort {
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .unit(entity.getUnit())
+                .price(entity.getPrice())
                 .build();
     }
 
@@ -144,6 +145,7 @@ public class MedicationJpaRepository implements MedicationRepositoryPort {
                 .name(medication.getName())
                 .description(medication.getDescription())
                 .unit(medication.getUnit())
+                .price(medication.getPrice())
                 .build();
     }
 
