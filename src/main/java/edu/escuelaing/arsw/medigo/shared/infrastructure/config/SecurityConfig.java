@@ -93,6 +93,11 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/api/branches/**", HttpMethod.PUT.name())).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/api/branches/**", HttpMethod.DELETE.name())).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/api/branches", HttpMethod.GET.name())).permitAll()
+
+                // Sedes Admin (CRUD)
+                .requestMatchers(new AntPathRequestMatcher("/api/sedes")).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/api/sedes/**")).hasRole("ADMIN")
+
                 .anyRequest().authenticated()
             );
 

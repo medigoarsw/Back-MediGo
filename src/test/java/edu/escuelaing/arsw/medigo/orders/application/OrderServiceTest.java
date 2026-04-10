@@ -134,9 +134,6 @@ class OrderServiceTest {
         .items(new ArrayList<>())
         .build();
 
-    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
-        .thenReturn(Optional.of(emptyCart));
-
     // When & Then: lanza excepción por insuficiente stock
     BusinessException exception = assertThrows(BusinessException.class, () ->
         orderService.addItemToCart(AFFILIATE_ID, BRANCH_ID, MEDICATION_ID, 101)
@@ -298,6 +295,9 @@ class OrderServiceTest {
             .city("Bogotá")
             .commune("Centro")
             .build();
+
+    when(orderRepository.findPendingByAffiliateAndBranch(AFFILIATE_ID, BRANCH_ID))
+        .thenReturn(Optional.of(orderWithItems));
 
     // When & Then: lanza excepción por dirección incompleta
     BusinessException exception = assertThrows(BusinessException.class, () ->

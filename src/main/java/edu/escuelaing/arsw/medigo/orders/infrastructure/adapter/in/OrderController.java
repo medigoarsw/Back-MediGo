@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.orders.application.OrderService;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,6 +54,8 @@ public class OrderController {
         try {
             Order cart = orderService.getCart(affiliateId, branchId);
             return ResponseEntity.ok(buildCartResponse(cart, "Carrito obtenido exitosamente"));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.ok(new CartResponse(null, affiliateId, branchId, List.of(), BigDecimal.ZERO, "Carrito vacío"));
         }

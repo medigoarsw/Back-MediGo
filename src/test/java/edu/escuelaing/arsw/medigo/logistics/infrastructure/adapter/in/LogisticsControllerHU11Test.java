@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
+import edu.escuelaing.arsw.medigo.logistics.domain.model.ActiveDeliveryDetails;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
@@ -156,20 +157,15 @@ class LogisticsControllerHU11Test {
         Long deliveryPersonId = 5L;
 
         // Entregas activas
-        Delivery inRouteDelivery = Delivery.builder()
-                .id(1L)
-                .orderId(100L)
-                .deliveryPersonId(deliveryPersonId)
-                .status(Delivery.DeliveryStatus.IN_ROUTE)
-                .assignedAt(LocalDateTime.now().minusHours(1))
+        // Entregas activas enriquecidas
+        ActiveDeliveryDetails detail1 = ActiveDeliveryDetails.builder()
+                .id(1L).orderId(100L).deliveryPersonId(deliveryPersonId)
+                .status(Delivery.DeliveryStatus.IN_ROUTE).assignedAt(LocalDateTime.now().minusHours(1))
                 .build();
 
-        Delivery assignedDelivery = Delivery.builder()
-                .id(2L)
-                .orderId(101L)
-                .deliveryPersonId(deliveryPersonId)
-                .status(Delivery.DeliveryStatus.ASSIGNED)
-                .assignedAt(LocalDateTime.now())
+        ActiveDeliveryDetails detail2 = ActiveDeliveryDetails.builder()
+                .id(2L).orderId(101L).deliveryPersonId(deliveryPersonId)
+                .status(Delivery.DeliveryStatus.ASSIGNED).assignedAt(LocalDateTime.now())
                 .build();
 
         // Entrega ya entregada (no debe mostrar botón)
@@ -182,8 +178,8 @@ class LogisticsControllerHU11Test {
                 .build();
 
         // When: visualiza su lista de entregas
-        when(getActiveDeliveriesUseCase.getActiveDeliveries(deliveryPersonId))
-                .thenReturn(List.of(inRouteDelivery, assignedDelivery));  // Solo devuelve activas
+        when(getActiveDeliveriesUseCase.getActiveDeliveryDetails(deliveryPersonId))
+                .thenReturn(List.of(detail1, detail2));  // Solo devuelve activas
 
         ResponseEntity<List<DeliveryResponse>> response = logisticsController
                 .getActiveDeliveries(deliveryPersonId);
@@ -268,8 +264,13 @@ class LogisticsControllerHU11Test {
                 .build();
 
         // When: repartidor 1 solicita sus entregas activas
-        when(getActiveDeliveriesUseCase.getActiveDeliveries(repartidor1))
-                .thenReturn(List.of(entregaRepartidor1));
+        ActiveDeliveryDetails detail1 = ActiveDeliveryDetails.builder()
+                .id(1L).orderId(100L).deliveryPersonId(repartidor1)
+                .status(Delivery.DeliveryStatus.IN_ROUTE).assignedAt(LocalDateTime.now())
+                .build();
+
+        when(getActiveDeliveriesUseCase.getActiveDeliveryDetails(repartidor1))
+                .thenReturn(List.of(detail1));
 
         ResponseEntity<List<DeliveryResponse>> response1 = logisticsController
                 .getActiveDeliveries(repartidor1);
@@ -279,8 +280,13 @@ class LogisticsControllerHU11Test {
         assertEquals(repartidor1, response1.getBody().get(0).getDeliveryPersonId());
 
         // When: repartidor 2 solicita sus entregas activas
-        when(getActiveDeliveriesUseCase.getActiveDeliveries(repartidor2))
-                .thenReturn(List.of(entregaRepartidor2));
+        ActiveDeliveryDetails detail2 = ActiveDeliveryDetails.builder()
+                .id(2L).orderId(101L).deliveryPersonId(repartidor2)
+                .status(Delivery.DeliveryStatus.IN_ROUTE).assignedAt(LocalDateTime.now())
+                .build();
+
+        when(getActiveDeliveriesUseCase.getActiveDeliveryDetails(repartidor2))
+                .thenReturn(List.of(detail2));
 
         ResponseEntity<List<DeliveryResponse>> response2 = logisticsController
                 .getActiveDeliveries(repartidor2);

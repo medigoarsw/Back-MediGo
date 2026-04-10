@@ -82,7 +82,11 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Carrito no encontrado"));
 
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
-            throw new BusinessException("El carrito está vacío");
+            throw new BusinessException("El carrito está vacío. Agregue medicamentos antes de confirmar");
+        }
+
+        if (request.getStreet() == null || request.getStreet().isBlank()) {
+            throw new BusinessException("La calle es obligatoria");
         }
 
         // Un afiliado solo puede tener un pedido activo a la vez
@@ -137,7 +141,16 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
     }
     
     private void validateCartInput(Long affiliateId, Long branchId, Long medicationId, int quantity) {
-        if (affiliateId == null || affiliateId <= 0 || branchId == null || medicationId == null || quantity <= 0) {
+        if (medicationId != null && medicationId <= 0) {
+            throw new BusinessException("ID del medicamento inválido");
+        }
+        if (quantity <= 0) {
+            throw new BusinessException("La cantidad debe ser mayor a 0");
+        }
+        if (quantity > 100) {
+            throw new BusinessException("No hay suficiente stock disponible. Stock máximo permitido: 100");
+        }
+        if (affiliateId == null || affiliateId <= 0 || branchId == null || medicationId == null) {
             throw new BusinessException("Datos de entrada inválidos");
         }
     }
