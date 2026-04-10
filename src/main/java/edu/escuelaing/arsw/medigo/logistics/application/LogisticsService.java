@@ -171,28 +171,44 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
     @Override
     @Transactional(readOnly = true)
     public Map<String, Object> getAffiliateDashboard(Long affiliateId) {
-        Order active = orderRepository.findByAffiliateId(affiliateId).stream()
+        log.info("HU-06: Buscando estado logístico para afiliado {}", affiliateId);
+        
+        List<Order> activeOrders = orderRepository.findByAffiliateId(affiliateId).stream()
                 .filter(o -> o.getStatus() == Order.OrderStatus.CONFIRMED
                         || o.getStatus() == Order.OrderStatus.ASSIGNED
                         || o.getStatus() == Order.OrderStatus.IN_ROUTE)
-                .findFirst()
-                .orElse(null);
+                .toList();
 
-        if (active == null) return null;
+        if (activeOrders.isEmpty()) {
+            log.info("HU-06: No se encontraron pedidos activos para el afiliado {}", affiliateId);
+            return null;
+        }
+
+        if (activeOrders.size() > 1) {
+            log.warn("HU-06: El afiliado {} tiene {} pedidos activos. Mostrando el más reciente.", affiliateId, activeOrders.size());
+        }
+
+        // Tomar el más reciente por ID (o fecha si estuviera disponible de forma confiable)
+        Order active = activeOrders.get(activeOrders.size() - 1);
 
         Map<String, Object> result = new HashMap<>();
         result.put("id", active.getId());
         result.put("orderNumber", active.getOrderNumber());
         result.put("status", active.getStatus().name());
-        result.put("message", switch (active.getStatus()) {
+        
+        String message = switch (active.getStatus()) {
             case CONFIRMED -> "Tu pedido está esperando a ser aceptado por un repartidor";
             case ASSIGNED  -> "¡Un repartidor aceptó tu pedido y va en camino a recogerlo!";
             case IN_ROUTE  -> "El repartidor ya recogió tu pedido y va en camino a entregarlo";
             default        -> "Pedido en proceso";
-        });
+        };
+        result.put("message", message);
 
         deliveryRepository.findByOrderId(active.getId())
-                .ifPresent(d -> result.put("driverId", d.getDeliveryPersonId()));
+                .ifPresent(d -> {
+                    result.put("driverId", d.getDeliveryPersonId());
+                    log.info("HU-06: Pedido {} tiene repartidor {} asignado", active.getId(), d.getDeliveryPersonId());
+                });
 
         return result;
     }

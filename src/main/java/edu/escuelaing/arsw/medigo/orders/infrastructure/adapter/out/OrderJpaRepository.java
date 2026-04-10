@@ -127,7 +127,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .auctionId(e.getAuctionId())
                 .finalPrice(e.getFinalPrice())
                 .totalPrice(e.getTotalPrice())
-                .status(Order.OrderStatus.valueOf(e.getStatus()))
+                .status(mapStatus(e.getStatus()))
                 .street(e.getStreet())
                 .streetNumber(e.getStreetNumber())
                 .city(e.getCity())
@@ -138,6 +138,16 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar
                 .build();
     }
+    private Order.OrderStatus mapStatus(String status) {
+        if (status == null) return Order.OrderStatus.PENDING;
+        try {
+            return Order.OrderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            // Log warning and fallback to PENDING or a safe default if data is corrupted
+            return Order.OrderStatus.PENDING;
+        }
+    }
+
     @Override
     public List<Order> findAll() {
         return springRepo.findAll().stream()

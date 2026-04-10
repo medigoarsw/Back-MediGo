@@ -24,10 +24,19 @@ public class AuthenticatedUserResolver {
             throw new BusinessException("No se encontró usuario autenticado", "AUTHENTICATION_ERROR");
         }
 
-        String token = String.valueOf(authentication.getPrincipal());
-        Long userId = token.startsWith(FAKE_JWT_PREFIX)
-                ? extractUserIdFromFakeToken(token)
-                : extractUserIdFromRealJwt(token);
+        Object principal = authentication.getPrincipal();
+        String principalStr = String.valueOf(principal);
+
+        // Si ya es un ID numérico (resuelto previamente por el filtro de seguridad)
+        Long userId = parseLongOrNull(principalStr);
+        if (userId != null) {
+            return userId;
+        }
+
+        // Si no es numérico, intentamos tratarlo como token (Fake o Real)
+        userId = principalStr.startsWith(FAKE_JWT_PREFIX)
+                ? extractUserIdFromFakeToken(principalStr)
+                : extractUserIdFromRealJwt(principalStr);
 
         if (userId == null) {
             throw new BusinessException("No se pudo resolver el usuario autenticado", "AUTHENTICATION_ERROR");

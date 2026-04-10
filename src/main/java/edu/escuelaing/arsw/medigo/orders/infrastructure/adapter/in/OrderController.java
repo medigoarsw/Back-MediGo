@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.orders.application.OrderService;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in.dto.ConfirmOrderRequest;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -121,8 +122,16 @@ public class OrderController {
         try {
             Order confirmedOrder = orderService.confirmPendingOrder(affiliateId, branchId, request);
             return ResponseEntity.ok(confirmedOrder);
+        } catch (ResourceNotFoundException e) {
+            log.warn("Hu-06: Carrito no encontrado para afiliado {} en sede {}", affiliateId, branchId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage(e.getMessage()));
+        } catch (BusinessException e) {
+            log.warn("Hu-06: Error de negocio al confirmar pedido: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ErrorMessage(e.getMessage()));
+            log.error("Hu-06: Error inesperado al confirmar pedido", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorMessage("Error interno al procesar el pedido: " + e.getMessage()));
         }
     }
     
