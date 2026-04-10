@@ -186,7 +186,6 @@ public class AuctionService implements
         Duration remaining = null;
         if (auction.getStatus() == Auction.AuctionStatus.ACTIVE
                 || auction.getStatus() == Auction.AuctionStatus.SCHEDULED) {
-            Duration d = Duration.between(LocalDateTime.now(), auction.getEndTime());
             Duration d = Duration.between(AuctionTime.now(), auction.getEndTime());
             remaining = d.isNegative() ? Duration.ZERO : d;
         }
