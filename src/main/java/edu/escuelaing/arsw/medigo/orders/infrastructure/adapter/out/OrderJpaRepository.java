@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -136,5 +137,11 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .createdAt(e.getCreatedAt())
                 .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar
                 .build();
+    }
+    @Override
+    public List<Order> findAll() {
+        return springRepo.findAll().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 }

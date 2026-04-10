@@ -53,4 +53,14 @@ public class DeliveryResponse {
         example = "2026-04-02T14:30:00"
     )
     private LocalDateTime assignedAt;
+
+    // Punto de recogida (farmacia/sede)
+    private Double pickupLat;
+    private Double pickupLng;
+    private String branchName;
+
+    // Punto de entrega (domicilio del afiliado)
+    private Double deliveryLat;
+    private Double deliveryLng;
+    private String deliveryAddress;
 }

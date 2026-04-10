@@ -14,7 +14,8 @@ package edu.escuelaing.arsw.medigo.users.domain.valueobject;
 public enum Role {
     ADMIN("ADMIN", "EPS Administrator with full access"),
     AFFILIATE("AFFILIATE", "Affiliate user/patient"),
-    DELIVERY("DELIVERY", "Delivery operator");
+    DELIVERY("DELIVERY", "Delivery operator"),
+    DEVELOPER("DEVELOPER", "Developer/Tester account");
 
     private final String code;
     private final String description;

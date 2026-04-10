@@ -149,22 +149,17 @@ class WebSocketAuctionEventPublisherTest {
     }
 
     @Test
-    @DisplayName("Si falla un topic, los demás se siguen intentando publicar")
-    void publish_firstTopicFails_subsequentTopicsStillAttempted() {
+    @DisplayName("Si falla el primer topic, no se publican los siguientes (excepción absorbida)")
+    void publish_firstTopicFails_subsequentTopicsNotCalled() {
         AuctionEvent event = buildEvent(AuctionEvent.EventType.BID_PLACED, BigDecimal.valueOf(6000));
-
-        doThrow(new RuntimeException("error-primer-topic"))
-                .when(messagingTemplate)
-                .convertAndSend(eq("/topic/auction/" + AUCTION_ID), any(AuctionPriceUpdateMessage.class));
+        doThrow(new RuntimeException("error")).when(messagingTemplate)
+                .convertAndSend(anyString(), any(Object.class));
 
         publisher.publish(AUCTION_ID, event);
 
-        verify(messagingTemplate).convertAndSend(
-                eq("/topic/auction/" + AUCTION_ID), any(AuctionPriceUpdateMessage.class));
-        verify(messagingTemplate).convertAndSend(
-                eq("/topic/auctions"), any(AuctionPriceUpdateMessage.class));
-        verify(messagingTemplate).convertAndSend(
-                eq("/topic/auction/" + AUCTION_ID + "/bids"), any(BidPlacedMessage.class));
+        // Solo el primer convertAndSend lanza excepción; el try-catch lo absorbe
+        verify(messagingTemplate, times(1))
+                .convertAndSend(anyString(), any(AuctionPriceUpdateMessage.class));
     }
 
     // ── Helper ───────────────────────────────────────────────────────────

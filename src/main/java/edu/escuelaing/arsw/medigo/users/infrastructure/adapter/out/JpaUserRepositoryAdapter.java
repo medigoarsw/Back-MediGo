@@ -60,6 +60,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .passwordHash(user.getPassword())
             .phone(user.getPhone())
                 .role(user.getRole().getCode())
+                .address(user.getAddress())
                 .active(user.isActive())
             .createdAt(user.getCreatedAt())
             .updatedAt(user.getUpdatedAt())
@@ -82,6 +83,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
             entity.getEmail(),
             entity.getPasswordHash(),
             entity.getPhone(),
+            entity.getAddress(),
             Role.valueOf(entity.getRole().toUpperCase()),
             entity.isActive(),
             entity.getCreatedAt(),

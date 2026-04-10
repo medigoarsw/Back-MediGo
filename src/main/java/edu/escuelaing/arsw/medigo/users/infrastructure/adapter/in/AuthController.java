@@ -305,7 +305,8 @@ public class AuthController {
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole().getCode(),
-                user.isActive()
+                user.isActive(),
+                user.getAddress()
         );
     }
 

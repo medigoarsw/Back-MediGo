@@ -28,6 +28,7 @@ public class User {
     private String password;  // En producción: passwordHash
     private String username;
     private String phone;
+    private String address;
     private Role role;
     private boolean active;
     private LocalDateTime createdAt;
@@ -39,15 +40,23 @@ public class User {
      */
     public static User create(Long id, String username, String email, String password, Role role) {
         LocalDateTime now = LocalDateTime.now();
-        return new User(id, email, password, username, null, role, true, now, now);
+        return new User(id, email, password, username, null, null, role, true, now, now);
     }
 
     /**
-     * Factory method para crear usuarios con teléfono
+     * Factory method para crear usuarios con teléfono (Backward compatibility)
      */
     public static User create(Long id, String username, String email, String password, String phone, Role role) {
         LocalDateTime now = LocalDateTime.now();
-        return new User(id, email, password, username, phone, role, true, now, now);
+        return new User(id, email, password, username, phone, null, role, true, now, now);
+    }
+
+    /**
+     * Factory method para crear usuarios con teléfono y dirección
+     */
+    public static User create(Long id, String username, String email, String password, String phone, String address, Role role) {
+        LocalDateTime now = LocalDateTime.now();
+        return new User(id, email, password, username, phone, address, role, true, now, now);
     }
 
     /**
@@ -59,11 +68,12 @@ public class User {
             String email,
             String password,
             String phone,
+            String address,
             Role role,
             boolean active,
             LocalDateTime createdAt,
             LocalDateTime updatedAt) {
-        return new User(id, email, password, username, phone, role, active, createdAt, updatedAt);
+        return new User(id, email, password, username, phone, address, role, active, createdAt, updatedAt);
     }
 
     /**
@@ -104,6 +114,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
                 ", role=" + role +
                 ", active=" + active +
                 ", createdAt=" + createdAt +

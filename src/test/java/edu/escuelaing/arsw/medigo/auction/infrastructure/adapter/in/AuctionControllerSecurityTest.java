@@ -5,6 +5,7 @@ import edu.escuelaing.arsw.medigo.auction.domain.model.Bid;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.config.SecurityConfig;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.security.AuthenticatedUserResolver;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ class AuctionControllerSecurityTest {
     @MockBean private QueryAuctionUseCase  queryAuctionUseCase;
     @MockBean private JoinAuctionUseCase   joinAuctionUseCase;
     @MockBean private AuthenticatedUserResolver authenticatedUserResolver;
+    @MockBean private JwtService jwtService;
 
     // ── Tokens de prueba ──────────────────────────────────────────────
     private static final String ADMIN_TOKEN     = "Bearer fake-jwt.1.ADMIN.1700000000000";

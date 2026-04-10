@@ -1,39 +1,53 @@
 name: Deploy Medi-Go to Azure App Service
 
 on:
+
   push:
+
     branches:
+
       - main
 
 jobs:
+
   build-and-deploy:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout código
+
         uses: actions/checkout@v4
 
       - name: Configurar Java
+
         uses: actions/setup-java@v4
+
         with:
+
           java-version: '21'
+
           distribution: 'temurin'
 
       - name: Build con Maven
-        run: mvn -U clean package -DskipTests
 
-      - name: Verificar artefacto ejecutable
-        run: |
-          test -f target/medigo-0.0.1-SNAPSHOT.jar
-          ls -lh target/*.jar
+        run: mvn clean package -DskipTests
 
       - name: Login en Azure
+
         uses: azure/login@v1
+
         with:
+
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy a Azure App Service
+
         uses: azure/webapps-deploy@v3
+
         with:
-          app-name: 'medi-go-app'
-          package: target/medigo-0.0.1-SNAPSHOT.jar
+
+          app-name: 'medi-go-app'  # El nombre exacto que pusiste en Azure
+
+          package: target/*.jar

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,7 +98,6 @@ class MedicationJpaRepositoryTest {
                 .id(1L)
                 .name("Aspirina")
                 .unit("tableta")
-                .price(new BigDecimal("4500.00"))
                 .build();
 
         when(medicationSpringDataRepository.findById(1L))
@@ -111,7 +109,6 @@ class MedicationJpaRepositoryTest {
         // Assert
         assertTrue(result.isPresent());
         assertEquals("Aspirina", result.get().getName());
-        assertEquals(0, new BigDecimal("4500.00").compareTo(result.get().getPrice()));
     }
 
     @Test
@@ -138,7 +135,6 @@ class MedicationJpaRepositoryTest {
                 .name("Nuevo Medicamento")
                 .unit("tableta")
                 .description("Descripción")
-                .price(new BigDecimal("12000.00"))
                 .build();
 
         MedicationEntity savedEntity = MedicationEntity.builder()
@@ -146,7 +142,6 @@ class MedicationJpaRepositoryTest {
                 .name("Nuevo Medicamento")
                 .unit("tableta")
                 .description("Descripción")
-                .price(new BigDecimal("12000.00"))
                 .build();
 
         when(medicationSpringDataRepository.save(any(MedicationEntity.class)))
@@ -159,7 +154,6 @@ class MedicationJpaRepositoryTest {
         assertNotNull(result.getId());
         assertEquals(10L, result.getId());
         assertEquals("Nuevo Medicamento", result.getName());
-        assertEquals(0, new BigDecimal("12000.00").compareTo(result.getPrice()));
         verify(medicationSpringDataRepository).save(any(MedicationEntity.class));
     }
 

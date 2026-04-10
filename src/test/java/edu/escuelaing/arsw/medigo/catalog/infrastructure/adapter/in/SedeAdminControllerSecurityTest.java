@@ -3,6 +3,7 @@ package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.catalog.application.SedeAdminService;
 import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchEntity;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.config.SecurityConfig;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ class SedeAdminControllerSecurityTest {
 
     @MockBean
     private SedeAdminService sedeService;
+
+    @MockBean
+    private JwtService jwtService;
 
     private static final String ADMIN_TOKEN = "Bearer fake-jwt.1.ADMIN.1700000000000";
     private static final String AFFILIATE_TOKEN = "Bearer fake-jwt.2.AFFILIATE.1700000000000";

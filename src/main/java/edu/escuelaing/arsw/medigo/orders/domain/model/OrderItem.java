@@ -1,7 +1,7 @@
 package edu.escuelaing.arsw.medigo.orders.domain.model;
 import lombok.*;
 import java.math.BigDecimal;
-@Getter @Builder @AllArgsConstructor
+@Getter @Builder(toBuilder = true) @AllArgsConstructor
 public class OrderItem {
     private Long orderId;
     private Long medicationId;

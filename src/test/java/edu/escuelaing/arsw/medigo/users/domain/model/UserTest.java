@@ -54,6 +54,7 @@ class UserTest {
             "user@example.com",
             "password123",
             "+57-300-1234567",
+            null, // address
             Role.AFFILIATE,
             false,
             now,
@@ -65,6 +66,24 @@ class UserTest {
         
         // ASSERT
         assertFalse(result, "Usuario inactivo no puede autenticarse");
+    }
+
+    @Test
+    void testFromPersistence() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = User.fromPersistence(
+                1L, "user", "user@example.com", "123", "+573001234567", "Calle 123", Role.AFFILIATE, true, now, now
+        );
+        
+        assertEquals(1L, user.getId());
+        assertEquals("user", user.getUsername());
+        assertEquals("user@example.com", user.getEmail());
+        assertEquals("+573001234567", user.getPhone());
+        assertEquals("Calle 123", user.getAddress());
+        assertEquals(Role.AFFILIATE, user.getRole());
+        assertTrue(user.isActive());
+        assertEquals(now, user.getCreatedAt());
+        assertEquals(now, user.getUpdatedAt());
     }
     
     @Test

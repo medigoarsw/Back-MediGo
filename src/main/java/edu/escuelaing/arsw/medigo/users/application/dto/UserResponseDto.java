@@ -30,4 +30,7 @@ public class UserResponseDto {
     
     @Schema(description = "Indica si el usuario está activo", example = "true")
     private boolean active;
+
+    @Schema(description = "Dirección del usuario", example = "Calle 123 #45-67")
+    private String address;
 }

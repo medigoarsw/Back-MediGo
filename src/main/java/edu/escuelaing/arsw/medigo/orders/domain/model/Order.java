@@ -3,7 +3,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-@Getter @Setter @Builder @AllArgsConstructor
+@Getter @Setter @Builder(toBuilder = true) @AllArgsConstructor
 public class Order {
     private Long id;
     private String orderNumber;          // número único de pedido (ej: ORD-2024-001234)

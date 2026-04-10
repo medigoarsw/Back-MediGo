@@ -1,6 +1,5 @@
 package edu.escuelaing.arsw.medigo.auction.domain.model;
 
-import edu.escuelaing.arsw.medigo.auction.infrastructure.config.AuctionTime;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,7 +33,7 @@ public class Auction {
 
     public boolean isAcceptingBids() {
         return this.status == AuctionStatus.ACTIVE
-            && AuctionTime.now().isBefore(this.endTime);
+            && LocalDateTime.now().isBefore(this.endTime);
     }
 
     public boolean shouldCloseByMaxPrice(BigDecimal bidAmount) {
@@ -47,6 +46,6 @@ public class Auction {
         if (this.closureType != ClosureType.INACTIVITY
                 || this.inactivityMinutes == null) return false;
         LocalDateTime ref = this.lastBidAt != null ? this.lastBidAt : this.startTime;
-        return AuctionTime.now().isAfter(ref.plusMinutes(this.inactivityMinutes));
+        return LocalDateTime.now().isAfter(ref.plusMinutes(this.inactivityMinutes));
     }
 }

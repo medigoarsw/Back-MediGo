@@ -4,7 +4,6 @@ import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
 import edu.escuelaing.arsw.medigo.auction.domain.model.*;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.auction.domain.port.out.*;
-import edu.escuelaing.arsw.medigo.auction.infrastructure.config.AuctionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -52,8 +51,8 @@ public class AuctionService implements
                 .medicationId(cmd.medicationId())
                 .branchId(cmd.branchId())
                 .basePrice(cmd.basePrice())
-            .startTime(AuctionTime.adjustForStorage(cmd.startTime()))
-            .endTime(AuctionTime.adjustForStorage(cmd.endTime()))
+                .startTime(cmd.startTime())
+                .endTime(cmd.endTime())
                 .status(Auction.AuctionStatus.SCHEDULED)
                 .closureType(cmd.closureType() != null
                         ? cmd.closureType()
@@ -81,8 +80,8 @@ public class AuctionService implements
 
         Auction updated = existing.toBuilder()
                 .basePrice(cmd.basePrice())
-            .startTime(AuctionTime.adjustForStorage(cmd.startTime()))
-            .endTime(AuctionTime.adjustForStorage(cmd.endTime()))
+                .startTime(cmd.startTime())
+                .endTime(cmd.endTime())
                 .build();
 
         return auctionRepository.save(updated);
@@ -186,7 +185,7 @@ public class AuctionService implements
         Duration remaining = null;
         if (auction.getStatus() == Auction.AuctionStatus.ACTIVE
                 || auction.getStatus() == Auction.AuctionStatus.SCHEDULED) {
-            Duration d = Duration.between(AuctionTime.now(), auction.getEndTime());
+            Duration d = Duration.between(LocalDateTime.now(), auction.getEndTime());
             remaining = d.isNegative() ? Duration.ZERO : d;
         }
 
@@ -273,7 +272,7 @@ public class AuctionService implements
                     .userId(userId)
                     .userName(userName)
                     .amount(amount)
-                    .placedAt(AuctionTime.now())
+                    .placedAt(LocalDateTime.now())
                     .build();
 
             Bid saved = auctionRepository.saveBid(bid);
@@ -325,7 +324,7 @@ public class AuctionService implements
             eventPublisher.publish(a.getId(), AuctionEvent.builder()
                     .type(AuctionEvent.EventType.AUCTION_STARTED)
                     .auctionId(a.getId())
-                    .timestamp(AuctionTime.now())
+                    .timestamp(LocalDateTime.now())
                     .message("La subasta ha comenzado")
                     .build());
         });
@@ -366,7 +365,7 @@ public class AuctionService implements
                     .currentAmount(winningBid.getAmount())
                     .leaderName(winningBid.getUserName())
                     .leaderId(winningBid.getUserId())
-                    .timestamp(AuctionTime.now())
+                    .timestamp(LocalDateTime.now())
                     .message("Ganador: " + winningBid.getUserName()
                             + " con $" + winningBid.getAmount())
                     .build();
@@ -385,7 +384,7 @@ public class AuctionService implements
      */
     @Scheduled(cron = "0 0 * * * *")
     public void checkExpiredPayments() {
-        LocalDateTime cutoff = AuctionTime.now().minusHours(24);
+        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
         List<AuctionOrderPort.ExpiredAuctionOrder> expired =
                 auctionOrderPort.findExpiredPendingOrders(cutoff);
 
@@ -437,7 +436,7 @@ public class AuctionService implements
         AuctionEvent.AuctionEventBuilder closedEvent = AuctionEvent.builder()
                 .type(AuctionEvent.EventType.AUCTION_CLOSED)
                 .auctionId(auctionId)
-            .timestamp(AuctionTime.now());
+                .timestamp(LocalDateTime.now());
 
         if (winningBid != null) {
             closedEvent
@@ -466,7 +465,7 @@ public class AuctionService implements
                 .currentAmount(secondBid.getAmount())
                 .leaderName(secondBid.getUserName())
                 .leaderId(secondBid.getUserId())
-            .timestamp(AuctionTime.now())
+                .timestamp(LocalDateTime.now())
                 .message("Re-adjudicación: " + secondBid.getUserName()
                         + " con $" + secondBid.getAmount())
                 .build());
@@ -487,7 +486,7 @@ public class AuctionService implements
             throw new InvalidAuctionDatesException(
                 "La fecha de inicio debe ser anterior a la fecha de fin");
         }
-        if (start.isBefore(AuctionTime.now())) {
+        if (start.isBefore(LocalDateTime.now())) {
             throw new InvalidAuctionDatesException(
                 "La subasta no puede comenzar en el pasado");
         }

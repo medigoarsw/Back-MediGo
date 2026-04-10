@@ -1,11 +1,11 @@
-error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java:java/lang/Math#min().
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java:java/util/List#
 file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java
-empty definition using pc, found symbol in pc: java/lang/Math#min().
+empty definition using pc, found symbol in pc: java/util/List#
 empty definition using semanticdb
 empty definition using fallback
 non-local guesses:
 
-offset: 3943
+offset: 513
 uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java
 text:
 ```scala
@@ -14,14 +14,13 @@ package edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in.dto.*;
-import edu.escuelaing.arsw.medigo.shared.infrastructure.security.AuthenticatedUserResolver;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.@@List;
 
 @RestController
 @RequestMapping("/api/auctions")
@@ -33,7 +32,6 @@ public class AuctionController {
     private final PlaceBidUseCase       placeBidUseCase;
     private final QueryAuctionUseCase   queryAuctionUseCase;
     private final JoinAuctionUseCase    joinAuctionUseCase;
-    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     // HU-15: Crear subasta (solo ADMIN)
     @PostMapping
@@ -73,8 +71,8 @@ public class AuctionController {
     // HU-17: Listar subastas activas
     @GetMapping("/active")
     public List<AuctionResponse> getActive() {
-        return queryAuctionUseCase.getActiveAuctionsWithCurrentPrice()
-                .stream().map(AuctionResponse::fromActive).toList();
+        return queryAuctionUseCase.getActiveAuctions()
+                .stream().map(AuctionResponse::from).toList();
     }
 
     // HU-17: Historial de pujas de una subasta
@@ -93,20 +91,6 @@ public class AuctionController {
         }
         return ResponseEntity.ok(new WinnerResponse(
                 view.auctionId(), view.winnerId(), view.winnerName(), view.winningAmount()));
-    }
-
-    @GetMapping("/won")
-    public WonAuctionsPageResponse getWonAuctions(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        int safePage = Math.max(0, page);
-        int safeSize = Math.max(1, Math.@@min(size, 100));
-
-        Long affiliateId = authenticatedUserResolver.getAuthenticatedUserId();
-        QueryAuctionUseCase.WonAuctionsPageView wonPage =
-                queryAuctionUseCase.getWonAuctionsByAffiliate(affiliateId, safePage, safeSize);
-
-        return WonAuctionsPageResponse.from(wonPage, "/api/auctions/won");
     }
 
     // HU-18: Unirse a subasta
@@ -132,4 +116,4 @@ public class AuctionController {
 
 #### Short summary: 
 
-empty definition using pc, found symbol in pc: java/lang/Math#min().
+empty definition using pc, found symbol in pc: java/util/List#

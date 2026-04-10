@@ -1,7 +1,9 @@
 package edu.escuelaing.arsw.medigo.logistics.domain.port.in;
 
+import edu.escuelaing.arsw.medigo.logistics.domain.model.ActiveDeliveryDetails;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import java.util.List;
+import java.util.Map;
 
 /**
  * HU-11: Repartidor presiona botón de finalización al entregar
@@ -20,6 +22,18 @@ public interface GetActiveDeliveriesUseCase {
      * @return Lista de entregas activas del repartidor
      */
     List<Delivery> getActiveDeliveries(Long deliveryPersonId);
+
+    /**
+     * Obtiene entregas activas enriquecidas con coordenadas de recogida (Branch)
+     * y destino (Order) para renderizar en el mapa del repartidor.
+     */
+    List<ActiveDeliveryDetails> getActiveDeliveryDetails(Long deliveryPersonId);
+
+    /**
+     * Retorna el pedido activo del afiliado con el estado actual y el driverId asignado.
+     * Null si no hay pedido activo (CONFIRMED / ASSIGNED / IN_ROUTE).
+     */
+    Map<String, Object> getAffiliateDashboard(Long affiliateId);
     
     /**
      * Obtiene una entrega específica si pertenece al repartidor indicado.

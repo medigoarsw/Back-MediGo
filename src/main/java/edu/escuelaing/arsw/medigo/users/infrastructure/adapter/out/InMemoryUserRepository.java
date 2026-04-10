@@ -137,6 +137,7 @@ public class InMemoryUserRepository implements UserRepositoryPort {
                     user.getEmail(),
                     user.getPassword(),
                     user.getPhone(),
+                    user.getAddress(),
                     user.getRole(),
                     user.isActive(),
                     user.getCreatedAt(),

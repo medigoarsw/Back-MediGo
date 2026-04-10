@@ -22,7 +22,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +43,7 @@ import java.util.List;
 @Tag(name = "Catalog", description = "Gestión del catálogo de medicamentos")
 @Slf4j
 public class MedicationController {
+
 
     private final SearchMedicationUseCase searchUseCase;
     private final UpdateStockUseCase updateUseCase;

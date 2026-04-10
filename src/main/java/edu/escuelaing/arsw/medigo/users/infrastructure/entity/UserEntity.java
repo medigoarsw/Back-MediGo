@@ -12,6 +12,8 @@ public class UserEntity {
     @Column(nullable = false) private String name;
     @Column(name = "phone", nullable = true, length = 20) private String phone;
     @Column(nullable = false) private String role;
+    @Column(nullable = true) private String address;
+    @Builder.Default
     @Column(nullable = false) private boolean active = true;
     @Column(name = "created_at", nullable = false, updatable = false) private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false) private LocalDateTime updatedAt;

@@ -3,7 +3,6 @@ package edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.out;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Bid;
 import edu.escuelaing.arsw.medigo.auction.domain.port.out.AuctionRepositoryPort;
-import edu.escuelaing.arsw.medigo.auction.infrastructure.config.AuctionTime;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.entity.AuctionEntity;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.entity.BidEntity;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.persistence.SpringAuctionJpaRepository;
@@ -44,13 +43,13 @@ public class AuctionJpaRepository implements AuctionRepositoryPort {
 
     @Override
     public List<Auction> findExpiredActiveAuctions() {
-        return auctionRepo.findExpiredActive(AuctionTime.now())
+        return auctionRepo.findExpiredActive(LocalDateTime.now())
                 .stream().map(this::toDomain).toList();
     }
 
     @Override
     public List<Auction> findScheduledReadyToStart() {
-        return auctionRepo.findScheduledReadyToStart(AuctionTime.now())
+        return auctionRepo.findScheduledReadyToStart(LocalDateTime.now())
                 .stream().map(this::toDomain).toList();
     }
 
