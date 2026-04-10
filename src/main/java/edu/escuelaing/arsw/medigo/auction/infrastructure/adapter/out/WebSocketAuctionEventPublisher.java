@@ -33,31 +33,34 @@ public class WebSocketAuctionEventPublisher implements AuctionEventPublisherPort
 
     @Override
     public void publish(Long auctionId, AuctionEvent event) {
+        AuctionPriceUpdateMessage priceUpdate = AuctionPriceUpdateMessage.from(event);
+
+        // Cada topic se publica de forma aislada para evitar que un fallo puntual
+        // impida que los demás clientes reciban actualizaciones en tiempo real.
+        safeSend(TOPIC_AUCTION + auctionId, priceUpdate, event, auctionId);
+        safeSend(TOPIC_AUCTIONS, priceUpdate, event, auctionId);
+
+        if (event.getType() == AuctionEvent.EventType.BID_PLACED) {
+            safeSend(
+                    TOPIC_AUCTION + auctionId + SUFFIX_BIDS,
+                    BidPlacedMessage.from(event),
+                    event,
+                    auctionId
+            );
+        }
+
+        log.info("[WS] Evento {} publicado → /topic/auction/{}, /topic/auctions{}",
+                event.getType(), auctionId,
+                event.getType() == AuctionEvent.EventType.BID_PLACED ? ", /topic/auction/" + auctionId + "/bids" : "");
+    }
+
+    private void safeSend(String destination, Object payload, AuctionEvent event, Long auctionId) {
         try {
-            AuctionPriceUpdateMessage priceUpdate = AuctionPriceUpdateMessage.from(event);
-
-            // 1. Topic por subasta: participantes suscritos a esta subasta concreta
-            messagingTemplate.convertAndSend(TOPIC_AUCTION + auctionId, priceUpdate);
-
-            // 2. Topic global: permite actualizar listas de subastas activas
-            messagingTemplate.convertAndSend(TOPIC_AUCTIONS, priceUpdate);
-
-            // 3. Topic de pujas: solo cuando se registra una puja nueva
-            if (event.getType() == AuctionEvent.EventType.BID_PLACED) {
-                messagingTemplate.convertAndSend(
-                        TOPIC_AUCTION + auctionId + SUFFIX_BIDS,
-                        BidPlacedMessage.from(event));
-            }
-
-            log.info("[WS] Evento {} publicado → /topic/auction/{}, /topic/auctions{}",
-                    event.getType(), auctionId,
-                    event.getType() == AuctionEvent.EventType.BID_PLACED ? ", /topic/auction/" + auctionId + "/bids" : "");
-
+            messagingTemplate.convertAndSend(destination, payload);
         } catch (Exception ex) {
             // La publicación WS no debe romper la transacción de negocio.
-            // Se registra como ERROR con stack trace completo para diagnóstico.
-            log.error("[WS] Error publicando evento {} para subasta {}: {}",
-                    event.getType(), auctionId, ex.getMessage(), ex);
+            log.error("[WS] Error publicando evento {} para subasta {} hacia {}: {}",
+                    event.getType(), auctionId, destination, ex.getMessage(), ex);
         }
     }
 }

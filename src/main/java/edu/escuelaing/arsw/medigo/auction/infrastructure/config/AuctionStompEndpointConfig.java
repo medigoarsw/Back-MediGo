@@ -10,7 +10,6 @@ import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import java.util.List;
@@ -19,8 +18,7 @@ import java.util.List;
  * Configuración STOMP dedicada a subastas.
  *
  * Responsabilidades:
- *  1. Agrega el endpoint /ws/auctions con SockJS para clientes React/Angular.
- *  2. Configura el MappingJackson2MessageConverter del broker STOMP para usar
+ *  1. Configura el MappingJackson2MessageConverter del broker STOMP para usar
  *     el ObjectMapper auto-configurado por Spring Boot (con JavaTimeModule,
  *     soporte para records Java, etc.).
  *
@@ -36,7 +34,8 @@ import java.util.List;
  *
  * Solución: inyectar el ObjectMapper de Spring Boot y registrarlo aquí.
  *
- * Seguridad: /ws/auctions está cubierto por la regla /ws/** de SecurityConfig.
+ * El endpoint STOMP canónico (/ws) ya está definido en WebSocketConfig.
+ * Esta clase no registra endpoints adicionales para evitar duplicidades.
  */
 @Configuration
 public class AuctionStompEndpointConfig implements WebSocketMessageBrokerConfigurer {
@@ -44,13 +43,6 @@ public class AuctionStompEndpointConfig implements WebSocketMessageBrokerConfigu
     /** ObjectMapper auto-configurado por Spring Boot (con JavaTimeModule, etc.). */
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/auctions")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
-    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
