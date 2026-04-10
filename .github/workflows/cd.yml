@@ -3,7 +3,7 @@ name: Deploy Medi-Go to Azure App Service
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build-and-deploy:
