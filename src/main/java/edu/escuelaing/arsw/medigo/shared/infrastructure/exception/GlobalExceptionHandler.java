@@ -142,6 +142,30 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Maneja parámetros de request faltantes (@RequestParam)
+     */
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParams(
+            org.springframework.web.bind.MissingServletRequestParameterException ex,
+            WebRequest request) {
+
+        log.warn("Missing parameter: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Required parameter is missing: " + ex.getParameterName())
+                .errorCode("MISSING_PARAMETER")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .timestamp(LocalDateTime.now())
+                .details(ex.getMessage())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    /**
      * Maneja excepciones genéricas no controladas
      */
     @ExceptionHandler(Exception.class)
