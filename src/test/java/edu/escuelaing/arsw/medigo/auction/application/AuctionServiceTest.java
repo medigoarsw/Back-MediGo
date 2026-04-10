@@ -5,6 +5,7 @@ import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
 import edu.escuelaing.arsw.medigo.auction.domain.model.*;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.CreateAuctionUseCase.CreateAuctionCommand;
 import edu.escuelaing.arsw.medigo.auction.domain.port.out.*;
+import edu.escuelaing.arsw.medigo.auction.infrastructure.config.AuctionTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,8 @@ class AuctionServiceTest {
  
     @InjectMocks AuctionService sut;
  
-    private static final LocalDateTime FUTURE_START = LocalDateTime.now().plusHours(1);
-    private static final LocalDateTime FUTURE_END   = LocalDateTime.now().plusHours(3);
+    private static final LocalDateTime FUTURE_START = AuctionTime.now().plusHours(1);
+    private static final LocalDateTime FUTURE_END   = AuctionTime.now().plusHours(3);
  
     // ── HU-15 ──────────────────────────────────────────────────────
  
@@ -79,14 +80,14 @@ class AuctionServiceTest {
     void createAuction_pastDates() {
         CreateAuctionCommand cmd = new CreateAuctionCommand(
             1L, 1L, BigDecimal.valueOf(5000),
-            LocalDateTime.now().minusHours(2),
-            LocalDateTime.now().minusHours(1),
+            AuctionTime.now().minusHours(2),
+            AuctionTime.now().minusHours(1),
             Auction.ClosureType.FIXED_TIME, null, null
         );
  
         assertThatThrownBy(() -> sut.createAuction(cmd))
             .isInstanceOf(InvalidAuctionDatesException.class)
-            .hasMessageContaining("pasado");
+            .hasMessage("La subasta no puede comenzar en el pasado");
     }
  
     @Test
