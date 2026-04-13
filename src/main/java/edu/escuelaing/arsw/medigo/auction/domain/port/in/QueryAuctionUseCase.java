@@ -17,12 +17,12 @@ public interface QueryAuctionUseCase {
     WonAuctionsPageView        getWonAuctionsByAffiliate(Long affiliateId, int page, int size);
 
     record AuctionDetailView(
-        Auction  auction,
-        String   medicationName,
-        String   medicationUnit,
-        Duration remainingTime,  // null if CLOSED / CANCELLED
-        String   winnerName,     // null if no winner yet
-        BigDecimal currentPrice  // puja más alta hasta el momento (null si no hay pujas)
+        Auction    auction,
+        String     medicationName,
+        String     medicationUnit,
+        Long       remainingSeconds,  // null if CLOSED / CANCELLED (en segundos)
+        String     winnerName,        // null if no winner yet
+        BigDecimal currentPrice       // puja más alta hasta el momento (null si no hay pujas)
     ) {}
 
     record WinnerView(

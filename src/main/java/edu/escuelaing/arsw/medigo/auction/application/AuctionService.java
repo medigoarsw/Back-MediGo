@@ -16,7 +16,9 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
@@ -35,6 +37,25 @@ public class AuctionService implements
     private final AuctionParticipantPort    participantPort;
     private final AuctionOrderPort          auctionOrderPort;
     private final AuctionCatalogPort        auctionCatalogPort;
+
+    // ── Cache simple para medicaciones (thread-safe) ──
+    private final java.util.Map<Long, Optional<AuctionCatalogPort.MedicationInfo>> medicationCache =
+            new ConcurrentHashMap<>();
+
+    /**
+     * Obtiene información del medicamento con cache.
+     * Evita múltiples peticiones concurrentes al mismo medicamento.
+     */
+    private Optional<AuctionCatalogPort.MedicationInfo> getMedicationInfo(Long medicationId) {
+        return medicationCache.computeIfAbsent(medicationId, id -> {
+            try {
+                return auctionCatalogPort.getMedicationInfo(id);
+            } catch (Exception e) {
+                log.debug("Error obteniendo medicación {}: {}", id, e.getMessage());
+                return Optional.empty();
+            }
+        });
+    }
 
     // ── HU-15: Crear subasta ──────────────────────────────────────
 
@@ -137,7 +158,8 @@ public class AuctionService implements
                     Auction auction = record.auction();
                     Bid winningBid = record.winningBid();
 
-                    String medicationName = auctionCatalogPort.getMedicationInfo(auction.getMedicationId())
+                    // Usar cache para evitar múltiples peticiones concurrentes al mismo medicamento
+                    String medicationName = getMedicationInfo(auction.getMedicationId())
                         .map(AuctionCatalogPort.MedicationInfo::name)
                         .orElse(null);
 
@@ -174,20 +196,20 @@ public class AuctionService implements
     public AuctionDetailView getAuctionDetail(Long id) {
         Auction auction = findOrThrow(id);
 
+        // Obtener información del catálogo usando cache (evita deadlock en concurrencia)
         String medicationName = null;
         String medicationUnit = null;
-        AuctionCatalogPort.MedicationInfo medInfo =
-                auctionCatalogPort.getMedicationInfo(auction.getMedicationId()).orElse(null);
-        if (medInfo != null) {
-            medicationName = medInfo.name();
-            medicationUnit = medInfo.unit();
+        Optional<AuctionCatalogPort.MedicationInfo> medInfo = getMedicationInfo(auction.getMedicationId());
+        if (medInfo.isPresent()) {
+            medicationName = medInfo.get().name();
+            medicationUnit = medInfo.get().unit();
         }
 
-        Duration remaining = null;
+        Long remainingSeconds = null;
         if (auction.getStatus() == Auction.AuctionStatus.ACTIVE
                 || auction.getStatus() == Auction.AuctionStatus.SCHEDULED) {
             Duration d = Duration.between(AuctionTime.now(), auction.getEndTime());
-            remaining = d.isNegative() ? Duration.ZERO : d;
+            remainingSeconds = d.isNegative() ? 0L : d.getSeconds();
         }
 
         String winnerName = null;
@@ -200,7 +222,7 @@ public class AuctionService implements
             }
         }
 
-        return new AuctionDetailView(auction, medicationName, medicationUnit, remaining, winnerName, currentPrice);
+        return new AuctionDetailView(auction, medicationName, medicationUnit, remainingSeconds, winnerName, currentPrice);
     }
 
     // ── HU-18: Unirse a subasta ───────────────────────────────────

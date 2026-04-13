@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -113,19 +115,36 @@ public class AuctionJpaRepository implements AuctionRepositoryPort {
         return bidRepo.findSecondHighestBid(auctionId, excludeUserId).map(this::toBidDomain);
     }
 
-        @Override
-        public WonAuctionsPage findWonAuctionsByWinnerId(Long winnerId, int page, int size) {
+    @Override
+    public WonAuctionsPage findWonAuctionsByWinnerId(Long winnerId, int page, int size) {
         Page<AuctionEntity> result = auctionRepo.findWonAuctionsByWinnerId(
             winnerId,
             PageRequest.of(page, size)
         );
 
+        // Evitar N+1 queries: obtener todas las pujas de una sola consulta
+        List<Long> auctionIds = result.getContent().stream()
+            .map(AuctionEntity::getId)
+            .toList();
+        
+        // Obtener todas las pujas ordenadas por monto descendente
+        List<BidEntity> allBids = auctionIds.isEmpty() ? 
+            List.of() : 
+            bidRepo.findBidsByAuctionIds(auctionIds);
+        
+        // Mapear para obtener la puja más alta por subasta (stream ya está ordenado)
+        Map<Long, BidEntity> highestBidByAuction = new java.util.LinkedHashMap<>();
+        for (BidEntity bid : allBids) {
+            if (!highestBidByAuction.containsKey(bid.getAuctionId())) {
+                highestBidByAuction.put(bid.getAuctionId(), bid);
+            }
+        }
+
         List<WonAuctionRecord> content = result.getContent().stream()
             .map(entity -> {
                 Auction auction = toDomain(entity);
-                Bid winningBid = bidRepo.findHighestBid(entity.getId())
-                    .map(this::toBidDomain)
-                    .orElse(null);
+                BidEntity bidEntity = highestBidByAuction.get(entity.getId());
+                Bid winningBid = bidEntity != null ? toBidDomain(bidEntity) : null;
                 return new WonAuctionRecord(auction, winningBid);
             })
             .toList();
@@ -137,7 +156,7 @@ public class AuctionJpaRepository implements AuctionRepositoryPort {
             result.getTotalElements(),
             result.getTotalPages()
         );
-        }
+    }
 
     // ── Mappers ───────────────────────────────────────────────────
 

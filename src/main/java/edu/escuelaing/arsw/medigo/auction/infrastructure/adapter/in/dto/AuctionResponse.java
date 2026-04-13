@@ -49,15 +49,12 @@ public record AuctionResponse(
     /** Mapa enriquecido: incluye datos de catálogo, tiempo restante, nombre del ganador y puja actual. */
     public static AuctionResponse fromDetail(QueryAuctionUseCase.AuctionDetailView detail) {
         Auction a = detail.auction();
-        Long remaining = detail.remainingTime() != null
-                ? detail.remainingTime().getSeconds()
-                : null;
         return new AuctionResponse(
             a.getId(), a.getMedicationId(), detail.medicationName(), detail.medicationUnit(),
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
             a.getStatus().name(), a.getClosureType().name(),
-            a.getWinnerId(), detail.winnerName(), remaining, detail.currentPrice()
+            a.getWinnerId(), detail.winnerName(), detail.remainingSeconds(), detail.currentPrice()
         );
     }
 }

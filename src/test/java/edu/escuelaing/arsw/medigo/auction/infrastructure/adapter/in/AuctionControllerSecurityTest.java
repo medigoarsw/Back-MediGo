@@ -63,7 +63,7 @@ class AuctionControllerSecurityTest {
         Auction subasta = buildAuction();
         QueryAuctionUseCase.AuctionDetailView detalle =
             new QueryAuctionUseCase.AuctionDetailView(
-                subasta, "Ibuprofeno", "mg", Duration.ofHours(2), null, BigDecimal.valueOf(6000));
+                subasta, "Ibuprofeno", "mg", 7200L, null, BigDecimal.valueOf(6000));
 
         when(queryAuctionUseCase.getAuctionDetail(anyLong())).thenReturn(detalle);
         when(queryAuctionUseCase.getActiveAuctions()).thenReturn(List.of());
