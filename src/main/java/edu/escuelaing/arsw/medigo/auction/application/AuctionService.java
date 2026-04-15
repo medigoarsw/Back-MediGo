@@ -44,6 +44,11 @@ public class AuctionService implements
         validateAuctionDates(cmd.startTime(), cmd.endTime());
         validateBasePrice(cmd.basePrice());
 
+        auctionCatalogPort.getMedicationInfo(cmd.medicationId())
+                .orElseThrow(() -> new edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException(
+                        "Medicamento no encontrado con ID: " + cmd.medicationId(),
+                        String.valueOf(cmd.medicationId())));
+
         if (auctionRepository.existsActiveOrScheduledForMedication(cmd.medicationId())) {
             throw new AuctionAlreadyExistsException(cmd.medicationId());
         }

@@ -241,8 +241,59 @@ public class LogisticsController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/deliveries/history")
+    public ResponseEntity<List<DeliveryResponse>> getDeliveryHistory(
+            @RequestParam Long deliveryPersonId,
+            @RequestParam(required = false) String range) {
+        log.info("Solicitando historial de entregas para repartidor: {}, rango: {}", deliveryPersonId, range);
+        // TODO: implementar consulta de entregas con status=DELIVERED por deliveryPersonId
+        return ResponseEntity.ok(List.of());
+    }
+
+    @GetMapping("/deliveries/history/summary")
+    public ResponseEntity<?> getDeliveryHistorySummary(
+            @RequestParam Long deliveryPersonId,
+            @RequestParam(required = false) String range) {
+        log.info("Solicitando resumen de historial para repartidor: {}, rango: {}", deliveryPersonId, range);
+        return ResponseEntity.ok(java.util.Map.of(
+                "totalTrips", 0,
+                "tripsGrowthPct", 0,
+                "averageRating", 5.0,
+                "monthlyEarnings", 0,
+                "currency", "COP"
+        ));
+    }
+
+    @PostMapping("/driver/emergency")
+    public ResponseEntity<?> reportEmergency(@RequestBody(required = false) Object body) {
+        log.info("Soporte de emergencia reportado: {}", body);
+        return ResponseEntity.ok(java.util.Map.of("message", "Reporte de emergencia recibido"));
+    }
+
     @PostMapping("/deliveries/assign")
     public ResponseEntity<?> assign(@RequestBody Object req) {
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboard() {
+        log.info("Mock dashboard requested");
+        return ResponseEntity.ok(java.util.Map.of(
+            "activeDeliveries", 0,
+            "completedToday", 0,
+            "pendingAssignments", 0
+        ));
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<?> createOrder(@RequestBody Object body) {
+        log.info("Mock logistics order created");
+        return ResponseEntity.status(HttpStatus.CREATED).body(java.util.Map.of("id", 123, "status", "CREATED"));
+    }
+
+    @PostMapping("/assignments")
+    public ResponseEntity<?> assignCourier(@RequestBody Object body) {
+        log.info("Mock courier assigned");
+        return ResponseEntity.ok(java.util.Map.of("message", "Courier assigned successfully"));
     }
 }

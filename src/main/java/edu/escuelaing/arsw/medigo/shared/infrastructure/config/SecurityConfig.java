@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/auctions/**").hasAnyRole("ADMIN", "AFFILIATE")
                 .requestMatchers(HttpMethod.POST, "/api/auctions/**").hasAnyRole("ADMIN", "AFFILIATE")
                 .requestMatchers("/api/sedes/**").hasRole("ADMIN")
+                .requestMatchers("/api/logistics/**").authenticated()
                 .anyRequest().authenticated()
             );
 
