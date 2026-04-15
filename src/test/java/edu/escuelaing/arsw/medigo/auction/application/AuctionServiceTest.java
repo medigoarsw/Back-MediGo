@@ -43,6 +43,9 @@ class AuctionServiceTest {
     @Test
     @DisplayName("HU-15 E1: Crear subasta exitosamente")
     void createAuction_success() {
+        when(auctionCatalogPort.getMedicationInfo(1L)).thenReturn(Optional.of(
+            new AuctionCatalogPort.MedicationInfo(1L, "Med", "Unit")
+        ));
         when(auctionRepository.existsActiveOrScheduledForMedication(1L)).thenReturn(false);
         when(auctionRepository.save(any())).thenAnswer(inv -> {
             Auction a = inv.getArgument(0);
@@ -107,6 +110,9 @@ class AuctionServiceTest {
     @Test
     @DisplayName("HU-15 E5: Subasta duplicada para mismo medicamento")
     void createAuction_duplicateMedication() {
+        when(auctionCatalogPort.getMedicationInfo(1L)).thenReturn(Optional.of(
+            new AuctionCatalogPort.MedicationInfo(1L, "Med", "Unit")
+        ));
         when(auctionRepository.existsActiveOrScheduledForMedication(1L)).thenReturn(true);
  
         CreateAuctionCommand cmd = new CreateAuctionCommand(
