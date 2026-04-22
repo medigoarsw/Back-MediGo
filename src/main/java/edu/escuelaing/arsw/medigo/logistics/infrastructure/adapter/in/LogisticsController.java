@@ -3,6 +3,9 @@ package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/logistics")
@@ -27,6 +31,7 @@ public class LogisticsController {
     private final UpdateLocationUseCase updateLocationUseCase;
     private final AssignDeliveryUseCase assignDeliveryUseCase;  // Contiene completeDelivery para HU-10
     private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;  // HU-11
+    private final OrderRepositoryPort orderRepository;  // HU-10: consulta estado del pedido
 
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
@@ -70,7 +75,7 @@ public class LogisticsController {
             description = "Entrega no encontrada"
         )
     })
-    public ResponseEntity<DeliveryResponse> completeDelivery(
+    public ResponseEntity<?> completeDelivery(
             @Parameter(
                 name = "id",
                 description = "ID de la entrega a confirmar",
@@ -81,18 +86,30 @@ public class LogisticsController {
 
         log.info("HU-10: Recibida solicitud para confirmar entrega con ID: {}", id);
 
-        Delivery delivery = assignDeliveryUseCase.completeDelivery(id);
+        try {
+            Delivery delivery = assignDeliveryUseCase.completeDelivery(id);
 
-        DeliveryResponse response = DeliveryResponse.builder()
-                .id(delivery.getId())
-                .orderId(delivery.getOrderId())
-                .deliveryPersonId(delivery.getDeliveryPersonId())
-                .status(delivery.getStatus())
-                .assignedAt(delivery.getAssignedAt())
-                .build();
+            DeliveryResponse response = DeliveryResponse.builder()
+                    .id(delivery.getId())
+                    .orderId(delivery.getOrderId())
+                    .deliveryPersonId(delivery.getDeliveryPersonId())
+                    .status(delivery.getStatus())
+                    .assignedAt(delivery.getAssignedAt())
+                    .deliveredAt(delivery.getDeliveredAt())
+                    .build();
 
-        log.info("HU-10: Entrega {} confirmada exitosamente", id);
-        return ResponseEntity.ok(response);
+            log.info("HU-10: Entrega {} confirmada exitosamente a las {}", id, delivery.getDeliveredAt());
+            return ResponseEntity.ok(response);
+
+        } catch (ResourceNotFoundException e) {
+            log.warn("HU-10: Entrega no encontrada: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            log.warn("HU-10: Error de negocio al confirmar entrega: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 
     /**
@@ -248,6 +265,32 @@ public class LogisticsController {
         log.info("Solicitando historial de entregas para repartidor: {}, rango: {}", deliveryPersonId, range);
         // TODO: implementar consulta de entregas con status=DELIVERED por deliveryPersonId
         return ResponseEntity.ok(List.of());
+    }
+
+    /**
+     * HU-10 (Escenario 2): El afiliado consulta el estado de su pedido.
+     * Retorna el estado actual del pedido y la fecha de entrega (si está DELIVERED).
+     */
+    @GetMapping("/orders/{orderId}/status")
+    @Operation(
+        summary = "Estado del pedido (Afiliado)",
+        description = "HU-10: El cliente consulta el estado de su pedido para saber si fue entregado."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estado del pedido retornado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
+    public ResponseEntity<?> getOrderStatus(
+            @Parameter(name = "orderId", description = "ID del pedido", required = true)
+            @PathVariable Long orderId) {
+        log.info("HU-10: Consultando estado del pedido {}", orderId);
+        return orderRepository.findById(orderId)
+                .map(order -> ResponseEntity.ok(Map.of(
+                        "orderId", order.getId(),
+                        "status", order.getStatus().name(),
+                        "deliveredAt", order.getDeliveredAt() != null ? order.getDeliveredAt().toString() : ""
+                )))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/deliveries/history/summary")

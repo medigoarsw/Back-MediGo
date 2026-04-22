@@ -31,29 +31,60 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
     }
     
     /**
-     * HU-10: Confirma la entrega de un pedido
-     * Cambia el estado de la entrega a DELIVERED y actualiza el pedido
+     * HU-10: Confirma la entrega de un pedido.
+     *
+     * Escenario 1: Cambia estado del pedido a DELIVERED y registra fecha/hora de entrega.
+     * Escenario 2: Valida que el delivery exista y esté en estado IN_ROUTE antes de confirmar.
+     *
+     * @param deliveryId ID de la entrega a confirmar
+     * @return Delivery con estado DELIVERED y deliveredAt registrado
+     * @throws ResourceNotFoundException si el delivery no existe
+     * @throws BusinessException si el delivery no está en estado IN_ROUTE
      */
     @Override
     public Delivery completeDelivery(Long deliveryId) {
         log.info("HU-10: Confirmando entrega con ID: {}", deliveryId);
-        
-        // Obtener la entrega usando el orderId que está disponible en el delivery
-        // Actualizar estado de la entrega directamente
-        deliveryRepository.updateStatus(deliveryId, Delivery.DeliveryStatus.DELIVERED);
-        
-        // Obtener el delivery actualizado para obtener el orderId
-        // Como DeliveryRepositoryPort no tiene findById, usamos una lógica alternativa
-        // Asumimos que la actualización fue exitosa y creamos el objeto de respuesta
-        Delivery updatedDelivery = Delivery.builder()
-                .id(deliveryId)
+
+        // 1. Obtener la entrega (lanza 404 si no existe)
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Entrega con ID %d no encontrada", deliveryId)));
+
+        // 2. Validar estado IN_ROUTE
+        if (delivery.getStatus() != Delivery.DeliveryStatus.IN_ROUTE) {
+            log.warn("HU-10: El delivery {} tiene estado {} — se requiere IN_ROUTE", deliveryId, delivery.getStatus());
+            throw new BusinessException(
+                    String.format("Solo se puede confirmar una entrega en estado IN_ROUTE. Estado actual: %s",
+                            delivery.getStatus()));
+        }
+
+        // 3. Registrar fecha/hora de entrega
+        LocalDateTime deliveredAt = LocalDateTime.now();
+
+        // 4. Actualizar estado del Delivery → DELIVERED + deliveredAt
+        deliveryRepository.updateStatusAndDeliveredAt(deliveryId, Delivery.DeliveryStatus.DELIVERED, deliveredAt);
+        log.info("HU-10: Delivery {} marcado como DELIVERED a las {}", deliveryId, deliveredAt);
+
+        // 5. Actualizar estado del Order asociado → DELIVERED + deliveredAt
+        if (delivery.getOrderId() != null) {
+            orderRepository.updateStatusAndDeliveredAt(
+                    delivery.getOrderId(), Order.OrderStatus.DELIVERED, deliveredAt);
+            log.info("HU-10: Order {} actualizado a DELIVERED a las {}", delivery.getOrderId(), deliveredAt);
+        } else {
+            log.warn("HU-10: El delivery {} no tiene orderId asociado — no se actualizó el pedido", deliveryId);
+        }
+
+        // 6. Retornar el objeto actualizado
+        return Delivery.builder()
+                .id(delivery.getId())
+                .orderId(delivery.getOrderId())
+                .deliveryPersonId(delivery.getDeliveryPersonId())
                 .status(Delivery.DeliveryStatus.DELIVERED)
+                .assignedAt(delivery.getAssignedAt())
+                .deliveredAt(deliveredAt)
                 .build();
-        
-        log.info("HU-10: Entrega {} marcada como DELIVERED", deliveryId);
-        
-        return updatedDelivery;
     }
+
     
     /**
      * HU-11: Obtiene todas las entregas activas del repartidor

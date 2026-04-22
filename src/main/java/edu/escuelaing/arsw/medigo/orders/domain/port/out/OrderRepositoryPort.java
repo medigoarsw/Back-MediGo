@@ -7,6 +7,7 @@ public interface OrderRepositoryPort {
     Optional<Order> findById(Long id);
     List<Order> findByAffiliateId(Long affiliateId);
     void updateStatus(Long orderId, Order.OrderStatus status);
+    void updateStatusAndDeliveredAt(Long orderId, Order.OrderStatus status, LocalDateTime deliveredAt);
     Optional<Order> findByAuctionId(Long auctionId);
     List<Order> findPendingPaymentCreatedBefore(LocalDateTime cutoff);
     Optional<Order> findPendingByAffiliateAndBranch(Long affiliateId, Long branchId);

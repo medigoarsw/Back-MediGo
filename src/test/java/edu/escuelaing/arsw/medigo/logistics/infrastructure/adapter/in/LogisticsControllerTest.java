@@ -4,6 +4,7 @@ import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +34,13 @@ class LogisticsControllerTest {
     @Mock
     private GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;
 
+    @Mock
+    private OrderRepositoryPort orderRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller = new LogisticsController(null, assignDeliveryUseCase, getActiveDeliveriesUseCase);
+        controller = new LogisticsController(null, assignDeliveryUseCase, getActiveDeliveriesUseCase, orderRepository);
     }
 
     // ======================== HU-10 BDD SCENARIOS ========================
@@ -70,13 +74,14 @@ class LogisticsControllerTest {
                 .thenReturn(deliveredDelivery);
 
         // Then el estado del pedido cambia automáticamente a "Entregado"
-        ResponseEntity<DeliveryResponse> response = controller.completeDelivery(deliveryId);
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(Delivery.DeliveryStatus.DELIVERED, response.getBody().getStatus());
-        assertEquals(orderId, response.getBody().getOrderId());
+        DeliveryResponse body = (DeliveryResponse) response.getBody();
+        assertEquals(Delivery.DeliveryStatus.DELIVERED, body.getStatus());
+        assertEquals(orderId, body.getOrderId());
         verify(assignDeliveryUseCase).completeDelivery(deliveryId);
     }
 
@@ -99,15 +104,17 @@ class LogisticsControllerTest {
                 .thenReturn(deliveredDelivery);
 
         // When el cliente accede a su panel de seguimiento
-        ResponseEntity<DeliveryResponse> response = controller.completeDelivery(deliveryId);
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
 
         // Then visualiza el estado "Entregado"
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Delivery.DeliveryStatus.DELIVERED, response.getBody().getStatus());
+        DeliveryResponse body = (DeliveryResponse) response.getBody();
+        assertNotNull(body);
+        assertEquals(Delivery.DeliveryStatus.DELIVERED, body.getStatus());
         
         // Y ya no ve el mapa en vivo del repartidor (verificable en frontend)
         // Y se muestra la hora de entrega (assignedAt es visible)
-        assertNotNull(response.getBody().getAssignedAt());
+        assertNotNull(body.getAssignedAt());
     }
 
     @Test
@@ -129,12 +136,14 @@ class LogisticsControllerTest {
                 .thenReturn(deliveredDelivery);
 
         // When el sistema actualiza el estado
-        ResponseEntity<DeliveryResponse> response = controller.completeDelivery(deliveryId);
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
 
         // Then el cliente recibe una notificación (mock indica "Tu pedido ha sido entregado")
         // (La notificación ocurre en el modelo de negocio/servicio, no en el controlador)
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Delivery.DeliveryStatus.DELIVERED, response.getBody().getStatus());
+        DeliveryResponse body = (DeliveryResponse) response.getBody();
+        assertNotNull(body);
+        assertEquals(Delivery.DeliveryStatus.DELIVERED, body.getStatus());
         
         // El estado DELIVERED indica que se puede enviar notificación
         verify(assignDeliveryUseCase).completeDelivery(deliveryId);
@@ -160,11 +169,11 @@ class LogisticsControllerTest {
                 .thenReturn(deliveredDelivery);
 
         // When el cliente accede a su historial de pedidos
-        ResponseEntity<DeliveryResponse> response = controller.completeDelivery(deliveryId);
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
 
         // Then el pedido aparece con estado "Entregado" y la fecha de entrega
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        DeliveryResponse result = response.getBody();
+        DeliveryResponse result = (DeliveryResponse) response.getBody();
         
         assertNotNull(result);
         assertEquals(Delivery.DeliveryStatus.DELIVERED, result.getStatus());
@@ -184,9 +193,9 @@ class LogisticsControllerTest {
                 .thenThrow(new ResourceNotFoundException("Entrega no encontrada con ID: " + deliveryId));
 
         // When se intenta confirmar la entrega
-        // Then lanza excepción ResourceNotFoundException
-        assertThrows(ResourceNotFoundException.class, () ->
-                controller.completeDelivery(deliveryId));
+        // Then el controlador retorna 404 (ahora maneja la excepción internamente)
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
         verify(assignDeliveryUseCase).completeDelivery(deliveryId);
     }
@@ -201,9 +210,9 @@ class LogisticsControllerTest {
                 .thenThrow(new BusinessException("La entrega debe estar en estado IN_ROUTE para poder confirmar la entrega. Estado actual: DELIVERED"));
 
         // When se intenta confirmar la entrega
-        // Then lanza excepción BusinessException
-        assertThrows(BusinessException.class, () ->
-                controller.completeDelivery(deliveryId));
+        // Then el controlador retorna 400 (ahora maneja la excepción internamente)
+        ResponseEntity<?> response = controller.completeDelivery(deliveryId);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         verify(assignDeliveryUseCase).completeDelivery(deliveryId);
     }

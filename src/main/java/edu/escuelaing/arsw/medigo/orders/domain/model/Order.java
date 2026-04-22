@@ -20,6 +20,7 @@ public class Order {
     private Double addressLat;
     private Double addressLng;
     private LocalDateTime createdAt;
+    private LocalDateTime deliveredAt;   // HU-10: fecha/hora de entrega confirmada
     private List<OrderItem> items;
     public enum OrderStatus { PENDING, CONFIRMED, PENDING_SHIPPING, ASSIGNED, IN_ROUTE, DELIVERED, CANCELLED, PENDING_PAYMENT }
     
