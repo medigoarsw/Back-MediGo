@@ -1,6 +1,7 @@
 package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -12,11 +13,11 @@ import org.springframework.stereotype.Controller;
  * Recibe actualizaciones GPS del repartidor, las persiste en el store en memoria
  * y las retransmite al tópico del afiliado.
  *
- * Flujo:
- *   Repartidor → STOMP /app/location/{deliveryId}  →  handleLocationUpdate()
- *             → store en memoria (DriverLocationStore)
- *             → broadcast → /topic/delivery/{deliveryId}/location
- *   Afiliado   ← suscribe /topic/delivery/{deliveryId}/location
+ * Dos canales:
+ *   /app/location/{deliveryId}   — repartidor con pedido activo (deliveryId numérico)
+ *   /app/location/u{userId}      — repartidor sin pedido activo (prefijo "u" + userId)
+ *
+ * Afiliado suscribe /topic/delivery/{deliveryId}/location para seguimiento en tiempo real.
  */
 @Controller
 @RequiredArgsConstructor
@@ -26,13 +27,17 @@ public class LocationWebSocketHandler {
     private final SimpMessagingTemplate messagingTemplate;
     private final DriverLocationStore locationStore;
     private final SpringDeliveryJpaRepository deliveryRepo;
+    private final UserJpaRepository userRepo;
 
+    /**
+     * Canal con pedido activo: /app/location/{deliveryId}
+     * Guarda posición y rebroadcastea al afiliado.
+     */
     @MessageMapping("/location/{deliveryId}")
     public void handleLocationUpdate(
             @DestinationVariable Long deliveryId,
             LocationPayload payload) {
 
-        // Obtener deliveryPersonId desde la entrega para actualizar el store
         deliveryRepo.findById(deliveryId).ifPresent(delivery -> {
             locationStore.update(
                     delivery.getDeliveryPersonId(),
@@ -40,11 +45,10 @@ public class LocationWebSocketHandler {
                     payload.lat(),
                     payload.lng()
             );
-            log.debug("GPS stored deliveryPersonId={} deliveryId={} lat={} lng={}",
+            log.debug("GPS(delivery) deliveryPersonId={} deliveryId={} lat={} lng={}",
                     delivery.getDeliveryPersonId(), deliveryId, payload.lat(), payload.lng());
         });
 
-        // Rebroadcast al afiliado suscrito a este delivery
         messagingTemplate.convertAndSend(
                 "/topic/delivery/" + deliveryId + "/location",
                 payload
@@ -52,11 +56,24 @@ public class LocationWebSocketHandler {
     }
 
     /**
-     * Payload GPS enviado por el repartidor.
-     *
-     * @param lat  latitud WGS-84
-     * @param lng  longitud WGS-84
-     * @param ts   timestamp epoch-ms (opcional)
+     * Canal sin pedido activo: /app/location/u{userId}
+     * Solo guarda posición en el store — no hay afiliado suscrito todavía.
      */
+    @MessageMapping("/location/u{userId}")
+    public void handleFreeDriverLocationUpdate(
+            @DestinationVariable Long userId,
+            LocationPayload payload) {
+
+        userRepo.findById(userId).ifPresent(user -> {
+            locationStore.update(
+                    userId,
+                    null,   // sin deliveryId
+                    payload.lat(),
+                    payload.lng()
+            );
+            log.debug("GPS(free) userId={} lat={} lng={}", userId, payload.lat(), payload.lng());
+        });
+    }
+
     public record LocationPayload(double lat, double lng, Long ts) {}
 }
