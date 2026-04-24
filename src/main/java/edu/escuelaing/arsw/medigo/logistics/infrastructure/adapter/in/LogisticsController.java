@@ -420,6 +420,38 @@ public class LogisticsController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/debug/delivery/{id}")
+    public ResponseEntity<?> debugDelivery(@PathVariable Long id) {
+        return springDeliveryRepo.findById(id)
+                .map(d -> {
+                    java.util.Map<String, Object> info = new java.util.HashMap<>();
+                    info.put("id", d.getId());
+                    info.put("orderId", d.getOrderId());
+                    info.put("deliveryPersonId", d.getDeliveryPersonId());
+                    info.put("status", d.getStatus());
+                    info.put("assignedAt", d.getAssignedAt());
+                    return ResponseEntity.ok(info);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/debug/deliveries/active")
+    public ResponseEntity<?> debugActiveDeliveries() {
+        List<edu.escuelaing.arsw.medigo.logistics.infrastructure.entity.DeliveryEntity> all =
+                springDeliveryRepo.findAll().stream()
+                        .filter(d -> "ASSIGNED".equals(d.getStatus()) || "IN_ROUTE".equals(d.getStatus()))
+                        .toList();
+        List<java.util.Map<String, Object>> result = all.stream().map(d -> {
+            java.util.Map<String, Object> info = new java.util.HashMap<>();
+            info.put("id", d.getId());
+            info.put("orderId", d.getOrderId());
+            info.put("deliveryPersonId", d.getDeliveryPersonId());
+            info.put("status", d.getStatus());
+            return info;
+        }).toList();
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/orders")
     public ResponseEntity<?> createOrder(@RequestBody Object body) {
         log.info("Mock logistics order created");
