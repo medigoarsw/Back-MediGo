@@ -8,9 +8,11 @@ import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFou
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,18 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
     private final LocationStatePort locationState;
     private final DeliveryRepositoryPort deliveryRepository;
     private final OrderRepositoryPort orderRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    private void broadcastOrderStatus(Long orderId, String status, Long deliveryId, String deliveredAt) {
+        if (orderId == null) return;
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("orderId", orderId);
+        payload.put("status", status);
+        payload.put("deliveryId", deliveryId);
+        payload.put("deliveredAt", deliveredAt != null ? deliveredAt : "");
+        messagingTemplate.convertAndSend("/topic/order/" + orderId + "/status", payload);
+        log.debug("Broadcast order status: orderId={} status={}", orderId, status);
+    }
     
     @Override
     public void updateLocation(LocationUpdate location) {
@@ -52,6 +66,7 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
         orderRepository.updateStatus(orderId, Order.OrderStatus.ASSIGNED);
         log.info("Pedido {} marcado como ASSIGNED", orderId);
 
+        broadcastOrderStatus(orderId, "ASSIGNED", saved.getId(), null);
         return saved;
     }
     
@@ -69,6 +84,7 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
         }
         deliveryRepository.updateStatus(deliveryId, Delivery.DeliveryStatus.IN_ROUTE);
         orderRepository.updateStatus(delivery.getOrderId(), Order.OrderStatus.IN_ROUTE);
+        broadcastOrderStatus(delivery.getOrderId(), "IN_ROUTE", deliveryId, null);
         return Delivery.builder()
                 .id(delivery.getId())
                 .orderId(delivery.getOrderId())
@@ -115,6 +131,7 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
             orderRepository.updateStatusAndDeliveredAt(
                     delivery.getOrderId(), Order.OrderStatus.DELIVERED, deliveredAt);
             log.info("HU-10: Order {} actualizado a DELIVERED a las {}", delivery.getOrderId(), deliveredAt);
+            broadcastOrderStatus(delivery.getOrderId(), "DELIVERED", deliveryId, deliveredAt.toString());
         } else {
             log.warn("HU-10: El delivery {} no tiene orderId asociado — no se actualizó el pedido", deliveryId);
         }

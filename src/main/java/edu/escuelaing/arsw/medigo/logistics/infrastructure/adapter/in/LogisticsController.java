@@ -4,9 +4,11 @@ import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +36,8 @@ public class LogisticsController {
     private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;
     private final OrderRepositoryPort orderRepository;
     private final DeliveryRepositoryPort deliveryRepository;
+    private final SpringDeliveryJpaRepository springDeliveryRepo;
+    private final UserJpaRepository userRepo;
 
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
@@ -371,13 +375,45 @@ public class LogisticsController {
     }
 
     @GetMapping("/dashboard")
-    public ResponseEntity<?> getDashboard() {
-        log.info("Mock dashboard requested");
-        return ResponseEntity.ok(java.util.Map.of(
-            "activeDeliveries", 0,
-            "completedToday", 0,
-            "pendingAssignments", 0
-        ));
+    public ResponseEntity<?> getDashboard(
+            @RequestParam(required = false) Long orderId) {
+        log.info("Dashboard requested, orderId={}", orderId);
+
+        // Entregas activas (ASSIGNED o IN_ROUTE)
+        List<edu.escuelaing.arsw.medigo.logistics.infrastructure.entity.DeliveryEntity> activeEntities =
+                springDeliveryRepo.findAll().stream()
+                        .filter(d -> "ASSIGNED".equals(d.getStatus()) || "IN_ROUTE".equals(d.getStatus()))
+                        .toList();
+
+        List<java.util.Map<String, Object>> drivers = activeEntities.stream()
+                .map(d -> {
+                    String driverName = userRepo.findById(d.getDeliveryPersonId())
+                            .map(edu.escuelaing.arsw.medigo.users.infrastructure.entity.UserEntity::getName)
+                            .orElse("Repartidor " + d.getDeliveryPersonId());
+
+                    // Si la entrega corresponde al pedido del afiliado → ASSIGNED_TO_ME
+                    boolean isAssignedToMe = orderId != null && orderId.equals(d.getOrderId());
+                    String status = isAssignedToMe ? "ASSIGNED_TO_ME"
+                            : "IN_ROUTE".equals(d.getStatus()) ? "BUSY" : "AVAILABLE";
+
+                    java.util.Map<String, Object> driver = new java.util.HashMap<>();
+                    driver.put("id", d.getDeliveryPersonId());
+                    driver.put("deliveryId", d.getId());
+                    driver.put("name", driverName);
+                    driver.put("status", status);
+                    // Posición inicial en Bogotá — se actualiza en tiempo real vía WebSocket
+                    driver.put("lat", 4.711);
+                    driver.put("lng", -74.0721);
+                    return driver;
+                })
+                .toList();
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("drivers", drivers);
+        response.put("activeDeliveries", activeEntities.size());
+        response.put("completedToday", 0);
+        response.put("pendingAssignments", 0);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/orders")
