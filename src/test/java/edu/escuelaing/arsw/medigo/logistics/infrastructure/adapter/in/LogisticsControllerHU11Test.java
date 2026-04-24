@@ -5,6 +5,7 @@ import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.DriverLocationStore;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
@@ -56,6 +57,9 @@ class LogisticsControllerHU11Test {
     @Mock
     private UserJpaRepository userRepo;
 
+    @Mock
+    private DriverLocationStore locationStore;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -66,7 +70,8 @@ class LogisticsControllerHU11Test {
                 orderRepository,
                 deliveryRepository,
                 springDeliveryRepo,
-                userRepo
+                userRepo,
+                locationStore
         );
     }
 

@@ -38,6 +38,7 @@ public class LogisticsController {
     private final DeliveryRepositoryPort deliveryRepository;
     private final SpringDeliveryJpaRepository springDeliveryRepo;
     private final UserJpaRepository userRepo;
+    private final DriverLocationStore locationStore;
 
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
@@ -379,42 +380,60 @@ public class LogisticsController {
             @RequestParam(required = false) Long orderId) {
         log.info("Dashboard requested, orderId={}", orderId);
 
-        // Entregas activas (ASSIGNED o IN_ROUTE)
-        List<edu.escuelaing.arsw.medigo.logistics.infrastructure.entity.DeliveryEntity> activeEntities =
-                springDeliveryRepo.findAll().stream()
-                        .filter(d -> "ASSIGNED".equals(d.getStatus()) || "IN_ROUTE".equals(d.getStatus()))
-                        .toList();
+        // Repartidores activos = los que enviaron GPS en los últimos 60s
+        java.util.Collection<DriverLocationStore.DriverPosition> activePositions =
+                locationStore.getActiveDrivers();
 
-        List<java.util.Map<String, Object>> drivers = activeEntities.stream()
-                .map(d -> {
-                    String driverName = userRepo.findById(d.getDeliveryPersonId())
+        // Obtener el orderId del afiliado para identificar al repartidor asignado
+        Long assignedDeliveryPersonId = null;
+        Long assignedDeliveryId = null;
+        if (orderId != null) {
+            var deliveryOpt = springDeliveryRepo.findByOrderId(orderId);
+            if (deliveryOpt.isPresent()) {
+                assignedDeliveryPersonId = deliveryOpt.get().getDeliveryPersonId();
+                assignedDeliveryId = deliveryOpt.get().getId();
+            }
+        }
+        final Long finalAssignedPersonId = assignedDeliveryPersonId;
+
+        List<java.util.Map<String, Object>> drivers = activePositions.stream()
+                .map(pos -> {
+                    String driverName = userRepo.findById(pos.deliveryPersonId())
                             .map(edu.escuelaing.arsw.medigo.users.infrastructure.entity.UserEntity::getName)
-                            .orElse("Repartidor " + d.getDeliveryPersonId());
+                            .orElse("Repartidor " + pos.deliveryPersonId());
 
-                    // Si la entrega corresponde al pedido del afiliado → ASSIGNED_TO_ME
-                    boolean isAssignedToMe = orderId != null && orderId.equals(d.getOrderId());
-                    String status = isAssignedToMe ? "ASSIGNED_TO_ME"
-                            : "IN_ROUTE".equals(d.getStatus()) ? "BUSY" : "AVAILABLE";
+                    boolean isAssignedToMe = pos.deliveryPersonId().equals(finalAssignedPersonId);
 
-                    log.info("Dashboard driver: deliveryPersonId={} deliveryId={} deliveryOrderId={} requestedOrderId={} isAssignedToMe={}",
-                            d.getDeliveryPersonId(), d.getId(), d.getOrderId(), orderId, isAssignedToMe);
+                    // Estado: si tiene entrega activa en DB → BUSY, si no → AVAILABLE
+                    String dbStatus = "AVAILABLE";
+                    Long deliveryOrderId = null;
+                    var deliveryOpt = springDeliveryRepo.findById(pos.deliveryId() != null ? pos.deliveryId() : -1L);
+                    if (deliveryOpt.isPresent()) {
+                        String s = deliveryOpt.get().getStatus();
+                        deliveryOrderId = deliveryOpt.get().getOrderId();
+                        if ("IN_ROUTE".equals(s) || "ASSIGNED".equals(s)) dbStatus = "BUSY";
+                    }
+
+                    String status = isAssignedToMe ? "ASSIGNED_TO_ME" : dbStatus;
+
+                    log.info("Dashboard driver: deliveryPersonId={} deliveryId={} deliveryOrderId={} requestedOrderId={} isAssignedToMe={} status={}",
+                            pos.deliveryPersonId(), pos.deliveryId(), deliveryOrderId, orderId, isAssignedToMe, status);
 
                     java.util.Map<String, Object> driver = new java.util.HashMap<>();
-                    driver.put("id", d.getDeliveryPersonId());
-                    driver.put("deliveryId", d.getId());
-                    driver.put("orderId", d.getOrderId());
+                    driver.put("id", pos.deliveryPersonId());
+                    driver.put("deliveryId", pos.deliveryId());
+                    driver.put("orderId", deliveryOrderId);
                     driver.put("name", driverName);
                     driver.put("status", status);
-                    // Posición inicial en Bogotá — se actualiza en tiempo real vía WebSocket
-                    driver.put("lat", 4.711);
-                    driver.put("lng", -74.0721);
+                    driver.put("lat", pos.lat());
+                    driver.put("lng", pos.lng());
                     return driver;
                 })
                 .toList();
 
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         response.put("drivers", drivers);
-        response.put("activeDeliveries", activeEntities.size());
+        response.put("activeDeliveries", drivers.size());
         response.put("completedToday", 0);
         response.put("pendingAssignments", 0);
         return ResponseEntity.ok(response);
