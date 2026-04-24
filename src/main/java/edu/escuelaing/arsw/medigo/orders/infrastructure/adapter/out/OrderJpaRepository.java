@@ -45,6 +45,15 @@ public class OrderJpaRepository implements OrderRepositoryPort {
     }
 
     @Override
+    public void updateStatusAndDeliveredAt(Long orderId, Order.OrderStatus status, LocalDateTime deliveredAt) {
+        springRepo.findById(orderId).ifPresent(e -> {
+            e.setStatus(status.name());
+            e.setDeliveredAt(deliveredAt);
+            springRepo.save(e);
+        });
+    }
+
+    @Override
     public Optional<Order> findByAuctionId(Long auctionId) {
         return springRepo.findByAuctionId(auctionId).map(this::toDomain);
     }
@@ -61,6 +70,11 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .stream()
                 .findFirst()
                 .map(this::toDomain);
+    }
+
+    @Override
+    public List<Order> findByStatus(Order.OrderStatus status) {
+        return springRepo.findByStatus(status.name()).stream().map(this::toDomain).toList();
     }
 
     // ── Mappers ───────────────────────────────────────────────────
@@ -84,6 +98,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .addressLat(o.getAddressLat())
                 .addressLng(o.getAddressLng())
                 .createdAt(o.getCreatedAt() != null ? o.getCreatedAt() : now)
+                .deliveredAt(o.getDeliveredAt())
                 .build();
         
         // Mapear items
@@ -134,6 +149,7 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .addressLat(e.getAddressLat())
                 .addressLng(e.getAddressLng())
                 .createdAt(e.getCreatedAt())
+                .deliveredAt(e.getDeliveredAt())
                 .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar
                 .build();
     }

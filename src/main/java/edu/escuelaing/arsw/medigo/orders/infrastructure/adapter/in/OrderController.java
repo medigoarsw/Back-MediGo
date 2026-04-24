@@ -520,23 +520,53 @@ public class OrderController {
         }
     }
     
+    /**
+     * GET /api/orders?status=CONFIRMED
+     * Lista pedidos filtrados por estado. Accesible a DELIVERY (repartidores) y ADMIN.
+     */
+    @GetMapping
     @Operation(
-        summary = "Obtener mis órdenes",
-        description = "Retorna todas las órdenes (en cualquier estado) del cliente autenticado. " +
-                     "Próximamente: listado de órdenes confirmadas, pendientes y entregadas."
+        summary = "Listar pedidos por estado",
+        description = "Retorna pedidos filtrados por estado. Sin parámetro devuelve todos."
     )
-    @ApiResponses({
-        @ApiResponse(
-            responseCode = "200",
-            description = "Lista de órdenes obtenida exitosamente"
-        ),
-        @ApiResponse(
-            responseCode = "401",
-            description = "No autenticado"
-        )
-    })
-    public ResponseEntity<?> myOrders() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> getOrders(
+            @RequestParam(required = false) String status) {
+        try {
+            List<Order> orders;
+            if (status != null && !status.isBlank()) {
+                Order.OrderStatus orderStatus = Order.OrderStatus.valueOf(status.toUpperCase());
+                orders = orderService.findByStatus(orderStatus);
+            } else {
+                orders = List.of();
+            }
+            return ResponseEntity.ok(orders);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorMessage("Estado inválido: " + status));
+        } catch (Exception e) {
+            log.error("Error al listar pedidos por estado", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorMessage("Error interno del servidor"));
+        }
+    }
+
+    /**
+     * GET /api/orders/affiliate/{affiliateId}
+     * Retorna todos los pedidos del afiliado.
+     */
+    @GetMapping("/affiliate/{affiliateId}")
+    @Operation(
+        summary = "Obtener pedidos del afiliado",
+        description = "Retorna todas las órdenes del cliente (afiliado)."
+    )
+    public ResponseEntity<?> getOrdersByAffiliate(@PathVariable Long affiliateId) {
+        try {
+            List<Order> orders = orderService.findByAffiliateId(affiliateId);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            log.error("Error al obtener pedidos del afiliado {}", affiliateId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorMessage("Error interno del servidor"));
+        }
     }
     
     // ────── Helper Methods ──────

@@ -229,6 +229,14 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         return savedOrder;
     }
     
+    public List<Order> findByStatus(Order.OrderStatus status) {
+        return orderRepository.findByStatus(status);
+    }
+
+    public List<Order> findByAffiliateId(Long affiliateId) {
+        return orderRepository.findByAffiliateId(affiliateId);
+    }
+
     // ────── Private Helper Methods ──────
     
     private void validateCartInput(Long affiliateId, Long branchId, Long medicationId, int quantity) {

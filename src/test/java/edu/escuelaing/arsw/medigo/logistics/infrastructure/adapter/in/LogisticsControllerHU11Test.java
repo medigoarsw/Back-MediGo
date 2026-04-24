@@ -3,7 +3,9 @@ package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,14 +42,21 @@ class LogisticsControllerHU11Test {
     @Mock
     private AssignDeliveryUseCase assignDeliveryUseCase;
 
+    @Mock
+    private OrderRepositoryPort orderRepository;
+
+    @Mock
+    private DeliveryRepositoryPort deliveryRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // El UpdateLocationUseCase no se necesita para HU-11
         logisticsController = new LogisticsController(
-                null,  // UpdateLocationUseCase no usado en HU-11
+                null,
                 assignDeliveryUseCase,
-                getActiveDeliveriesUseCase
+                getActiveDeliveriesUseCase,
+                orderRepository,
+                deliveryRepository
         );
     }
 
@@ -97,12 +106,14 @@ class LogisticsControllerHU11Test {
         when(assignDeliveryUseCase.completeDelivery(deliveryId))
                 .thenReturn(completedDelivery);
 
-        ResponseEntity<DeliveryResponse> completeResponse = logisticsController
+        ResponseEntity<?> completeResponse = logisticsController
                 .completeDelivery(deliveryId);
 
         // Then: el estado cambia a DELIVERED y se muestra mensaje de éxito
         assertEquals(HttpStatus.OK, completeResponse.getStatusCode());
-        assertEquals(Delivery.DeliveryStatus.DELIVERED, completeResponse.getBody().getStatus());
+        DeliveryResponse completedBody = (DeliveryResponse) completeResponse.getBody();
+        assertNotNull(completedBody);
+        assertEquals(Delivery.DeliveryStatus.DELIVERED, completedBody.getStatus());
 
         // And: el pedido desaparece de lista activa (al recargar, no aparecerá en getActiveDeliveries)
         verify(assignDeliveryUseCase, times(1)).completeDelivery(deliveryId);

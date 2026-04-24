@@ -23,7 +23,8 @@ public class OrderEntity {
     @Column(name = "address_lat") private Double addressLat;
     @Column(name = "address_lng") private Double addressLng;
     @Column(name = "created_at") private LocalDateTime createdAt;
-    
+    @Column(name = "delivered_at") private LocalDateTime deliveredAt;  // HU-10
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OrderItemEntity> items;
 }
