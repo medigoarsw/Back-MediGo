@@ -3,6 +3,7 @@ package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
@@ -44,15 +45,18 @@ class LogisticsControllerHU11Test {
     @Mock
     private OrderRepositoryPort orderRepository;
 
+    @Mock
+    private DeliveryRepositoryPort deliveryRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // El UpdateLocationUseCase no se necesita para HU-11
         logisticsController = new LogisticsController(
-                null,  // UpdateLocationUseCase no usado en HU-11
+                null,
                 assignDeliveryUseCase,
                 getActiveDeliveriesUseCase,
-                orderRepository
+                orderRepository,
+                deliveryRepository
         );
     }
 

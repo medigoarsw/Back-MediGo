@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
@@ -29,9 +30,10 @@ import java.util.Map;
 @Slf4j
 public class LogisticsController {
     private final UpdateLocationUseCase updateLocationUseCase;
-    private final AssignDeliveryUseCase assignDeliveryUseCase;  // Contiene completeDelivery para HU-10
-    private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;  // HU-11
-    private final OrderRepositoryPort orderRepository;  // HU-10: consulta estado del pedido
+    private final AssignDeliveryUseCase assignDeliveryUseCase;
+    private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;
+    private final OrderRepositoryPort orderRepository;
+    private final DeliveryRepositoryPort deliveryRepository;
 
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
@@ -285,11 +287,18 @@ public class LogisticsController {
             @PathVariable Long orderId) {
         log.info("HU-10: Consultando estado del pedido {}", orderId);
         return orderRepository.findById(orderId)
-                .map(order -> ResponseEntity.ok(Map.of(
-                        "orderId", order.getId(),
-                        "status", order.getStatus().name(),
-                        "deliveredAt", order.getDeliveredAt() != null ? order.getDeliveredAt().toString() : ""
-                )))
+                .map(order -> {
+                    // Incluir deliveryId si existe para que el afiliado pueda suscribirse al WebSocket
+                    Long deliveryId = deliveryRepository.findByOrderId(orderId)
+                            .map(edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery::getId)
+                            .orElse(null);
+                    java.util.Map<String, Object> body = new java.util.HashMap<>();
+                    body.put("orderId", order.getId());
+                    body.put("status", order.getStatus().name());
+                    body.put("deliveredAt", order.getDeliveredAt() != null ? order.getDeliveredAt().toString() : "");
+                    body.put("deliveryId", deliveryId);
+                    return ResponseEntity.ok(body);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -314,8 +323,51 @@ public class LogisticsController {
     }
 
     @PostMapping("/deliveries/assign")
-    public ResponseEntity<?> assign(@RequestBody Object req) {
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Auto-asignar repartidor a un pedido")
+    public ResponseEntity<?> assign(@RequestBody AssignRequest req) {
+        log.info("Asignando repartidor {} al pedido {}", req.deliveryPersonId(), req.orderId());
+        try {
+            Delivery delivery = assignDeliveryUseCase.assignDelivery(req.orderId(), req.deliveryPersonId());
+            DeliveryResponse response = DeliveryResponse.builder()
+                    .id(delivery.getId())
+                    .orderId(delivery.getOrderId())
+                    .deliveryPersonId(delivery.getDeliveryPersonId())
+                    .status(delivery.getStatus())
+                    .assignedAt(delivery.getAssignedAt())
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error al asignar repartidor", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error interno al asignar pedido"));
+        }
+    }
+
+    record AssignRequest(Long orderId, Long deliveryPersonId) {}
+
+    @PutMapping("/deliveries/{id}/pickup")
+    @Operation(summary = "Marcar recogida en sucursal (IN_ROUTE)")
+    public ResponseEntity<?> markPickup(@PathVariable Long id) {
+        log.info("Marcando entrega {} como IN_ROUTE", id);
+        try {
+            Delivery delivery = assignDeliveryUseCase.markInRoute(id);
+            DeliveryResponse response = DeliveryResponse.builder()
+                    .id(delivery.getId())
+                    .orderId(delivery.getOrderId())
+                    .deliveryPersonId(delivery.getDeliveryPersonId())
+                    .status(delivery.getStatus())
+                    .assignedAt(delivery.getAssignedAt())
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/dashboard")

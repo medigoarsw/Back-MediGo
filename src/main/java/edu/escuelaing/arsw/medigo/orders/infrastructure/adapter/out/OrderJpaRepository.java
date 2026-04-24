@@ -72,6 +72,11 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .map(this::toDomain);
     }
 
+    @Override
+    public List<Order> findByStatus(Order.OrderStatus status) {
+        return springRepo.findByStatus(status.name()).stream().map(this::toDomain).toList();
+    }
+
     // ── Mappers ───────────────────────────────────────────────────
 
     private OrderEntity toEntity(Order o) {
