@@ -396,9 +396,13 @@ public class LogisticsController {
                     String status = isAssignedToMe ? "ASSIGNED_TO_ME"
                             : "IN_ROUTE".equals(d.getStatus()) ? "BUSY" : "AVAILABLE";
 
+                    log.info("Dashboard driver: deliveryPersonId={} deliveryId={} deliveryOrderId={} requestedOrderId={} isAssignedToMe={}",
+                            d.getDeliveryPersonId(), d.getId(), d.getOrderId(), orderId, isAssignedToMe);
+
                     java.util.Map<String, Object> driver = new java.util.HashMap<>();
                     driver.put("id", d.getDeliveryPersonId());
                     driver.put("deliveryId", d.getId());
+                    driver.put("orderId", d.getOrderId());
                     driver.put("name", driverName);
                     driver.put("status", status);
                     // Posición inicial en Bogotá — se actualiza en tiempo real vía WebSocket
