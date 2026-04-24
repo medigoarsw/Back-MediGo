@@ -5,7 +5,9 @@ import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +50,12 @@ class LogisticsControllerHU11Test {
     @Mock
     private DeliveryRepositoryPort deliveryRepository;
 
+    @Mock
+    private SpringDeliveryJpaRepository springDeliveryRepo;
+
+    @Mock
+    private UserJpaRepository userRepo;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -56,7 +64,9 @@ class LogisticsControllerHU11Test {
                 assignDeliveryUseCase,
                 getActiveDeliveriesUseCase,
                 orderRepository,
-                deliveryRepository
+                deliveryRepository,
+                springDeliveryRepo,
+                userRepo
         );
     }
 

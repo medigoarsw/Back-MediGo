@@ -5,7 +5,9 @@ import edu.escuelaing.arsw.medigo.logistics.domain.port.in.AssignDeliveryUseCase
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.GetActiveDeliveriesUseCase;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,10 +43,16 @@ class LogisticsControllerTest {
     @Mock
     private DeliveryRepositoryPort deliveryRepository;
 
+    @Mock
+    private SpringDeliveryJpaRepository springDeliveryRepo;
+
+    @Mock
+    private UserJpaRepository userRepo;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller = new LogisticsController(null, assignDeliveryUseCase, getActiveDeliveriesUseCase, orderRepository, deliveryRepository);
+        controller = new LogisticsController(null, assignDeliveryUseCase, getActiveDeliveriesUseCase, orderRepository, deliveryRepository, springDeliveryRepo, userRepo);
     }
 
     // ======================== HU-10 BDD SCENARIOS ========================
