@@ -106,6 +106,11 @@ public class AuctionService implements
     }
 
     @Override
+    public List<Auction> getAllAuctions() {
+        return auctionRepository.findAll();
+    }
+
+    @Override
     public List<QueryAuctionUseCase.AuctionWithPrice> getActiveAuctionsWithCurrentPrice() {
         return auctionRepository.findActiveAuctions()
                 .stream()

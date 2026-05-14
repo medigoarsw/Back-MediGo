@@ -43,6 +43,14 @@ public class AuctionController {
         return AuctionResponse.from(auction);
     }
 
+    // HU-15: Listar todas las subastas (solo ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public List<AuctionResponse> getAll() {
+        return queryAuctionUseCase.getAllAuctions()
+                .stream().map(AuctionResponse::from).toList();
+    }
+
     // HU-16: Editar subasta programada (solo ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")

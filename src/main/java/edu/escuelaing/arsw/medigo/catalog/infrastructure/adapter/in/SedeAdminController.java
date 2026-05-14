@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,7 @@ public class SedeAdminController {
     public ResponseEntity<ApiEnvelope<SedeListData>> list(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int limit,
+            @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "El término de búsqueda contiene caracteres no permitidos")
             @RequestParam(required = false) String q,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceHeader) {
 

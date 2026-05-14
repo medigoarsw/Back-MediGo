@@ -12,6 +12,9 @@ import java.util.List;
 public interface SpringAuctionJpaRepository extends JpaRepository<AuctionEntity, Long> {
 
     List<AuctionEntity> findByStatus(String status);
+    
+    @Query("SELECT a FROM AuctionEntity a WHERE a.status IN ('ACTIVE', 'SCHEDULED')")
+    List<AuctionEntity> findActiveOrScheduled();
 
     // Subastas activas cuyo endTime ya paso (cierre por tiempo fijo)
     @Query("SELECT a FROM AuctionEntity a WHERE a.status = 'ACTIVE' AND a.endTime <= :now")

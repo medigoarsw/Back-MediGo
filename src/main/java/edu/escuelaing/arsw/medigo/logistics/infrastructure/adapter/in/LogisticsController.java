@@ -274,6 +274,7 @@ public class LogisticsController {
     @GetMapping("/deliveries/history")
     public ResponseEntity<List<DeliveryResponse>> getDeliveryHistory(
             @RequestParam Long deliveryPersonId,
+            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "Rango inválido")
             @RequestParam(required = false) String range) {
         log.info("Solicitando historial de entregas para repartidor: {}, rango: {}", deliveryPersonId, range);
         // TODO: implementar consulta de entregas con status=DELIVERED por deliveryPersonId
@@ -316,6 +317,7 @@ public class LogisticsController {
     @GetMapping("/deliveries/history/summary")
     public ResponseEntity<?> getDeliveryHistorySummary(
             @RequestParam Long deliveryPersonId,
+            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "Rango inválido")
             @RequestParam(required = false) String range) {
         log.info("Solicitando resumen de historial para repartidor: {}, rango: {}", deliveryPersonId, range);
         return ResponseEntity.ok(java.util.Map.of(

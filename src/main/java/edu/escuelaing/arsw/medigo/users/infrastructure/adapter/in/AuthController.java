@@ -273,6 +273,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserByEmail(
             @Parameter(description = "Email del usuario", required = true, example = "student@medigo.com")
+            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9@._-]*$", message = "Formato de email inválido")
             @PathVariable String email) {
         try {
             User user = authUseCase.getUserByEmail(email);

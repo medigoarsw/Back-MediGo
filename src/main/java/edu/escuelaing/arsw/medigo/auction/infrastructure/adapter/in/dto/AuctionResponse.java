@@ -29,7 +29,8 @@ public record AuctionResponse(
             a.getId(), a.getMedicationId(), null, null,
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
-            a.getStatus().name(), a.getClosureType().name(),
+            a.getStatus() != null ? a.getStatus().name() : null,
+            a.getClosureType() != null ? a.getClosureType().name() : null,
             a.getWinnerId(), null, null, null
         );
     }
@@ -41,7 +42,8 @@ public record AuctionResponse(
             a.getId(), a.getMedicationId(), null, null,
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
-            a.getStatus().name(), a.getClosureType().name(),
+            a.getStatus() != null ? a.getStatus().name() : null,
+            a.getClosureType() != null ? a.getClosureType().name() : null,
             a.getWinnerId(), null, null, ap.currentPrice()
         );
     }
@@ -56,7 +58,8 @@ public record AuctionResponse(
             a.getId(), a.getMedicationId(), detail.medicationName(), detail.medicationUnit(),
             a.getBranchId(), a.getBasePrice(), a.getMaxPrice(),
             a.getStartTime(), a.getEndTime(),
-            a.getStatus().name(), a.getClosureType().name(),
+            a.getStatus() != null ? a.getStatus().name() : null,
+            a.getClosureType() != null ? a.getClosureType().name() : null,
             a.getWinnerId(), detail.winnerName(), remaining, detail.currentPrice()
         );
     }

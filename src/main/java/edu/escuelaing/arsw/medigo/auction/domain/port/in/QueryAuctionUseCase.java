@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface QueryAuctionUseCase {
     List<Auction>              getActiveAuctions();
+    List<Auction>              getAllAuctions();
     List<AuctionWithPrice>     getActiveAuctionsWithCurrentPrice();
     Auction                    getAuctionById(Long id);
     List<Bid>                  getBidHistory(Long auctionId);
