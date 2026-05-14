@@ -26,7 +26,7 @@ import java.util.Optional;
 @Slf4j
 public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase {
 
-    private static final Logger log = LoggerFactory.getLogger(CatalogService.class);
+
 
     private final MedicationRepositoryPort medicationRepository;
 

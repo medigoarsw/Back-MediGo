@@ -45,7 +45,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService implements AuthUseCase {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+
     
     // INYECCIÓN: El repositorio es un puerto de salida (DESACOPLADO)
     // En MVP: InMemoryUserRepository
