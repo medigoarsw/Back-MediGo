@@ -1,6 +1,15 @@
-package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+### com.thoughtworks.qdox.parser.ParseException: syntax error @[67,28]
 
-import org.springframework.security.access.prepost.PreAuthorize;
+error in qdox parser
+file content:
+```java
+offset: 3240
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+text:
+```scala
+package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
@@ -42,9 +51,9 @@ public class LogisticsController {
     private final UserJpaRepository userRepo;
     private final DriverLocationStore locationStore;
 
-    @PreAuthorize("hasRole('DELIVERY')")
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
+            @PreAuthorize("hasRole('DELIVERY')")
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +61,6 @@ public class LogisticsController {
      * HU-10: Confirma la entrega de un pedido
      * Actualiza el estado de la entrega a DELIVERED y del pedido a ENTREGADO
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @PutMapping("/deliveries/{id}/complete")
     @Operation(
         summary = "Confirmar entrega (Repartidor)",
@@ -67,7 +75,7 @@ public class LogisticsController {
                 schema = @Schema(
                     example = """
                         {
-                          "id": 1,
+                          "i@@d": 1,
                           "orderId": 100,
                           "deliveryPersonId": 5,
                           "status": "DELIVERED",
@@ -87,6 +95,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<?> completeDelivery(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "id",
                 description = "ID de la entrega a confirmar",
@@ -127,7 +136,6 @@ public class LogisticsController {
      * HU-11: Obtiene todas las entregas activas del repartidor
      * Las entregas activas son aquellas no entregadas (ASSIGNED, IN_ROUTE, PENDING_SHIPPING)
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/active")
     @Operation(
         summary = "Obtener entregas activas (Repartidor)",
@@ -171,6 +179,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<List<DeliveryResponse>> getActiveDeliveries(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "deliveryPersonId",
                 description = "ID del repartidor",
@@ -201,7 +210,6 @@ public class LogisticsController {
      * HU-11: Obtiene una entrega específica si pertenece al repartidor
      * Valida la propiedad y muestra el modal de confirmación con detalles de la entrega
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/{id}")
     @Operation(
         summary = "Obtener detalle de una entrega (Repartidor)",
@@ -489,3 +497,41 @@ public class LogisticsController {
         return ResponseEntity.ok(java.util.Map.of("message", "Courier assigned successfully"));
     }
 }
+```
+
+```
+
+
+
+#### Error stacktrace:
+
+```
+com.thoughtworks.qdox.parser.impl.Parser.yyerror(Parser.java:2025)
+	com.thoughtworks.qdox.parser.impl.Parser.yyparse(Parser.java:2147)
+	com.thoughtworks.qdox.parser.impl.Parser.parse(Parser.java:2006)
+	com.thoughtworks.qdox.library.SourceLibrary.parse(SourceLibrary.java:232)
+	com.thoughtworks.qdox.library.SourceLibrary.parse(SourceLibrary.java:190)
+	com.thoughtworks.qdox.library.SourceLibrary.addSource(SourceLibrary.java:94)
+	com.thoughtworks.qdox.library.SourceLibrary.addSource(SourceLibrary.java:89)
+	com.thoughtworks.qdox.library.SortedClassLibraryBuilder.addSource(SortedClassLibraryBuilder.java:162)
+	com.thoughtworks.qdox.JavaProjectBuilder.addSource(JavaProjectBuilder.java:174)
+	scala.meta.internal.mtags.JavaMtags.indexRoot(JavaMtags.scala:49)
+	scala.meta.internal.metals.SemanticdbDefinition$.foreachWithReturnMtags(SemanticdbDefinition.scala:99)
+	scala.meta.internal.metals.Indexer.indexSourceFile(Indexer.scala:560)
+	scala.meta.internal.metals.Indexer.$anonfun$reindexWorkspaceSources$3(Indexer.scala:691)
+	scala.meta.internal.metals.Indexer.$anonfun$reindexWorkspaceSources$3$adapted(Indexer.scala:688)
+	scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	scala.collection.AbstractIterator.foreach(Iterator.scala:1313)
+	scala.meta.internal.metals.Indexer.reindexWorkspaceSources(Indexer.scala:688)
+	scala.meta.internal.metals.MetalsLspService.$anonfun$onChange$2(MetalsLspService.scala:940)
+	scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	scala.concurrent.Future$.$anonfun$apply$1(Future.scala:691)
+	scala.concurrent.impl.Promise$Transformation.run(Promise.scala:500)
+	java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	java.base/java.lang.Thread.run(Thread.java:1583)
+```
+#### Short summary: 
+
+QDox parse error in file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java

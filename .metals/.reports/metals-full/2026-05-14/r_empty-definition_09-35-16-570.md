@@ -1,6 +1,15 @@
-package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java:org/springframework/security/access/prepost/PreAuthorize#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+empty definition using pc, found symbol in pc: org/springframework/security/access/prepost/PreAuthorize#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
 
-import org.springframework.security.access.prepost.PreAuthorize;
+offset: 1578
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/catalog/infrastructure/adapter/in/MedicationController.java
+text:
+```scala
+package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
@@ -25,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.@@PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -478,7 +488,6 @@ public class MedicationController {
             description = "No autorizado: solo administradores pueden crear medicamentos"
         )
     })
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MedicationResponse> create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                 description = "Datos del medicamento a crear",
@@ -531,7 +540,6 @@ public class MedicationController {
             description = "Medicamento no encontrado"
         )
     })
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateStock(
             @Parameter(
                 name = "medicationId",
@@ -773,3 +781,10 @@ public class MedicationController {
                 .build();
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/security/access/prepost/PreAuthorize#

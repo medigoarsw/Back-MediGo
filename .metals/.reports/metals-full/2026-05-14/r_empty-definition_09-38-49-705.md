@@ -1,6 +1,16 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java:_empty_/PostMapping#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java
+empty definition using pc, found symbol in pc: _empty_/PostMapping#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1156
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/auction/infrastructure/adapter/in/AuctionController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in.dto.*;
@@ -26,10 +36,10 @@ public class AuctionController {
     private final AuthenticatedUserResolver authenticatedUserResolver;
 
     // HU-15: Crear subasta (solo ADMIN)
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @@@PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AuctionResponse create(@Valid @RequestBody CreateAuctionRequest req) {
+            @PreAuthorize("hasRole('ADMIN')")
         Auction auction = createAuctionUseCase.createAuction(
             new CreateAuctionUseCase.CreateAuctionCommand(
                 req.medicationId(), req.branchId(), req.basePrice(),
@@ -44,9 +54,9 @@ public class AuctionController {
     }
 
     // HU-16: Editar subasta programada (solo ADMIN)
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public AuctionResponse update(@PathVariable Long id,
+                                    @PreAuthorize("hasRole('ADMIN')")
                                    @Valid @RequestBody UpdateAuctionRequest req) {
         Auction auction = updateAuctionUseCase.updateAuction(id,
             new UpdateAuctionUseCase.UpdateAuctionCommand(
@@ -57,9 +67,9 @@ public class AuctionController {
     }
 
     // HU-17: Ver detalle de subasta (enriquecido con catálogo, tiempo restante y ganador)
-    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     @GetMapping("/{id}")
     public AuctionResponse getById(@PathVariable Long id) {
+            @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
         return AuctionResponse.fromDetail(queryAuctionUseCase.getAuctionDetail(id));
     }
 
@@ -72,16 +82,16 @@ public class AuctionController {
 
     // HU-17: Historial de pujas de una subasta
     @GetMapping("/{id}/bids")
-    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public List<BidResponse> getBids(@PathVariable Long id) {
+            @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
         return queryAuctionUseCase.getBidHistory(id)
                 .stream().map(BidResponse::from).toList();
     }
 
     // HU-22: Consultar ganador de una subasta cerrada
     @GetMapping("/{id}/winner")
-    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public ResponseEntity<WinnerResponse> getWinner(@PathVariable Long id) {
+            @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
         QueryAuctionUseCase.WinnerView view = queryAuctionUseCase.getAuctionWinner(id);
         if (view.winnerId() == null) {
             return ResponseEntity.noContent().build();
@@ -107,19 +117,26 @@ public class AuctionController {
     // HU-18: Unirse a subasta
     @PostMapping("/{id}/join")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public void join(@PathVariable Long id, @RequestParam Long userId) {
+            @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
         joinAuctionUseCase.joinAuction(id, userId);
     }
 
     // HU-19: Realizar puja (con concurrencia Redis SETNX)
     @PostMapping("/{id}/bids")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public BidResponse placeBid(@PathVariable Long id,
+                                    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
                                  @Valid @RequestBody PlaceBidRequest req) {
         return BidResponse.from(
             placeBidUseCase.placeBid(id, req.userId(), req.userName(), req.amount())
         );
     }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/PostMapping#

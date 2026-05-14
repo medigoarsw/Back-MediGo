@@ -1,6 +1,16 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java:_empty_/GetMapping#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java
+empty definition using pc, found symbol in pc: _empty_/GetMapping#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 7272
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/orders/infrastructure/adapter/in/OrderController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.orders.infrastructure.adapter.in;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import edu.escuelaing.arsw.medigo.orders.application.OrderService;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.port.in.*;
@@ -138,8 +148,8 @@ public class OrderController {
             )
         )
     })
-    @PreAuthorize("hasRole('AFFILIATE')")
     public ResponseEntity<Object> addToCart(
+                @PreAuthorize("hasRole('AFFILIATE')")
             @Valid @RequestBody AddToCartRequest request) {
         try {
             log.info("Agregando medicamento {} al carrito del cliente {}", 
@@ -172,7 +182,7 @@ public class OrderController {
      * GET /api/orders/cart
      * Obtiene el carrito actual del cliente
      */
-    @GetMapping("/cart")
+    @@@GetMapping("/cart")
     @Operation(
         summary = "Obtener carrito actual",
         description = "Recupera el carrito de compras (con estado PENDING) del cliente en una sucursal específica. " +
@@ -283,8 +293,8 @@ public class OrderController {
             )
         )
     })
-    @PreAuthorize("hasRole('AFFILIATE')")
     public ResponseEntity<Object> getCart(
+                @PreAuthorize("hasRole('AFFILIATE')")
             @Parameter(
                 name = "affiliateId",
                 description = "ID del cliente (afiliado)",
@@ -418,8 +428,8 @@ public class OrderController {
             )
         )
     })
-    @PreAuthorize("hasRole('AFFILIATE')")
     public ResponseEntity<?> create(
+                @PreAuthorize("hasRole('AFFILIATE')")
             @Valid @RequestBody CreateOrderRequest request) {
         try {
             log.info("Creando nuevo carrito para cliente {} en sucursal {}", 
@@ -490,8 +500,8 @@ public class OrderController {
             description = "Error interno del servidor"
         )
     })
-    @PreAuthorize("hasRole('AFFILIATE')")
     public ResponseEntity<Object> confirmPendingOrder(
+                @PreAuthorize("hasRole('AFFILIATE')")
             @Parameter(
                 name = "affiliateId",
                 description = "ID del cliente (afiliado)",
@@ -830,3 +840,9 @@ public class OrderController {
             String message
     ) {}
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/GetMapping#

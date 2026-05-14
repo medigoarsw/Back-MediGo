@@ -9,6 +9,8 @@ import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFou
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 
     private final MedicationRepositoryPort medicationRepository;
 
@@ -93,12 +97,6 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         // Crear el stock inicial si es > 0
         if (initialStock > 0) {
-            BranchStock branchStock = BranchStock.builder()
-                    .branchId(branchId)
-                    .medicationId(savedMedication.getId())
-                    .quantity(initialStock)
-                    .build();
-
             medicationRepository.updateStock(branchId, savedMedication.getId(), initialStock);
         }
 
@@ -217,11 +215,7 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         if (stock == null) {
             // Si no hay registro, retornar con cantidad 0 (no disponible)
-            stock = BranchStock.builder()
-                    .medicationId(medicationId)
-                    .branchId(branchId)
-                    .quantity(0)
-                    .build();
+                stock = new BranchStock(branchId, medicationId, 0);
         }
 
         log.info("Disponibilidad obtenida: {} unidades", stock.getQuantity());

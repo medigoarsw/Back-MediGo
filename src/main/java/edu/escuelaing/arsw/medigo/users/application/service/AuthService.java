@@ -10,6 +10,8 @@ import edu.escuelaing.arsw.medigo.users.domain.util.PasswordValidator;
 import edu.escuelaing.arsw.medigo.users.domain.valueobject.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthService implements AuthUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     
     // INYECCIÓN: El repositorio es un puerto de salida (DESACOPLADO)
     // En MVP: InMemoryUserRepository

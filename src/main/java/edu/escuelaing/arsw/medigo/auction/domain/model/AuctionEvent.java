@@ -27,4 +27,32 @@ public class AuctionEvent {
     private Long          leaderId;
     private LocalDateTime timestamp;
     private String        message;
+
+    public EventType getType() {
+        return type;
+    }
+
+    public Long getAuctionId() {
+        return auctionId;
+    }
+
+    public BigDecimal getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public Long getLeaderId() {
+        return leaderId;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

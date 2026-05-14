@@ -1,6 +1,17 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java:org/springframework/security/access/prepost/PreAuthorize#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+empty definition using pc, found symbol in pc: org/springframework/security/access/prepost/PreAuthorize#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 126
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.@@PreAuthorize;
 
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
@@ -87,6 +98,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<?> completeDelivery(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "id",
                 description = "ID de la entrega a confirmar",
@@ -171,6 +183,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<List<DeliveryResponse>> getActiveDeliveries(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "deliveryPersonId",
                 description = "ID del repartidor",
@@ -201,7 +214,6 @@ public class LogisticsController {
      * HU-11: Obtiene una entrega específica si pertenece al repartidor
      * Valida la propiedad y muestra el modal de confirmación con detalles de la entrega
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/{id}")
     @Operation(
         summary = "Obtener detalle de una entrega (Repartidor)",
@@ -489,3 +501,9 @@ public class LogisticsController {
         return ResponseEntity.ok(java.util.Map.of("message", "Courier assigned successfully"));
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: org/springframework/security/access/prepost/PreAuthorize#

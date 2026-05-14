@@ -1,6 +1,16 @@
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java:_empty_/PreAuthorize#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java
+empty definition using pc, found symbol in pc: _empty_/PreAuthorize#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 6899
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/users/infrastructure/adapter/in/AuthController.java
+text:
+```scala
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginRequestDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginResponseDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
@@ -155,8 +165,11 @@ public class AuthController {
             description = "Error interno del servidor"
         )
     })
-        public ResponseEntity<Object> register(@Valid @RequestBody SignUpRequestDto request) {
+    public ResponseEntity<Object> register(@Valid @RequestBody SignUpRequestDto request) {
             // Público, no requiere anotación
+            @@@PreAuthorize("isAuthenticated()")
+            @PreAuthorize("hasRole('ADMIN')")
+            @PreAuthorize("hasRole('ADMIN')")
         try {
             log.debug("Registration request received for email: {}", request.getEmail());
             
@@ -202,7 +215,6 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Object> getCurrentUser(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @RequestParam(name = "user_id") Long userId) {
@@ -236,7 +248,6 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserById(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @PathVariable Long id) {
@@ -270,7 +281,6 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserByEmail(
             @Parameter(description = "Email del usuario", required = true, example = "student@medigo.com")
             @PathVariable String email) {
@@ -367,3 +377,9 @@ public class AuthController {
 class ErrorResponse {
     private String message;
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/PreAuthorize#

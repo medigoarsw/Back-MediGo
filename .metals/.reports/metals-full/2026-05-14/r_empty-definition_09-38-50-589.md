@@ -1,6 +1,15 @@
-package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
+error id: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java:_empty_/PostMapping#
+file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+empty definition using pc, found symbol in pc: _empty_/PostMapping#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
 
-import org.springframework.security.access.prepost.PreAuthorize;
+offset: 14134
+uri: file:///D:/ander/Documents/SEMESTRE%207/ARSW/PROYECTO%20OFICIAL/Back-MediGo/src/main/java/edu/escuelaing/arsw/medigo/logistics/infrastructure/adapter/in/LogisticsController.java
+text:
+```scala
+package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
@@ -42,9 +51,9 @@ public class LogisticsController {
     private final UserJpaRepository userRepo;
     private final DriverLocationStore locationStore;
 
-    @PreAuthorize("hasRole('DELIVERY')")
     @PutMapping("/deliveries/{id}/location")
     public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
+            @PreAuthorize("hasRole('DELIVERY')")
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +61,6 @@ public class LogisticsController {
      * HU-10: Confirma la entrega de un pedido
      * Actualiza el estado de la entrega a DELIVERED y del pedido a ENTREGADO
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @PutMapping("/deliveries/{id}/complete")
     @Operation(
         summary = "Confirmar entrega (Repartidor)",
@@ -87,6 +95,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<?> completeDelivery(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "id",
                 description = "ID de la entrega a confirmar",
@@ -127,7 +136,6 @@ public class LogisticsController {
      * HU-11: Obtiene todas las entregas activas del repartidor
      * Las entregas activas son aquellas no entregadas (ASSIGNED, IN_ROUTE, PENDING_SHIPPING)
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/active")
     @Operation(
         summary = "Obtener entregas activas (Repartidor)",
@@ -171,6 +179,7 @@ public class LogisticsController {
         )
     })
     public ResponseEntity<List<DeliveryResponse>> getActiveDeliveries(
+                @PreAuthorize("hasRole('DELIVERY')")
             @Parameter(
                 name = "deliveryPersonId",
                 description = "ID del repartidor",
@@ -201,7 +210,6 @@ public class LogisticsController {
      * HU-11: Obtiene una entrega específica si pertenece al repartidor
      * Valida la propiedad y muestra el modal de confirmación con detalles de la entrega
      */
-    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/{id}")
     @Operation(
         summary = "Obtener detalle de una entrega (Repartidor)",
@@ -327,7 +335,7 @@ public class LogisticsController {
         ));
     }
 
-    @PostMapping("/driver/emergency")
+    @@@PostMapping("/driver/emergency")
     public ResponseEntity<?> reportEmergency(@RequestBody(required = false) Object body) {
         log.info("Soporte de emergencia reportado: {}", body);
         return ResponseEntity.ok(java.util.Map.of("message", "Reporte de emergencia recibido"));
@@ -489,3 +497,9 @@ public class LogisticsController {
         return ResponseEntity.ok(java.util.Map.of("message", "Courier assigned successfully"));
     }
 }
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/PostMapping#
