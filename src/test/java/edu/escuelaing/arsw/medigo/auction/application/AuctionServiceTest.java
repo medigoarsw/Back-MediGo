@@ -258,8 +258,8 @@ class AuctionServiceTest {
         return Auction.builder()
                 .id(1L).medicationId(1L).branchId(1L)
                 .basePrice(BigDecimal.valueOf(5000))
-                .startTime(LocalDateTime.now().minusMinutes(10))
-                .endTime(LocalDateTime.now().plusHours(2))
+                .startTime(AuctionTime.now().minusMinutes(10))
+                .endTime(AuctionTime.now().plusHours(2))
                 .status(status)
                 .closureType(Auction.ClosureType.FIXED_TIME)
                 .maxPrice(BigDecimal.valueOf(10000))
@@ -270,7 +270,7 @@ class AuctionServiceTest {
         return Bid.builder()
                 .id(1L).auctionId(1L).userId(1L)
                 .userName("Otro").amount(amount)
-                .placedAt(LocalDateTime.now()).build();
+                .placedAt(AuctionTime.now()).build();
     }
 
     @Test
@@ -311,7 +311,7 @@ class AuctionServiceTest {
         assertThatThrownBy(() -> sut.createAuction(cmd2)).isInstanceOf(InvalidAuctionDatesException.class);
 
         CreateAuctionCommand cmd3 = new CreateAuctionCommand(
-            1L, 1L, BigDecimal.valueOf(5000), LocalDateTime.now().minusDays(1), FUTURE_END, null, null, null
+            1L, 1L, BigDecimal.valueOf(5000), AuctionTime.now().minusDays(1), FUTURE_END, null, null, null
         );
         assertThatThrownBy(() -> sut.createAuction(cmd3)).isInstanceOf(InvalidAuctionDatesException.class);
 
@@ -350,7 +350,7 @@ class AuctionServiceTest {
 
     @Test
     void getAuctionDetail_activeNegativeDuration() {
-        Auction auction = buildAuction(Auction.AuctionStatus.ACTIVE).toBuilder().endTime(LocalDateTime.now().minusHours(1)).build();
+        Auction auction = buildAuction(Auction.AuctionStatus.ACTIVE).toBuilder().endTime(AuctionTime.now().minusHours(1)).build();
         when(auctionRepository.findById(1L)).thenReturn(Optional.of(auction));
         when(auctionCatalogPort.getMedicationInfo(1L)).thenReturn(Optional.of(new AuctionCatalogPort.MedicationInfo(1L, "Med", "Unit")));
         
@@ -408,7 +408,7 @@ class AuctionServiceTest {
         Auction active = buildAuction(Auction.AuctionStatus.ACTIVE).toBuilder()
             .closureType(Auction.ClosureType.INACTIVITY)
             .inactivityMinutes(5)
-            .lastBidAt(LocalDateTime.now().minusMinutes(10))
+            .lastBidAt(AuctionTime.now().minusMinutes(10))
             .build();
             
         when(auctionRepository.findActiveAuctions()).thenReturn(List.of(active));

@@ -80,7 +80,7 @@ class AuctionDomainTest {
             .userId(1L)
             .userName("User")
             .amount(BigDecimal.valueOf(5000))
-            .placedAt(LocalDateTime.now())
+            .placedAt(AuctionTime.now())
             .build();
             
         assertThat(bid.getId()).isEqualTo(1L);
