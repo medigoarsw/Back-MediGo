@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,7 @@ public class MedicationController {
     })
     public ResponseEntity<InventoryListResponse> listInventory(
             @RequestParam(required = false) Long branchId,
+            @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "El término de búsqueda contiene caracteres no permitidos")
             @RequestParam(required = false) String q,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int limit) {
@@ -205,6 +207,7 @@ public class MedicationController {
                 example = "paracetamol",
                 required = true
             )
+            @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "El nombre solo puede contener letras y números")
             @RequestParam String name) {
 
         log.info("Búsqueda de medicamentos por nombre: {}", name);
