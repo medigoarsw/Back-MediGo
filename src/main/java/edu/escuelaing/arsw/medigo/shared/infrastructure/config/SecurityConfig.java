@@ -72,6 +72,8 @@ public class SecurityConfig {
                 // CATALOG (admin)
                 .requestMatchers(HttpMethod.POST, "/api/medications").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/medications/*/branch/*/stock").hasRole("ADMIN")
+                .requestMatchers("/api/sedes/**").hasRole("ADMIN")
+                .requestMatchers("/api/sedes").hasRole("ADMIN")
 
                 // ORDERS (solo AFFILIATE)
                 .requestMatchers(HttpMethod.POST, "/api/orders/cart/add").hasRole("AFFILIATE")

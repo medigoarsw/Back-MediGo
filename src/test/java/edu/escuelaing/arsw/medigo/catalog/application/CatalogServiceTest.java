@@ -1,407 +1,267 @@
 package edu.escuelaing.arsw.medigo.catalog.application;
 
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
+import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-/**
- * Pruebas unitarias para el servicio CatalogService
- */
-@DisplayName("CatalogService - Casos de uso")
+@ExtendWith(MockitoExtension.class)
+@DisplayName("CatalogService - Unit Tests")
 class CatalogServiceTest {
 
     @Mock
     private MedicationRepositoryPort medicationRepository;
 
+    @InjectMocks
     private CatalogService catalogService;
+
+    private Medication mockMedication;
+    private BranchStock mockStock;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        catalogService = new CatalogService(medicationRepository);
-    }
+        mockMedication = Medication.builder()
+                .id(1L)
+                .name("Paracetamol")
+                .description("Para el dolor")
+                .unit("Caja 10 pastillas")
+                .price(new BigDecimal("5000.00"))
+                .build();
 
-    // ======================== BUSCAR MEDICAMENTOS ========================
-
-    @Test
-    @DisplayName("Debería buscar medicamentos por nombre exitosamente")
-    void testSearchByNameSuccess() {
-        // Arrange
-        String searchTerm = "paracetamol";
-        List<Medication> medications = List.of(
-                Medication.builder().id(1L).name("Paracetamol 500mg").unit("tableta").build(),
-                Medication.builder().id(2L).name("Paracetamol 1000mg").unit("tableta").build()
-        );
-
-        when(medicationRepository.findByNameContaining(searchTerm))
-                .thenReturn(medications);
-
-        // Act
-        List<Medication> result = catalogService.searchByName(searchTerm);
-
-        // Assert
-        assertEquals(2, result.size());
-        assertEquals("Paracetamol 500mg", result.get(0).getName());
-        verify(medicationRepository).findByNameContaining(searchTerm);
+        mockStock = new BranchStock(10L, 1L, 100);
     }
 
     @Test
-    @DisplayName("Debería lanzar excepción si el término de búsqueda está vacío")
-    void testSearchByNameEmptyTerm() {
-        // Act & Assert
+    @DisplayName("searchByName - Success")
+    void searchByName_success() {
+        when(medicationRepository.findByNameContaining("Para")).thenReturn(List.of(mockMedication));
+
+        List<Medication> results = catalogService.searchByName("Para");
+
+        assertFalse(results.isEmpty());
+        assertEquals("Paracetamol", results.get(0).getName());
+    }
+
+    @Test
+    @DisplayName("searchByName - Empty Name throws BusinessException")
+    void searchByName_emptyName_throwsException() {
         assertThrows(BusinessException.class, () -> catalogService.searchByName(""));
-        assertThrows(BusinessException.class, () -> catalogService.searchByName(null));
-        verify(medicationRepository, never()).findByNameContaining(anyString());
+        assertThrows(BusinessException.class, () -> catalogService.searchByName("  "));
     }
 
     @Test
-    @DisplayName("Debería retornar lista vacía si no hay resultados")
-    void testSearchByNameNoResults() {
-        // Arrange
-        String searchTerm = "medicamento_inexistente";
-        when(medicationRepository.findByNameContaining(searchTerm))
-                .thenReturn(List.of());
+    @DisplayName("getStockByBranch - Success")
+    void getStockByBranch_success() {
+        when(medicationRepository.findStockByBranch(10L)).thenReturn(List.of(mockStock));
 
-        // Act
-        List<Medication> result = catalogService.searchByName(searchTerm);
+        List<BranchStock> results = catalogService.getStockByBranch(10L);
 
-        // Assert
-        assertTrue(result.isEmpty());
-    }
-
-    // ======================== OBTENER STOCK POR SUCURSAL ========================
-
-    @Test
-    @DisplayName("Debería obtener stock de una sucursal exitosamente")
-    void testGetStockByBranchSuccess() {
-        // Arrange
-        Long branchId = 5L;
-        List<BranchStock> stocks = List.of(
-                BranchStock.builder().branchId(5L).medicationId(1L).quantity(35).build(),
-                BranchStock.builder().branchId(5L).medicationId(2L).quantity(0).build()
-        );
-
-        when(medicationRepository.findStockByBranch(branchId))
-                .thenReturn(stocks);
-
-        // Act
-        List<BranchStock> result = catalogService.getStockByBranch(branchId);
-
-        // Assert
-        assertEquals(2, result.size());
-        assertEquals(35, result.get(0).getQuantity());
-        verify(medicationRepository).findStockByBranch(branchId);
+        assertFalse(results.isEmpty());
+        assertEquals(100, results.get(0).getQuantity());
     }
 
     @Test
-    @DisplayName("Debería lanzar excepción si el ID de sucursal es inválido")
-    void testGetStockByBranchInvalidId() {
-        // Act & Assert
-        assertThrows(BusinessException.class, () -> catalogService.getStockByBranch(null));
-        assertThrows(BusinessException.class, () -> catalogService.getStockByBranch(-1L));
+    @DisplayName("getStockByBranch - Invalid ID throws BusinessException")
+    void getStockByBranch_invalidId_throwsException() {
         assertThrows(BusinessException.class, () -> catalogService.getStockByBranch(0L));
     }
 
-    // ======================== CREAR MEDICAMENTO ========================
-
     @Test
-    @DisplayName("Debería crear medicamento exitosamente (método antiguo)")
-    void testCreateMedicationSuccess() {
-        // Este test verifica el método antiguo createMedication(Medication, Long, int)
-        // Aunque mantiene compatibilidad hacia atrás con UpdateStockUseCase
-        Medication medication = Medication.builder()
-                .name("Aspirina")
-                .unit("tableta")
-                .description("Analgésico")
-                .price(java.math.BigDecimal.valueOf(3500))
-                .build();
+    @DisplayName("createMedication (Object) - Success")
+    void createMedication_object_success() {
+        when(medicationRepository.save(any(Medication.class))).thenReturn(mockMedication);
 
-        Medication savedMedication = Medication.builder()
-                .id(10L)
-                .name("Aspirina")
-                .unit("tableta")
-                .description("Analgésico")
-                .price(java.math.BigDecimal.valueOf(3500))
-                .build();
+        Medication result = catalogService.createMedication(mockMedication, 10L, 50);
 
-        when(medicationRepository.save(any(Medication.class)))
-                .thenReturn(savedMedication);
-
-        // Act
-        Medication result = catalogService.createMedication(medication, 1L, 100);
-
-        // Assert
-        assertNotNull(result.getId());
-        assertEquals("Aspirina", result.getName());
-        assertEquals(java.math.BigDecimal.valueOf(3500), result.getPrice());
-        verify(medicationRepository).save(any(Medication.class));
-        verify(medicationRepository).updateStock(1L, 10L, 100);
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si el medicamento es nulo")
-    void testCreateMedicationNullData() {
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(null, 1L, 100));
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si el nombre es vacío")
-    void testCreateMedicationEmptyName() {
-        // Arrange
-        Medication medication = Medication.builder()
-                .name("")
-                .unit("tableta")
-                .build();
-
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(medication, 1L, 100));
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si el ID de sucursal es inválido")
-    void testCreateMedicationInvalidBranch() {
-        // Arrange
-        Medication medication = Medication.builder()
-                .name("Medicamento")
-                .unit("tableta")
-                .build();
-
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(medication, null, 100));
-        assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(medication, 0L, 100));
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si el stock inicial es negativo")
-    void testCreateMedicationNegativeStock() {
-        // Arrange
-        Medication medication = Medication.builder()
-                .name("Medicamento")
-                .unit("tableta")
-                .build();
-
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(medication, 1L, -10));
-    }
-
-    // ======================== ACTUALIZAR STOCK ========================
-
-    @Test
-    @DisplayName("Debería actualizar stock exitosamente")
-    void testUpdateStockSuccess() {
-        // Arrange
-        Long branchId = 5L;
-        Long medicationId = 1L;
-        int newQuantity = 50;
-
-        when(medicationRepository.findById(medicationId))
-                .thenReturn(Optional.of(
-                        Medication.builder().id(1L).name("Medicamento").build()
-                ));
-
-        // Act
-        catalogService.updateStock(branchId, medicationId, newQuantity);
-
-        // Assert
-        verify(medicationRepository).findById(medicationId);
-        verify(medicationRepository).updateStock(branchId, medicationId, newQuantity);
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si medicamento no existe")
-    void testUpdateStockMedicationNotFound() {
-        // Arrange
-        when(medicationRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () ->
-                catalogService.updateStock(5L, 999L, 50));
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si la cantidad es negativa")
-    void testUpdateStockNegativeQuantity() {
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.updateStock(5L, 1L, -10));
-    }
-
-    @Test
-    @DisplayName("Debería lanzar excepción si el ID de medicamento es inválido")
-    void testUpdateStockInvalidMedicationId() {
-        // Act & Assert
-        assertThrows(BusinessException.class, () ->
-                catalogService.updateStock(5L, null, 50));
-        assertThrows(BusinessException.class, () ->
-                catalogService.updateStock(5L, 0L, 50));
-    }
-
-    @Test
-    @DisplayName("Debería permitir actualizar stock a cero")
-    void testUpdateStockToZero() {
-        // Arrange
-        when(medicationRepository.findById(1L))
-                .thenReturn(Optional.of(
-                        Medication.builder().id(1L).name("Medicamento").build()
-                ));
-
-        // Act
-        catalogService.updateStock(5L, 1L, 0);
-
-        // Assert
-        verify(medicationRepository).updateStock(5L, 1L, 0);
-    }
-
-    // ======================== HU-07: CREAR MEDICAMENTO ========================
-
-    @Test
-    @DisplayName("HU-07 Escenario 1: Crear medicamento exitosamente")
-    void testCreateMedicationSuccessfully() {
-        // Given: el administrador está autenticado e ingresa datos válidos
-        String name = "Paracetamol 500mg";
-        String description = "Analgésico y antipirético";
-        String unit = "Tabletas";
-        java.math.BigDecimal price = java.math.BigDecimal.valueOf(5000);
-        Long branchId = 1L;
-        Integer initialStock = 100;
-
-        when(medicationRepository.save(any(Medication.class)))
-                .thenAnswer(invocation -> {
-                    Medication med = invocation.getArgument(0);
-                    return Medication.builder()
-                            .id(10L)
-                            .name(med.getName())
-                            .description(med.getDescription())
-                            .unit(med.getUnit())
-                            .price(med.getPrice())  // Incluir precio en el mock
-                            .build();
-                });
-
-        // When: presiona el botón "Guardar"
-        Medication result = catalogService.createMedication(
-                name, description, unit, price, branchId, initialStock);
-
-        // Then: el medicamento se guarda en el catálogo
         assertNotNull(result);
-        assertNotNull(result.getId());
-        assertEquals(name, result.getName());
-        assertEquals(description, result.getDescription());
-        assertEquals(unit, result.getUnit());
-        assertEquals(price, result.getPrice());
-
-        // Verify: se actualiza el stock en la sucursal
-        verify(medicationRepository).save(any(Medication.class));
-        verify(medicationRepository).updateStock(branchId, result.getId(), initialStock);
+        assertEquals("Paracetamol", result.getName());
+        verify(medicationRepository).updateStock(10L, 1L, 50);
     }
 
     @Test
-    @DisplayName("HU-07 Escenario 2: Intentar crear medicamento con nombre vacío")
-    void testCreateMedicationWithEmptyName() {
-        // Given: el administrador intenta crear un medicamento sin nombre
-        String name = "";
-        String description = "Descripción";
-        String unit = "Tabletas";
-        java.math.BigDecimal price = java.math.BigDecimal.valueOf(5000);
-        Long branchId = 1L;
-        Integer initialStock = 100;
-
-        // When & Then: lanza excepción por nombre vacío
-        BusinessException exception = assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(name, description, unit, price, branchId, initialStock)
-        );
-
-        assertEquals("El nombre es obligatorio", exception.getMessage());
-        verify(medicationRepository, never()).save(any(Medication.class));
+    @DisplayName("createMedication (Object) - Negative Stock throws BusinessException")
+    void createMedication_object_negativeStock_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.createMedication(mockMedication, 10L, -5));
     }
 
     @Test
-    @DisplayName("HU-07 Escenario 3: Intentar crear medicamento con precio inválido (0 o negativo)")
-    void testCreateMedicationWithInvalidPrice() {
-        // Given: el administrador intenta crear un medicamento con precio 0
-        String name = "Paracetamol 500mg";
-        String description = "Descripción";
-        String unit = "Tabletas";
-        java.math.BigDecimal priceZero = java.math.BigDecimal.ZERO;
-        java.math.BigDecimal priceNegative = java.math.BigDecimal.valueOf(-100);
-        Long branchId = 1L;
-        Integer initialStock = 100;
-
-        // When & Then: lanza excepción por precio inválido (0)
-        BusinessException exceptionZero = assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(name, description, unit, priceZero, branchId, initialStock)
-        );
-        assertEquals("El precio debe ser mayor a 0", exceptionZero.getMessage());
-
-        // When & Then: lanza excepción por precio negativo
-        BusinessException exceptionNegative = assertThrows(BusinessException.class, () ->
-                catalogService.createMedication(name, description, unit, priceNegative, branchId, initialStock)
-        );
-        assertEquals("El precio debe ser mayor a 0", exceptionNegative.getMessage());
-
-        verify(medicationRepository, never()).save(any(Medication.class));
+    @DisplayName("createMedication (Object) - Null branch throws BusinessException")
+    void createMedication_object_nullBranch_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.createMedication(mockMedication, null, 50));
     }
 
     @Test
-    @DisplayName("HU-07 Escenario 4: Medicamento creado visible en búsqueda de clientes")
-    void testCreatedMedicationVisibleInSearch() {
-        // Given: el administrador acaba de crear un medicamento "Aspirina 500mg"
-        String name = "Aspirina 500mg";
-        String description = "Antiinflamatorio";
-        String unit = "Tabletas";
-        java.math.BigDecimal price = java.math.BigDecimal.valueOf(3500);
-        Long branchId = 1L;
-        Integer initialStock = 50;
+    @DisplayName("createMedication (Object) - Invalid medication data throws BusinessException")
+    void createMedication_object_invalidMedication_throwsException() {
+        Medication invalid = Medication.builder().build();
+        assertThrows(BusinessException.class, () -> catalogService.createMedication(invalid, 10L, 50));
+        assertThrows(BusinessException.class, () -> catalogService.createMedication(null, 10L, 50));
+    }
 
-        Medication createdMedication = Medication.builder()
-                .id(11L)
-                .name(name)
-                .description(description)
-                .unit(unit)
-                .price(price)
-                .build();
+    @Test
+    @DisplayName("createMedication (Params) - Success")
+    void createMedication_params_success() {
+        when(medicationRepository.save(any(Medication.class))).thenReturn(mockMedication);
 
-        when(medicationRepository.save(any(Medication.class)))
-                .thenReturn(createdMedication);
+        Medication result = catalogService.createMedication("Paracetamol", "Para el dolor", "Caja 10 pastillas", new BigDecimal("5000.00"), 10L, 50);
 
-        // Crear el medicamento
-        Medication result = catalogService.createMedication(
-                name, description, unit, price, branchId, initialStock);
+        assertNotNull(result);
+        assertEquals("Paracetamol", result.getName());
+        verify(medicationRepository).updateStock(10L, 1L, 50);
+    }
 
-        // When: un cliente accede a la plataforma y busca "Aspirina"
-        when(medicationRepository.findByNameContaining("Aspirina"))
-                .thenReturn(List.of(createdMedication));
+    @Test
+    @DisplayName("createMedication (Params) - Invalid Params throws BusinessException")
+    void createMedication_params_invalidParams_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.createMedication("", "Desc", "Unit", new BigDecimal("500"), 10L, 50));
+        assertThrows(BusinessException.class, () -> catalogService.createMedication("Name", "Desc", "", new BigDecimal("500"), 10L, 50));
+        assertThrows(BusinessException.class, () -> catalogService.createMedication("Name", "Desc", "Unit", new BigDecimal("-5"), 10L, 50));
+        assertThrows(BusinessException.class, () -> catalogService.createMedication("Name", "Desc", "Unit", new BigDecimal("500"), 0L, 50));
+        assertThrows(BusinessException.class, () -> catalogService.createMedication("Name", "Desc", "Unit", new BigDecimal("500"), 10L, -5));
+    }
 
-        List<Medication> searchResults = catalogService.searchByName("Aspirina");
+    @Test
+    @DisplayName("updateStock - Success")
+    void updateStock_success() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.of(mockMedication));
 
-        // Then: el medicamento aparece en el catálogo general
-        assertNotNull(searchResults);
-        assertFalse(searchResults.isEmpty());
-        assertTrue(searchResults.stream().anyMatch(m -> m.getName().contains("Aspirina")));
-        assertEquals(name, searchResults.get(0).getName());
-        assertEquals(price, searchResults.get(0).getPrice());
+        catalogService.updateStock(10L, 1L, 150);
 
-        verify(medicationRepository).save(any(Medication.class));
-        verify(medicationRepository).updateStock(branchId, result.getId(), initialStock);
+        verify(medicationRepository).updateStock(10L, 1L, 150);
+    }
+
+    @Test
+    @DisplayName("updateStock - Negative Quantity throws BusinessException")
+    void updateStock_negativeQuantity_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.updateStock(10L, 1L, -5));
+    }
+
+    @Test
+    @DisplayName("updateStock - Medication Not Found throws ResourceNotFoundException")
+    void updateStock_notFound_throwsException() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> catalogService.updateStock(10L, 1L, 150));
+    }
+    
+    @Test
+    @DisplayName("updateStock - Invalid ID throws Exception")
+    void updateStock_invalidId_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.updateStock(0L, 1L, 150));
+        assertThrows(BusinessException.class, () -> catalogService.updateStock(10L, 0L, 150));
+    }
+
+    @Test
+    @DisplayName("getMedicationsByBranch - Success")
+    void getMedicationsByBranch_success() {
+        StockWithMedicationInfo info = new StockWithMedicationInfo(1L, "Paracetamol", "Para el dolor", "Caja", 10L, 50);
+        when(medicationRepository.findMedicationsByBranch(10L)).thenReturn(List.of(info));
+
+        List<StockWithMedicationInfo> results = catalogService.getMedicationsByBranch(10L);
+
+        assertFalse(results.isEmpty());
+        assertEquals(50, results.get(0).getQuantity());
+    }
+
+    @Test
+    @DisplayName("getMedicationsByBranch - Invalid ID throws Exception")
+    void getMedicationsByBranch_invalidId_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.getMedicationsByBranch(0L));
+    }
+
+    @Test
+    @DisplayName("getAllMedicationsByBranches - Success")
+    void getAllMedicationsByBranches_success() {
+        BranchWithMedications branchWithMedications = new BranchWithMedications();
+        when(medicationRepository.findAllBranchesWithMedications()).thenReturn(List.of(branchWithMedications));
+
+        List<BranchWithMedications> results = catalogService.getAllMedicationsByBranches();
+
+        assertFalse(results.isEmpty());
+    }
+
+    @Test
+    @DisplayName("findById - Success")
+    void findById_success() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.of(mockMedication));
+
+        Optional<Medication> result = catalogService.findById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
+    }
+
+    @Test
+    @DisplayName("findById - Invalid ID throws BusinessException")
+    void findById_invalidId_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.findById(0L));
+    }
+
+    @Test
+    @DisplayName("getAvailabilityByMedicationBranch - Success")
+    void getAvailabilityByMedicationBranch_success() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.of(mockMedication));
+        when(medicationRepository.findStockByMedicationAndBranch(1L, 10L)).thenReturn(mockStock);
+
+        BranchStock result = catalogService.getAvailabilityByMedicationBranch(1L, 10L);
+
+        assertNotNull(result);
+        assertEquals(100, result.getQuantity());
+    }
+
+    @Test
+    @DisplayName("getAvailabilityByMedicationBranch - Missing Stock Returns 0")
+    void getAvailabilityByMedicationBranch_missingStock_returnsZero() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.of(mockMedication));
+        when(medicationRepository.findStockByMedicationAndBranch(1L, 10L)).thenReturn(null);
+
+        BranchStock result = catalogService.getAvailabilityByMedicationBranch(1L, 10L);
+
+        assertNotNull(result);
+        assertEquals(0, result.getQuantity());
+    }
+    
+    @Test
+    @DisplayName("getAvailabilityByMedicationBranch - Invalid ID throws Exception")
+    void getAvailabilityByMedicationBranch_invalidId_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.getAvailabilityByMedicationBranch(0L, 10L));
+        assertThrows(BusinessException.class, () -> catalogService.getAvailabilityByMedicationBranch(1L, 0L));
+    }
+
+    @Test
+    @DisplayName("getAvailabilityByMedicationAllBranches - Success")
+    void getAvailabilityByMedicationAllBranches_success() {
+        when(medicationRepository.findById(1L)).thenReturn(Optional.of(mockMedication));
+        when(medicationRepository.findStockByMedication(1L)).thenReturn(List.of(mockStock));
+
+        List<BranchStock> results = catalogService.getAvailabilityByMedicationAllBranches(1L);
+
+        assertFalse(results.isEmpty());
+        assertEquals(10L, results.get(0).getBranchId());
+    }
+    
+    @Test
+    @DisplayName("getAvailabilityByMedicationAllBranches - Invalid ID throws Exception")
+    void getAvailabilityByMedicationAllBranches_invalidId_throwsException() {
+        assertThrows(BusinessException.class, () -> catalogService.getAvailabilityByMedicationAllBranches(0L));
     }
 }

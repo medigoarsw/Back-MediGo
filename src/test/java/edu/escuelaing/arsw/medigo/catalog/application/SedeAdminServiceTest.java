@@ -9,89 +9,199 @@ import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFou
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
-@DisplayName("SedeAdminService")
+@ExtendWith(MockitoExtension.class)
+@DisplayName("SedeAdminService - Unit Tests")
 class SedeAdminServiceTest {
 
     @Mock
     private BranchSpringDataRepository branchRepository;
 
-    private SedeAdminService service;
+    @InjectMocks
+    private SedeAdminService sedeAdminService;
+
+    private BranchEntity mockBranch;
+    private SedeRequest mockRequest;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        service = new SedeAdminService(branchRepository);
-    }
-
-    @Test
-    @DisplayName("create debe rechazar nombre duplicado")
-    void createRejectsDuplicateName() {
-        SedeRequest request = new SedeRequest();
-        request.setNombre("Sede Centro");
-        request.setDireccion("Calle 10");
-        request.setEspecialidad("General");
-
-        when(branchRepository.existsByNameIgnoreCaseAndActiveTrue("Sede Centro")).thenReturn(true);
-
-        assertThrows(ResourceConflictException.class, () -> service.create(request));
-    }
-
-    @Test
-    @DisplayName("update parcial debe aplicar solo campos presentes")
-    void updatePartialWorks() {
-        BranchEntity existing = BranchEntity.builder()
-                .id(5L)
-                .name("Sede Norte")
-                .address("Dir vieja")
+        mockBranch = BranchEntity.builder()
+                .id(1L)
+                .name("Sede Central")
+                .address("Calle 123")
                 .specialty("General")
-                .phone("+57 300 000 0000")
+                .phone("1234567")
                 .capacity(100)
+                .latitude(4.0)
+                .longitude(-74.0)
                 .active(true)
                 .build();
 
-        SedeUpdateRequest request = new SedeUpdateRequest();
-        request.setDireccion("Dir nueva");
-        request.setCapacidad(180);
-
-        when(branchRepository.findById(5L)).thenReturn(Optional.of(existing));
-        when(branchRepository.save(any(BranchEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        BranchEntity updated = service.update(5L, request);
-
-        assertEquals("Sede Norte", updated.getName());
-        assertEquals("Dir nueva", updated.getAddress());
-        assertEquals(180, updated.getCapacity());
+        mockRequest = new SedeRequest();
+        mockRequest.setNombre("Sede Central");
+        mockRequest.setDireccion("Calle 123");
+        mockRequest.setEspecialidad("General");
+        mockRequest.setTelefono("1234567");
+        mockRequest.setCapacidad(100);
+        mockRequest.setLatitude(4.0);
+        mockRequest.setLongitude(-74.0);
     }
 
     @Test
-    @DisplayName("softDelete debe marcar active=false")
-    void softDeleteMarksInactive() {
-        BranchEntity existing = BranchEntity.builder().id(9L).name("Sede Sur").active(true).build();
-        when(branchRepository.findById(9L)).thenReturn(Optional.of(existing));
+    @DisplayName("list - Success")
+    void list_success() {
+        Page<BranchEntity> page = new PageImpl<>(List.of(mockBranch));
+        when(branchRepository.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(page);
 
-        service.softDelete(9L);
+        Page<BranchEntity> result = sedeAdminService.list(1, 10, "Central");
 
-        assertEquals(false, existing.getActive());
-        verify(branchRepository).save(existing);
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Sede Central", result.getContent().get(0).getName());
     }
 
     @Test
-    @DisplayName("getById debe lanzar not found si sede esta inactiva")
-    void getByIdInactiveThrowsNotFound() {
-        BranchEntity existing = BranchEntity.builder().id(4L).name("Sede X").active(false).build();
-        when(branchRepository.findById(4L)).thenReturn(Optional.of(existing));
+    @DisplayName("list - Invalid page throws Exception")
+    void list_invalidPage_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> sedeAdminService.list(0, 10, ""));
+    }
 
-        assertThrows(ResourceNotFoundException.class, () -> service.getById(4L));
+    @Test
+    @DisplayName("list - Invalid limit throws Exception")
+    void list_invalidLimit_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> sedeAdminService.list(1, 150, ""));
+    }
+
+    @Test
+    @DisplayName("getById - Success")
+    void getById_success() {
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(mockBranch));
+
+        BranchEntity result = sedeAdminService.getById(1L);
+
+        assertNotNull(result);
+        assertEquals("Sede Central", result.getName());
+    }
+
+    @Test
+    @DisplayName("getById - Not found throws ResourceNotFoundException")
+    void getById_notFound_throwsException() {
+        when(branchRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> sedeAdminService.getById(1L));
+    }
+
+    @Test
+    @DisplayName("getById - Inactive throws ResourceNotFoundException")
+    void getById_inactive_throwsException() {
+        mockBranch.setActive(false);
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(mockBranch));
+
+        assertThrows(ResourceNotFoundException.class, () -> sedeAdminService.getById(1L));
+    }
+
+    @Test
+    @DisplayName("create - Success")
+    void create_success() {
+        when(branchRepository.existsByNameIgnoreCaseAndActiveTrue("Sede Central")).thenReturn(false);
+        when(branchRepository.save(any(BranchEntity.class))).thenReturn(mockBranch);
+
+        BranchEntity result = sedeAdminService.create(mockRequest);
+
+        assertNotNull(result);
+        assertEquals("Sede Central", result.getName());
+        verify(branchRepository).save(any(BranchEntity.class));
+    }
+
+    @Test
+    @DisplayName("create - Conflict throws ResourceConflictException")
+    void create_conflict_throwsException() {
+        when(branchRepository.existsByNameIgnoreCaseAndActiveTrue("Sede Central")).thenReturn(true);
+
+        assertThrows(ResourceConflictException.class, () -> sedeAdminService.create(mockRequest));
+        verify(branchRepository, never()).save(any(BranchEntity.class));
+    }
+
+    @Test
+    @DisplayName("create - Empty name throws Exception")
+    void create_emptyName_throwsException() {
+        mockRequest.setNombre("");
+
+        assertThrows(IllegalArgumentException.class, () -> sedeAdminService.create(mockRequest));
+    }
+
+    @Test
+    @DisplayName("update - Success")
+    void update_success() {
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(mockBranch));
+        when(branchRepository.existsByNameIgnoreCaseAndActiveTrueAndIdNot("Sede Nueva", 1L)).thenReturn(false);
+        
+        SedeUpdateRequest updateRequest = new SedeUpdateRequest();
+        updateRequest.setNombre("Sede Nueva");
+        updateRequest.setDireccion("Calle 456");
+        updateRequest.setEspecialidad("Pediatria");
+        updateRequest.setTelefono("987654");
+        updateRequest.setCapacidad(200);
+        updateRequest.setLatitude(5.0);
+        updateRequest.setLongitude(-75.0);
+        
+        BranchEntity updatedBranch = BranchEntity.builder()
+                .id(1L)
+                .name("Sede Nueva")
+                .address("Calle 456")
+                .specialty("Pediatria")
+                .phone("987654")
+                .capacity(200)
+                .latitude(5.0)
+                .longitude(-75.0)
+                .active(true)
+                .build();
+        
+        when(branchRepository.save(any(BranchEntity.class))).thenReturn(updatedBranch);
+
+        BranchEntity result = sedeAdminService.update(1L, updateRequest);
+
+        assertNotNull(result);
+        assertEquals("Sede Nueva", result.getName());
+    }
+
+    @Test
+    @DisplayName("update - Conflict throws ResourceConflictException")
+    void update_conflict_throwsException() {
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(mockBranch));
+        when(branchRepository.existsByNameIgnoreCaseAndActiveTrueAndIdNot("Sede Nueva", 1L)).thenReturn(true);
+        
+        SedeUpdateRequest updateRequest = new SedeUpdateRequest();
+        updateRequest.setNombre("Sede Nueva");
+
+        assertThrows(ResourceConflictException.class, () -> sedeAdminService.update(1L, updateRequest));
+    }
+
+    @Test
+    @DisplayName("softDelete - Success")
+    void softDelete_success() {
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(mockBranch));
+        when(branchRepository.save(any(BranchEntity.class))).thenReturn(mockBranch);
+
+        sedeAdminService.softDelete(1L);
+
+        assertFalse(mockBranch.getActive());
+        verify(branchRepository).save(mockBranch);
     }
 }

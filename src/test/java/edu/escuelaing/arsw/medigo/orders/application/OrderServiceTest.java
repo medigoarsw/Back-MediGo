@@ -465,4 +465,45 @@ class OrderServiceTest {
     assertEquals("El carrito está vacío. Agregue medicamentos antes de confirmar", exception.getMessage());
     verify(orderRepository, never()).save(any(Order.class));
   }
+
+  @Test
+  @DisplayName("findByStatus - Returns orders")
+  void findByStatus_returnsOrders() {
+    when(orderRepository.findByStatus(Order.OrderStatus.PENDING)).thenReturn(java.util.List.of(Order.builder().build()));
+    java.util.List<Order> result = orderService.findByStatus(Order.OrderStatus.PENDING);
+    assertFalse(result.isEmpty());
+  }
+
+  @Test
+  @DisplayName("findByAffiliateId - Returns orders")
+  void findByAffiliateId_returnsOrders() {
+    when(orderRepository.findByAffiliateId(1L)).thenReturn(java.util.List.of(Order.builder().build()));
+    java.util.List<Order> result = orderService.findByAffiliateId(1L);
+    assertFalse(result.isEmpty());
+  }
+
+  @Test
+  @DisplayName("createOrder - Validates parameters and saves")
+  void createOrder_validatesAndSaves() {
+    assertThrows(BusinessException.class, () -> orderService.createOrder(0L, 1L, 1.0, 1.0, new ArrayList<>()));
+    assertThrows(BusinessException.class, () -> orderService.createOrder(1L, 0L, 1.0, 1.0, new ArrayList<>()));
+
+    when(orderRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    Order result = orderService.createOrder(1L, 1L, 1.0, 1.0, new ArrayList<>());
+    assertNotNull(result);
+    assertEquals(1L, result.getAffiliateId());
+  }
+
+  @Test
+  @DisplayName("createOrder - Handles save exception")
+  void createOrder_handlesSaveException() {
+    when(orderRepository.save(any())).thenThrow(new RuntimeException("DB error"));
+    assertThrows(BusinessException.class, () -> orderService.createOrder(1L, 1L, 1.0, 1.0, new ArrayList<>()));
+  }
+
+  @Test
+  @DisplayName("confirmOrder - Throws UnsupportedOperationException")
+  void confirmOrder_throwsException() {
+    assertThrows(UnsupportedOperationException.class, () -> orderService.confirmOrder(1L));
+  }
 }
