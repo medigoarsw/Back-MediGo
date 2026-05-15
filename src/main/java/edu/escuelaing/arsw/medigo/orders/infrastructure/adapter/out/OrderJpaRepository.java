@@ -97,6 +97,10 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .commune(o.getCommune())
                 .addressLat(o.getAddressLat())
                 .addressLng(o.getAddressLng())
+                .branchLat(o.getBranchLat())
+                .branchLng(o.getBranchLng())
+                .branchName(o.getBranchName())
+                .branchAddress(o.getBranchAddress())
                 .createdAt(o.getCreatedAt() != null ? o.getCreatedAt() : now)
                 .deliveredAt(o.getDeliveredAt())
                 .build();
@@ -148,6 +152,10 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .commune(e.getCommune())
                 .addressLat(e.getAddressLat())
                 .addressLng(e.getAddressLng())
+                .branchLat(e.getBranchLat())
+                .branchLng(e.getBranchLng())
+                .branchName(e.getBranchName())
+                .branchAddress(e.getBranchAddress())
                 .createdAt(e.getCreatedAt())
                 .deliveredAt(e.getDeliveredAt())
                 .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar

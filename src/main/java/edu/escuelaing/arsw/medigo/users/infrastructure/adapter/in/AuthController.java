@@ -290,7 +290,7 @@ public class AuthController {
      * Esta es la respuesta después de un login exitoso
      */
     private LoginResponseDto buildLoginResponse(User user) {
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().getCode());
+        String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole().getCode());
         
         return LoginResponseDto.builder()
                 .accessToken(token)

@@ -22,6 +22,10 @@ public class OrderEntity {
     @Column(name = "commune", length = 100) private String commune;
     @Column(name = "address_lat") private Double addressLat;
     @Column(name = "address_lng") private Double addressLng;
+    @Column(name = "branch_lat") private Double branchLat;
+    @Column(name = "branch_lng") private Double branchLng;
+    @Column(name = "branch_name", length = 255) private String branchName;
+    @Column(name = "branch_address", length = 255) private String branchAddress;
     @Column(name = "created_at") private LocalDateTime createdAt;
     @Column(name = "delivered_at") private LocalDateTime deliveredAt;  // HU-10
 

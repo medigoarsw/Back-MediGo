@@ -133,14 +133,7 @@ public class LogisticsController {
         try {
             Delivery delivery = assignDeliveryUseCase.completeDelivery(id);
 
-            DeliveryResponse response = DeliveryResponse.builder()
-                    .id(delivery.getId())
-                    .orderId(delivery.getOrderId())
-                    .deliveryPersonId(delivery.getDeliveryPersonId())
-                    .status(delivery.getStatus())
-                    .assignedAt(delivery.getAssignedAt())
-                    .deliveredAt(delivery.getDeliveredAt())
-                    .build();
+            DeliveryResponse response = mapToResponse(delivery);
 
             log.info("HU-10: Entrega {} confirmada exitosamente a las {}", id, delivery.getDeliveredAt());
             return ResponseEntity.ok(response);
@@ -292,13 +285,15 @@ public class LogisticsController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/deliveries/history")
+    @PreAuthorize("hasRole('DELIVERY')")
+    @GetMapping({"/deliveries/history", "/deliveries/history/trips"})
+    @Operation(summary = "Historial de entregas del repartidor")
     public ResponseEntity<List<DeliveryResponse>> getDeliveryHistory(
             @RequestParam Long deliveryPersonId,
-            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "Rango inválido")
             @RequestParam(required = false) String range) {
         log.info("Solicitando historial de entregas para repartidor: {}, rango: {}", deliveryPersonId, range);
-        // TODO: implementar consulta de entregas con status=DELIVERED por deliveryPersonId
+        
+        // TODO: Implementar búsqueda real en deliveryRepository filtrando por status=DELIVERED
         return ResponseEntity.ok(List.of());
     }
 
@@ -335,12 +330,14 @@ public class LogisticsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/deliveries/history/summary")
+    @PreAuthorize("hasRole('DELIVERY')")
+    @GetMapping({"/deliveries/history/summary", "/deliveries/history/summary/stats"})
     public ResponseEntity<?> getDeliveryHistorySummary(
             @RequestParam Long deliveryPersonId,
-            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "Rango inválido")
             @RequestParam(required = false) String range) {
         log.info("Solicitando resumen de historial para repartidor: {}, rango: {}", deliveryPersonId, range);
+        
+        // TODO: Implementar agregación real de estadísticas
         return ResponseEntity.ok(java.util.Map.of(
                 "totalTrips", 0,
                 "tripsGrowthPct", 0,
@@ -362,13 +359,7 @@ public class LogisticsController {
         log.info("Asignando repartidor {} al pedido {}", req.deliveryPersonId(), req.orderId());
         try {
             Delivery delivery = assignDeliveryUseCase.assignDelivery(req.orderId(), req.deliveryPersonId());
-            DeliveryResponse response = DeliveryResponse.builder()
-                    .id(delivery.getId())
-                    .orderId(delivery.getOrderId())
-                    .deliveryPersonId(delivery.getDeliveryPersonId())
-                    .status(delivery.getStatus())
-                    .assignedAt(delivery.getAssignedAt())
-                    .build();
+            DeliveryResponse response = mapToResponse(delivery);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
@@ -416,13 +407,7 @@ public class LogisticsController {
         log.info("Marcando entrega {} como IN_ROUTE", id);
         try {
             Delivery delivery = assignDeliveryUseCase.markInRoute(id);
-            DeliveryResponse response = DeliveryResponse.builder()
-                    .id(delivery.getId())
-                    .orderId(delivery.getOrderId())
-                    .deliveryPersonId(delivery.getDeliveryPersonId())
-                    .status(delivery.getStatus())
-                    .assignedAt(delivery.getAssignedAt())
-                    .build();
+            DeliveryResponse response = mapToResponse(delivery);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
@@ -527,15 +512,10 @@ public class LogisticsController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/orders")
-    public ResponseEntity<?> createOrder(@RequestBody Object body) {
-        log.info("Mock logistics order created");
-        return ResponseEntity.status(HttpStatus.CREATED).body(java.util.Map.of("id", 123, "status", "CREATED"));
-    }
-
     @PostMapping("/assignments")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> assignCourier(@RequestBody Object body) {
-        log.info("Mock courier assigned");
-        return ResponseEntity.ok(java.util.Map.of("message", "Courier assigned successfully"));
+        log.info("Courier assignment requested");
+        return ResponseEntity.ok(java.util.Map.of("message", "Request received"));
     }
 }

@@ -5,6 +5,7 @@ import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.repository.BranchSpringDataRepository;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase {
+public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase, SearchBranchUseCase {
 
 
 
     private final MedicationRepositoryPort medicationRepository;
+    private final BranchSpringDataRepository branchRepository;
 
     /**
      * Busca medicamentos por nombre (búsqueda parcial, insensible a mayúsculas)
@@ -185,6 +187,19 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         log.debug("Buscando medicamento con ID: {}", id);
         return medicationRepository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Branch> findBranchById(Long branchId) {
+        return branchRepository.findById(branchId)
+                .map(e -> Branch.builder()
+                        .id(e.getId())
+                        .name(e.getName())
+                        .address(e.getAddress())
+                        .latitude(e.getLatitude())
+                        .longitude(e.getLongitude())
+                        .build());
     }
 
     /**

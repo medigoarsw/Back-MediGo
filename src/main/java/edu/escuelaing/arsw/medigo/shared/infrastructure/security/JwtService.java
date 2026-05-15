@@ -32,8 +32,9 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(Long userId, String username, String role) {
         Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", userId);
         extraClaims.put("role", role);
         return generateToken(extraClaims, username);
     }

@@ -99,6 +99,7 @@ public class AuctionController {
     }
 
     @GetMapping("/won")
+    @PreAuthorize("hasRole('AFFILIATE')")
     public WonAuctionsPageResponse getWonAuctions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
