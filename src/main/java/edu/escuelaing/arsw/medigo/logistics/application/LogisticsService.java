@@ -8,7 +8,7 @@ import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFou
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.LogisticsEventPublisherPort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +21,7 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
     private final LocationStatePort locationState;
     private final DeliveryRepositoryPort deliveryRepository;
     private final OrderRepositoryPort orderRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final LogisticsEventPublisherPort eventPublisher;
 
     private void broadcastOrderStatus(Long orderId, String status, Long deliveryId, String deliveredAt) {
         if (orderId == null) return;
@@ -30,8 +30,8 @@ public class LogisticsService implements UpdateLocationUseCase, AssignDeliveryUs
         payload.put("status", status);
         payload.put("deliveryId", deliveryId);
         payload.put("deliveredAt", deliveredAt != null ? deliveredAt : "");
-        messagingTemplate.convertAndSend("/topic/order/" + orderId + "/status", payload);
-        log.debug("Broadcast order status: orderId={} status={}", orderId, status);
+        eventPublisher.publishOrderStatusUpdate(orderId, payload);
+        log.debug("Published order status update to Redis: orderId={} status={}", orderId, status);
     }
     
     @Override

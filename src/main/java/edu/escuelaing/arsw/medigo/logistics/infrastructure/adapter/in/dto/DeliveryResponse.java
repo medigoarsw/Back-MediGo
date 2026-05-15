@@ -44,5 +44,25 @@ public class DeliveryResponse {
 
     @Schema(description = "Fecha y hora de entrega confirmada (HU-10)", example = "2026-04-02T15:45:00")
     private LocalDateTime deliveredAt;
+
+    // Detalles de la sucursal para recogida
+    @Schema(description = "Nombre de la sucursal de recogida", example = "Farmacia Central")
+    private String branchName;
+
+    @Schema(description = "Dirección de la sucursal", example = "Calle 100 #15-20")
+    private String branchAddress;
+
+    @Schema(description = "Latitud de la sucursal")
+    private Double branchLat;
+
+    @Schema(description = "Longitud de la sucursal")
+    private Double branchLng;
+
+    // Coordenadas del usuario (destino)
+    @Schema(description = "Latitud del destino (Usuario)")
+    private Double userLat;
+
+    @Schema(description = "Longitud del destino (Usuario)")
+    private Double userLng;
 }
 

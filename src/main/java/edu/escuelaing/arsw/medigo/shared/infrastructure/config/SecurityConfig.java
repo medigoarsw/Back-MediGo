@@ -84,7 +84,7 @@ public class SecurityConfig {
                 // LOGISTICS (solo DELIVERY)
                 .requestMatchers(HttpMethod.GET, "/api/logistics/deliveries/active").hasRole("DELIVERY")
                 .requestMatchers(HttpMethod.GET, "/api/logistics/deliveries/*").hasRole("DELIVERY")
-                .requestMatchers(HttpMethod.PUT, "/api/logistics/deliveries/*/location").hasRole("DELIVERY")
+                .requestMatchers("/api/logistics/deliveries/*/location").permitAll() // Permitir actualizaciones internas (POST/PUT)
                 .requestMatchers(HttpMethod.PUT, "/api/logistics/deliveries/*/complete").hasRole("DELIVERY")
 
                 // AUCTIONS

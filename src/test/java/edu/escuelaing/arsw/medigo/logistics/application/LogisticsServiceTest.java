@@ -6,6 +6,7 @@ import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPo
 import edu.escuelaing.arsw.medigo.logistics.domain.port.out.LocationStatePort;
 import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.LogisticsEventPublisherPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +36,7 @@ class LogisticsServiceTest {
     @Mock
     private OrderRepositoryPort orderRepository;
     @Mock
-    private SimpMessagingTemplate messagingTemplate;
+    private LogisticsEventPublisherPort eventPublisher;
 
     @InjectMocks
     private LogisticsService logisticsService;
@@ -80,7 +80,7 @@ class LogisticsServiceTest {
         assertEquals(100L, result.getId());
         assertEquals(Delivery.DeliveryStatus.ASSIGNED, result.getStatus());
         verify(orderRepository).updateStatus(200L, Order.OrderStatus.ASSIGNED);
-        verify(messagingTemplate).convertAndSend(eq("/topic/order/200/status"), anyMap());
+        verify(eventPublisher).publishOrderStatusUpdate(eq(200L), anyMap());
     }
 
     @Test
@@ -113,7 +113,7 @@ class LogisticsServiceTest {
         assertEquals(Delivery.DeliveryStatus.IN_ROUTE, result.getStatus());
         verify(deliveryRepository).updateStatus(100L, Delivery.DeliveryStatus.IN_ROUTE);
         verify(orderRepository).updateStatus(200L, Order.OrderStatus.IN_ROUTE);
-        verify(messagingTemplate).convertAndSend(eq("/topic/order/200/status"), anyMap());
+        verify(eventPublisher).publishOrderStatusUpdate(eq(200L), anyMap());
     }
 
     @Test
@@ -137,7 +137,7 @@ class LogisticsServiceTest {
         assertNotNull(result.getDeliveredAt());
         verify(deliveryRepository).updateStatusAndDeliveredAt(eq(100L), eq(Delivery.DeliveryStatus.DELIVERED), any(LocalDateTime.class));
         verify(orderRepository).updateStatusAndDeliveredAt(eq(200L), eq(Order.OrderStatus.DELIVERED), any(LocalDateTime.class));
-        verify(messagingTemplate).convertAndSend(eq("/topic/order/200/status"), anyMap());
+        verify(eventPublisher).publishOrderStatusUpdate(eq(200L), anyMap());
     }
 
     @Test

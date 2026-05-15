@@ -11,6 +11,9 @@ import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.repository.BranchSpringDataRepository;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchEntity;
+import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,11 +44,41 @@ public class LogisticsController {
     private final SpringDeliveryJpaRepository springDeliveryRepo;
     private final UserJpaRepository userRepo;
     private final DriverLocationStore locationStore;
+    private final BranchSpringDataRepository branchRepo;
 
-    @PreAuthorize("hasRole('DELIVERY')")
-    @PutMapping("/deliveries/{id}/location")
-    public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
-        return ResponseEntity.ok().build();
+    @PostMapping("/deliveries/{id}/location")
+    public ResponseEntity<?> updateLocation(@PathVariable String id, @RequestBody Map<String, Object> payload) {
+        try {
+            double lat = Double.parseDouble(payload.get("lat").toString());
+            double lng = Double.parseDouble(payload.get("lng").toString());
+            Long ts = payload.get("ts") != null ? Long.parseLong(payload.get("ts").toString()) : System.currentTimeMillis();
+            
+            Long deliveryPersonId = null;
+            Object dpIdObj = payload.get("deliveryPersonId");
+            if (dpIdObj != null && !dpIdObj.toString().equals("null") && !dpIdObj.toString().isEmpty()) {
+                deliveryPersonId = Long.parseLong(dpIdObj.toString());
+            }
+
+            // Si el id empieza por 'u', es un repartidor libre (el id es el deliveryPersonId con prefijo)
+            if (id.startsWith("u")) {
+                Long personId = Long.parseLong(id.substring(1));
+                locationStore.update(personId, null, lat, lng);
+                log.debug("Updated location for available driver: {}", personId);
+            } else {
+                // Es una entrega real
+                Long deliveryId = Long.parseLong(id);
+                updateLocationUseCase.updateLocation(new edu.escuelaing.arsw.medigo.logistics.domain.model.LocationUpdate(deliveryId, lat, lng, ts));
+                
+                if (deliveryPersonId != null) {
+                    locationStore.update(deliveryPersonId, deliveryId, lat, lng);
+                }
+            }
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error updating location for ID {}: {}", id, e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -184,13 +217,7 @@ public class LogisticsController {
         List<Delivery> activeDeliveries = getActiveDeliveriesUseCase.getActiveDeliveries(deliveryPersonId);
 
         List<DeliveryResponse> responses = activeDeliveries.stream()
-                .map(delivery -> DeliveryResponse.builder()
-                        .id(delivery.getId())
-                        .orderId(delivery.getOrderId())
-                        .deliveryPersonId(delivery.getDeliveryPersonId())
-                        .status(delivery.getStatus())
-                        .assignedAt(delivery.getAssignedAt())
-                        .build())
+                .map(this::mapToResponse)
                 .toList();
 
         log.info("HU-11: Se encontraron {} entregas activas", responses.size());
@@ -259,13 +286,7 @@ public class LogisticsController {
 
         Delivery delivery = getActiveDeliveriesUseCase.getDeliveryIfOwner(id, deliveryPersonId);
 
-        DeliveryResponse response = DeliveryResponse.builder()
-                .id(delivery.getId())
-                .orderId(delivery.getOrderId())
-                .deliveryPersonId(delivery.getDeliveryPersonId())
-                .status(delivery.getStatus())
-                .assignedAt(delivery.getAssignedAt())
-                .build();
+        DeliveryResponse response = mapToResponse(delivery);
 
         log.info("HU-11: Retornando detalle de entrega {}", id);
         return ResponseEntity.ok(response);
@@ -358,6 +379,33 @@ public class LogisticsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Error interno al asignar pedido"));
         }
+    }
+
+    private DeliveryResponse mapToResponse(Delivery delivery) {
+        DeliveryResponse.DeliveryResponseBuilder builder = DeliveryResponse.builder()
+                .id(delivery.getId())
+                .orderId(delivery.getOrderId())
+                .deliveryPersonId(delivery.getDeliveryPersonId())
+                .status(delivery.getStatus())
+                .assignedAt(delivery.getAssignedAt())
+                .deliveredAt(delivery.getDeliveredAt());
+
+        // Enriquecer con datos de la sucursal y destino del usuario
+        orderRepository.findById(delivery.getOrderId()).ifPresent(order -> {
+            builder.userLat(order.getAddressLat())
+                   .userLng(order.getAddressLng());
+
+            if (order.getBranchId() != null) {
+                branchRepo.findById(order.getBranchId()).ifPresent(branch -> {
+                    builder.branchName(branch.getName())
+                           .branchAddress(branch.getAddress())
+                           .branchLat(branch.getLatitude())
+                           .branchLng(branch.getLongitude());
+                });
+            }
+        });
+
+        return builder.build();
     }
 
     record AssignRequest(Long orderId, Long deliveryPersonId) {}
