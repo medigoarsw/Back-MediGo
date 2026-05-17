@@ -13,6 +13,7 @@ import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.telemetry.TelemetryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -60,6 +61,7 @@ public class AuthController {
     private final AuthUseCase authUseCase;
     private final AuthService authService;
     private final JwtService jwtService;
+    private final TelemetryService telemetryService;
 
     /**
      * POST /api/auth/login
@@ -104,6 +106,9 @@ public class AuthController {
             
             // PASO 2: Convertir a DTO
             LoginResponseDto response = buildLoginResponse(user);
+            
+            // PASO 3: Registrar métrica de negocio
+            telemetryService.trackUserLogin(user.getId(), user.getRole().getCode());
             
             log.info("Authentication successful for user ID: {}", user.getId());
             return ResponseEntity.ok(response);
@@ -165,6 +170,9 @@ public class AuthController {
             
             // PASO 2: Convertir a DTO de respuesta
             SignUpResponseDto response = buildSignUpResponse(newUser);
+            
+            // PASO 3: Registrar métrica de negocio
+            telemetryService.trackUserRegistered(newUser.getId(), newUser.getRole().getCode());
             
             log.info("User registered successfully with ID: {}", newUser.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

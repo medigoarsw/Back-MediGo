@@ -109,6 +109,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Application Insights SDK for Custom Events -->
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>applicationinsights-core</artifactId>
+			<version>3.4.19</version>
+		</dependency>
+
 		<!-- Solo una dependencia de prueba -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
