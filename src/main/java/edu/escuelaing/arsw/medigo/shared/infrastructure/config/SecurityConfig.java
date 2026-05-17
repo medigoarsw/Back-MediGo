@@ -97,6 +97,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auctions/*/bids").hasAnyRole("ADMIN", "AFFILIATE")
 
                 // Documentación y otros públicos
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
