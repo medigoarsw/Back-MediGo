@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.users.infrastructure.adapter.in;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginRequestDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.LoginResponseDto;
 import edu.escuelaing.arsw.medigo.users.application.dto.SignUpRequestDto;
@@ -11,6 +12,8 @@ import edu.escuelaing.arsw.medigo.users.domain.exception.UserNotFoundException;
 import edu.escuelaing.arsw.medigo.users.domain.model.User;
 import edu.escuelaing.arsw.medigo.users.domain.port.in.AuthUseCase;
 import edu.escuelaing.arsw.medigo.users.application.service.AuthService;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.telemetry.TelemetryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,6 +60,8 @@ public class AuthController {
     // En realidad es AuthService que implementa este puerto
     private final AuthUseCase authUseCase;
     private final AuthService authService;
+    private final JwtService jwtService;
+    private final TelemetryService telemetryService;
 
     /**
      * POST /api/auth/login
@@ -89,6 +94,7 @@ public class AuthController {
         )
     })
     public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDto request) {
+            // Público, no requiere anotación
         try {
             log.debug("Authentication request received");
             
@@ -100,6 +106,9 @@ public class AuthController {
             
             // PASO 2: Convertir a DTO
             LoginResponseDto response = buildLoginResponse(user);
+            
+            // PASO 3: Registrar métrica de negocio
+            telemetryService.trackUserLogin(user.getId(), user.getRole().getCode());
             
             log.info("Authentication successful for user ID: {}", user.getId());
             return ResponseEntity.ok(response);
@@ -151,7 +160,8 @@ public class AuthController {
             description = "Error interno del servidor"
         )
     })
-    public ResponseEntity<Object> register(@Valid @RequestBody SignUpRequestDto request) {
+        public ResponseEntity<Object> register(@Valid @RequestBody SignUpRequestDto request) {
+            // Público, no requiere anotación
         try {
             log.debug("Registration request received for email: {}", request.getEmail());
             
@@ -160,6 +170,9 @@ public class AuthController {
             
             // PASO 2: Convertir a DTO de respuesta
             SignUpResponseDto response = buildSignUpResponse(newUser);
+            
+            // PASO 3: Registrar métrica de negocio
+            telemetryService.trackUserRegistered(newUser.getId(), newUser.getRole().getCode());
             
             log.info("User registered successfully with ID: {}", newUser.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -197,6 +210,7 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Object> getCurrentUser(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @RequestParam(name = "user_id") Long userId) {
@@ -230,6 +244,7 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserById(
             @Parameter(description = "ID del usuario", required = true, example = "1")
             @PathVariable Long id) {
@@ -263,8 +278,10 @@ public class AuthController {
             description = "Usuario no encontrado"
         )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserByEmail(
             @Parameter(description = "Email del usuario", required = true, example = "student@medigo.com")
+            @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9@._-]*$", message = "Formato de email inválido")
             @PathVariable String email) {
         try {
             User user = authUseCase.getUserByEmail(email);
@@ -281,12 +298,10 @@ public class AuthController {
      * Esta es la respuesta después de un login exitoso
      */
     private LoginResponseDto buildLoginResponse(User user) {
-        // En MVP: generamos un fake JWT
-        // En producción: aquí haría JwtService.generateToken(user)
-        String fakeToken = generateFakeJwt(user);
+        String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole().getCode());
         
         return LoginResponseDto.builder()
-                .accessToken(fakeToken)
+                .accessToken(token)
                 .tokenType("Bearer")
                 .userId(user.getId())
                 .username(user.getUsername())
@@ -307,24 +322,6 @@ public class AuthController {
                 user.getRole().getCode(),
                 user.isActive()
         );
-    }
-
-    /**
-     * FAKE JWT - Solo para MVP
-     * 
-     * En producción reemplazar con:
-     * @Bean
-     * public JwtService jwtService() { ... }
-     * 
-     * y luego: String token = jwtService.generateToken(user);
-     */
-    private String generateFakeJwt(User user) {
-        // Format: "fake-jwt.{userid}.{role}.{timestamp}"
-        long timestamp = System.currentTimeMillis();
-        return String.format("fake-jwt.%d.%s.%d",
-                user.getId(),
-                user.getRole().getCode(),
-                timestamp);
     }
 
     /**

@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import edu.escuelaing.arsw.medigo.auction.domain.model.Auction;
 import edu.escuelaing.arsw.medigo.auction.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.auction.infrastructure.adapter.in.dto.*;
@@ -25,6 +26,7 @@ public class AuctionController {
     private final AuthenticatedUserResolver authenticatedUserResolver;
 
     // HU-15: Crear subasta (solo ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AuctionResponse create(@Valid @RequestBody CreateAuctionRequest req) {
@@ -41,7 +43,16 @@ public class AuctionController {
         return AuctionResponse.from(auction);
     }
 
+    // HU-15: Listar todas las subastas (solo ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public List<AuctionResponse> getAll() {
+        return queryAuctionUseCase.getAllAuctions()
+                .stream().map(AuctionResponse::from).toList();
+    }
+
     // HU-16: Editar subasta programada (solo ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public AuctionResponse update(@PathVariable Long id,
                                    @Valid @RequestBody UpdateAuctionRequest req) {
@@ -54,6 +65,7 @@ public class AuctionController {
     }
 
     // HU-17: Ver detalle de subasta (enriquecido con catálogo, tiempo restante y ganador)
+    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     @GetMapping("/{id}")
     public AuctionResponse getById(@PathVariable Long id) {
         return AuctionResponse.fromDetail(queryAuctionUseCase.getAuctionDetail(id));
@@ -68,6 +80,7 @@ public class AuctionController {
 
     // HU-17: Historial de pujas de una subasta
     @GetMapping("/{id}/bids")
+    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public List<BidResponse> getBids(@PathVariable Long id) {
         return queryAuctionUseCase.getBidHistory(id)
                 .stream().map(BidResponse::from).toList();
@@ -75,6 +88,7 @@ public class AuctionController {
 
     // HU-22: Consultar ganador de una subasta cerrada
     @GetMapping("/{id}/winner")
+    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public ResponseEntity<WinnerResponse> getWinner(@PathVariable Long id) {
         QueryAuctionUseCase.WinnerView view = queryAuctionUseCase.getAuctionWinner(id);
         if (view.winnerId() == null) {
@@ -85,6 +99,7 @@ public class AuctionController {
     }
 
     @GetMapping("/won")
+    @PreAuthorize("hasRole('AFFILIATE')")
     public WonAuctionsPageResponse getWonAuctions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
@@ -101,6 +116,7 @@ public class AuctionController {
     // HU-18: Unirse a subasta
     @PostMapping("/{id}/join")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public void join(@PathVariable Long id, @RequestParam Long userId) {
         joinAuctionUseCase.joinAuction(id, userId);
     }
@@ -108,6 +124,7 @@ public class AuctionController {
     // HU-19: Realizar puja (con concurrencia Redis SETNX)
     @PostMapping("/{id}/bids")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN','AFFILIATE')")
     public BidResponse placeBid(@PathVariable Long id,
                                  @Valid @RequestBody PlaceBidRequest req) {
         return BidResponse.from(

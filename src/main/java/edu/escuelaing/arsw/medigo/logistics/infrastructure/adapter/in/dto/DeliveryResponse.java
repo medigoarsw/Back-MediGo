@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * DTO para respuestas de entrega
- * HU-10: Confirmación de entrega
+ * HU-10: Confirmación de entrega — incluye deliveredAt
  */
 @Data
 @NoArgsConstructor
@@ -23,22 +23,13 @@ import java.time.LocalDateTime;
 )
 public class DeliveryResponse {
 
-    @Schema(
-        description = "ID único de la entrega",
-        example = "1"
-    )
+    @Schema(description = "ID único de la entrega", example = "1")
     private Long id;
 
-    @Schema(
-        description = "ID del pedido asociado",
-        example = "100"
-    )
+    @Schema(description = "ID del pedido asociado", example = "100")
     private Long orderId;
 
-    @Schema(
-        description = "ID del repartidor asignado",
-        example = "5"
-    )
+    @Schema(description = "ID del repartidor asignado", example = "5")
     private Long deliveryPersonId;
 
     @Schema(
@@ -48,9 +39,30 @@ public class DeliveryResponse {
     )
     private Delivery.DeliveryStatus status;
 
-    @Schema(
-        description = "Fecha y hora de asignación de la entrega",
-        example = "2026-04-02T14:30:00"
-    )
+    @Schema(description = "Fecha y hora de asignación", example = "2026-04-02T14:30:00")
     private LocalDateTime assignedAt;
+
+    @Schema(description = "Fecha y hora de entrega confirmada (HU-10)", example = "2026-04-02T15:45:00")
+    private LocalDateTime deliveredAt;
+
+    // Detalles de la sucursal para recogida
+    @Schema(description = "Nombre de la sucursal de recogida", example = "Farmacia Central")
+    private String branchName;
+
+    @Schema(description = "Dirección de la sucursal", example = "Calle 100 #15-20")
+    private String branchAddress;
+
+    @Schema(description = "Latitud de la sucursal")
+    private Double branchLat;
+
+    @Schema(description = "Longitud de la sucursal")
+    private Double branchLng;
+
+    // Coordenadas del usuario (destino)
+    @Schema(description = "Latitud del destino (Usuario)")
+    private Double userLat;
+
+    @Schema(description = "Longitud del destino (Usuario)")
+    private Double userLng;
 }
+

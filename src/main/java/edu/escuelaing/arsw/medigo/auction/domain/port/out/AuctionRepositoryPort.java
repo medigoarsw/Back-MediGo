@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface AuctionRepositoryPort {
     Auction           save(Auction auction);
     Optional<Auction> findById(Long id);
+    List<Auction>     findAll();
     List<Auction>     findActiveAuctions();
     List<Auction>     findExpiredActiveAuctions();
     List<Auction>     findScheduledReadyToStart();

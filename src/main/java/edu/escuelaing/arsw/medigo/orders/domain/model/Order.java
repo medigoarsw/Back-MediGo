@@ -19,7 +19,12 @@ public class Order {
     private String commune;              // comuna/barrio
     private Double addressLat;
     private Double addressLng;
+    private Double branchLat;
+    private Double branchLng;
+    private String branchName;           // Nombre de la sucursal (HU-09)
+    private String branchAddress;        // Dirección de la sucursal (HU-09)
     private LocalDateTime createdAt;
+    private LocalDateTime deliveredAt;   // HU-10: fecha/hora de entrega confirmada
     private List<OrderItem> items;
     public enum OrderStatus { PENDING, CONFIRMED, PENDING_SHIPPING, ASSIGNED, IN_ROUTE, DELIVERED, CANCELLED, PENDING_PAYMENT }
     

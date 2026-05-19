@@ -5,4 +5,16 @@ public class BranchStock {
     private Long branchId;
     private Long medicationId;
     private int quantity;
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public Long getMedicationId() {
+        return medicationId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
 }

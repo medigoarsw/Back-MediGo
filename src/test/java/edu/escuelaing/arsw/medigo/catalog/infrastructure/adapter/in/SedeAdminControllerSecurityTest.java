@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = SedeAdminController.class,
         excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class)
-@Import({SecurityConfig.class, SedeExceptionHandler.class})
+@Import({SecurityConfig.class, SedeExceptionHandler.class, edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtAuthenticationFilter.class})
 @DisplayName("SedeAdminController - Seguridad y contrato")
 class SedeAdminControllerSecurityTest {
 
@@ -36,6 +36,9 @@ class SedeAdminControllerSecurityTest {
 
     @MockBean
     private SedeAdminService sedeService;
+    
+    @MockBean
+    private edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService jwtService;
 
     private static final String ADMIN_TOKEN = "Bearer fake-jwt.1.ADMIN.1700000000000";
     private static final String AFFILIATE_TOKEN = "Bearer fake-jwt.2.AFFILIATE.1700000000000";

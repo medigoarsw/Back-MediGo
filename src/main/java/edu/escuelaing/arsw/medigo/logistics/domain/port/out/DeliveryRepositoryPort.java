@@ -1,5 +1,6 @@
 package edu.escuelaing.arsw.medigo.logistics.domain.port.out;
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 public interface DeliveryRepositoryPort {
@@ -8,4 +9,5 @@ public interface DeliveryRepositoryPort {
     Optional<Delivery> findById(Long id);
     List<Delivery> findActiveByDeliveryPersonId(Long deliveryPersonId);
     void updateStatus(Long deliveryId, Delivery.DeliveryStatus status);
+    void updateStatusAndDeliveredAt(Long deliveryId, Delivery.DeliveryStatus status, LocalDateTime deliveredAt);
 }

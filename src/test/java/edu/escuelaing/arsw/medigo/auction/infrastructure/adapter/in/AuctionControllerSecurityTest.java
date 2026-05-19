@@ -39,13 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(value = AuctionController.class,
             excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtAuthenticationFilter.class})
 @DisplayName("AuctionController - Autorización por rol")
 class AuctionControllerSecurityTest {
 
     @Autowired
     private MockMvc mvc;
 
+    @MockBean private edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtService jwtService;
     @MockBean private CreateAuctionUseCase createAuctionUseCase;
     @MockBean private UpdateAuctionUseCase updateAuctionUseCase;
     @MockBean private PlaceBidUseCase      placeBidUseCase;

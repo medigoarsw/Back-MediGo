@@ -45,6 +45,15 @@ public class OrderJpaRepository implements OrderRepositoryPort {
     }
 
     @Override
+    public void updateStatusAndDeliveredAt(Long orderId, Order.OrderStatus status, LocalDateTime deliveredAt) {
+        springRepo.findById(orderId).ifPresent(e -> {
+            e.setStatus(status.name());
+            e.setDeliveredAt(deliveredAt);
+            springRepo.save(e);
+        });
+    }
+
+    @Override
     public Optional<Order> findByAuctionId(Long auctionId) {
         return springRepo.findByAuctionId(auctionId).map(this::toDomain);
     }
@@ -61,6 +70,11 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .stream()
                 .findFirst()
                 .map(this::toDomain);
+    }
+
+    @Override
+    public List<Order> findByStatus(Order.OrderStatus status) {
+        return springRepo.findByStatus(status.name()).stream().map(this::toDomain).toList();
     }
 
     // ── Mappers ───────────────────────────────────────────────────
@@ -83,7 +97,12 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .commune(o.getCommune())
                 .addressLat(o.getAddressLat())
                 .addressLng(o.getAddressLng())
+                .branchLat(o.getBranchLat())
+                .branchLng(o.getBranchLng())
+                .branchName(o.getBranchName())
+                .branchAddress(o.getBranchAddress())
                 .createdAt(o.getCreatedAt() != null ? o.getCreatedAt() : now)
+                .deliveredAt(o.getDeliveredAt())
                 .build();
         
         // Mapear items
@@ -133,7 +152,12 @@ public class OrderJpaRepository implements OrderRepositoryPort {
                 .commune(e.getCommune())
                 .addressLat(e.getAddressLat())
                 .addressLng(e.getAddressLng())
+                .branchLat(e.getBranchLat())
+                .branchLng(e.getBranchLng())
+                .branchName(e.getBranchName())
+                .branchAddress(e.getBranchAddress())
                 .createdAt(e.getCreatedAt())
+                .deliveredAt(e.getDeliveredAt())
                 .items(new ArrayList<>(items))  // ArrayList mutable para poder modificar
                 .build();
     }

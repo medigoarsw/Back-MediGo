@@ -1,6 +1,7 @@
 package edu.escuelaing.arsw.medigo.shared.infrastructure.config;
 
 import edu.escuelaing.arsw.medigo.shared.infrastructure.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,10 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Value("${app.security.open-all-endpoints:false}")
     private boolean openAllEndpoints;
@@ -52,18 +56,53 @@ public class SecurityConfig {
         }
 
         http
-            .addFilterBefore(new JwtAuthenticationFilter(),
-                    UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll()
+                // AUTH
+                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/auth/{id}", "/api/auth/email/{email}").hasRole("ADMIN")
+
+                // CATALOG (públicos)
+                .requestMatchers(HttpMethod.GET, "/api/medications/search").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/medications/branch/*/stock").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/medications/branch/*/medications").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/medications/branches").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/medications/*/availability/branch/*").permitAll()
+                // CATALOG (admin)
+                .requestMatchers(HttpMethod.POST, "/api/medications").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/medications/*/branch/*/stock").hasRole("ADMIN")
+                .requestMatchers("/api/sedes/**").hasRole("ADMIN")
+                .requestMatchers("/api/sedes").hasRole("ADMIN")
+
+                // ORDERS (solo AFFILIATE)
+                .requestMatchers(HttpMethod.POST, "/api/orders/cart/add").hasRole("AFFILIATE")
+                .requestMatchers(HttpMethod.GET, "/api/orders/cart").hasRole("AFFILIATE")
+                .requestMatchers(HttpMethod.POST, "/api/orders").hasRole("AFFILIATE")
+                .requestMatchers(HttpMethod.POST, "/api/orders/*/confirm").hasRole("AFFILIATE")
+
+                // LOGISTICS (solo DELIVERY)
+                .requestMatchers(HttpMethod.GET, "/api/logistics/deliveries/active").hasRole("DELIVERY")
+                .requestMatchers(HttpMethod.GET, "/api/logistics/deliveries/*").hasRole("DELIVERY")
+                .requestMatchers("/api/logistics/deliveries/*/location").permitAll() // Permitir actualizaciones internas (POST/PUT)
+                .requestMatchers(HttpMethod.PUT, "/api/logistics/deliveries/*/complete").hasRole("DELIVERY")
+
+                // AUCTIONS
+                .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/auctions/*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/auctions/*").hasAnyRole("ADMIN", "AFFILIATE")
+                .requestMatchers(HttpMethod.GET, "/api/auctions/*/bids").hasAnyRole("ADMIN", "AFFILIATE")
+                .requestMatchers(HttpMethod.GET, "/api/auctions/*/winner").hasAnyRole("ADMIN", "AFFILIATE")
+                .requestMatchers(HttpMethod.POST, "/api/auctions/*/join").hasAnyRole("ADMIN", "AFFILIATE")
+                .requestMatchers(HttpMethod.POST, "/api/auctions/*/bids").hasAnyRole("ADMIN", "AFFILIATE")
+
+                // Documentación y otros públicos
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/auctions/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/auctions/**").hasAnyRole("ADMIN", "AFFILIATE")
-                .requestMatchers(HttpMethod.POST, "/api/auctions/**").hasAnyRole("ADMIN", "AFFILIATE")
-                .requestMatchers("/api/sedes/**").hasRole("ADMIN")
+
+                // Cualquier otro endpoint requiere autenticación
                 .anyRequest().authenticated()
             );
 
@@ -83,7 +122,7 @@ public class SecurityConfig {
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "X-Trace-Id"));
         config.setExposedHeaders(Arrays.asList("Authorization", "X-Trace-Id"));
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

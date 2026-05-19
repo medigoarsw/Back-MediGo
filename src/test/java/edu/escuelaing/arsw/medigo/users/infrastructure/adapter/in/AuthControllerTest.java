@@ -17,7 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +47,12 @@ class AuthControllerTest {
     
     @Autowired
     private ObjectMapper mapper;
+
+    @MockBean
+    private StringRedisTemplate stringRedisTemplate;
+
+    @MockBean
+    private SimpMessagingTemplate messagingTemplate;
     
     @Test
     @DisplayName("POST /api/auth/login debe retornar 200 con credenciales válidas")
@@ -97,6 +105,7 @@ class AuthControllerTest {
         
         // ACT & ASSERT
         mockMvc.perform(get("/api/auth/2")
+                .header("Authorization", "Bearer fake-jwt.1.ADMIN.1700000000000")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.user_id").value(2))
@@ -111,6 +120,7 @@ class AuthControllerTest {
         
         // ACT & ASSERT
         mockMvc.perform(get("/api/auth/email/admin@medigo.com")
+                .header("Authorization", "Bearer fake-jwt.1.ADMIN.1700000000000")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.user_id").value(1))

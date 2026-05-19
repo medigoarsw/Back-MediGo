@@ -10,4 +10,5 @@ public class DeliveryEntity {
     @Column(name = "delivery_person_id") private Long deliveryPersonId;
     @Column(nullable = false) private String status;
     @Column(name = "assigned_at") private LocalDateTime assignedAt;
+    @Column(name = "delivered_at") private LocalDateTime deliveredAt;
 }

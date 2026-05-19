@@ -5,6 +5,6 @@ import java.math.BigDecimal;
 
 public record PlaceBidRequest(
     @NotNull Long      userId,
-    @NotNull String    userName,
+    @NotNull @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "Nombre de usuario inválido") String userName,
     @NotNull @Positive BigDecimal amount
 ) {}

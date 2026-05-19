@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
+@lombok.EqualsAndHashCode(callSuper = true)
 @Schema(description = "Request para crear una sede")
 public class SedeRequest extends SedeUpdateRequest {
 

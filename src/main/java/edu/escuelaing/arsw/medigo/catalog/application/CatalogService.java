@@ -5,10 +5,13 @@ import edu.escuelaing.arsw.medigo.catalog.domain.dto.BranchWithMedications;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.*;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.out.MedicationRepositoryPort;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.repository.BranchSpringDataRepository;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +25,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase {
+public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCase, CreateMedicationUseCase, SearchBranchUseCase {
+
+
 
     private final MedicationRepositoryPort medicationRepository;
+    private final BranchSpringDataRepository branchRepository;
 
     /**
      * Busca medicamentos por nombre (búsqueda parcial, insensible a mayúsculas)
@@ -93,12 +99,6 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         // Crear el stock inicial si es > 0
         if (initialStock > 0) {
-            BranchStock branchStock = BranchStock.builder()
-                    .branchId(branchId)
-                    .medicationId(savedMedication.getId())
-                    .quantity(initialStock)
-                    .build();
-
             medicationRepository.updateStock(branchId, savedMedication.getId(), initialStock);
         }
 
@@ -189,6 +189,19 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
         return medicationRepository.findById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Branch> findBranchById(Long branchId) {
+        return branchRepository.findById(branchId)
+                .map(e -> Branch.builder()
+                        .id(e.getId())
+                        .name(e.getName())
+                        .address(e.getAddress())
+                        .latitude(e.getLatitude())
+                        .longitude(e.getLongitude())
+                        .build());
+    }
+
     /**
      * Obtiene la disponibilidad de un medicamento en una sucursal específica (HU-04)
      * @param medicationId ID del medicamento
@@ -217,11 +230,7 @@ public class CatalogService implements SearchMedicationUseCase, UpdateStockUseCa
 
         if (stock == null) {
             // Si no hay registro, retornar con cantidad 0 (no disponible)
-            stock = BranchStock.builder()
-                    .medicationId(medicationId)
-                    .branchId(branchId)
-                    .quantity(0)
-                    .build();
+                stock = new BranchStock(branchId, medicationId, 0);
         }
 
         log.info("Disponibilidad obtenida: {} unidades", stock.getQuantity());

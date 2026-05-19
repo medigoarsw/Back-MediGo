@@ -8,6 +8,8 @@ import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchMedicationUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.port.in.UpdateStockUseCase;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
+import edu.escuelaing.arsw.medigo.catalog.domain.model.Branch;
+import edu.escuelaing.arsw.medigo.catalog.domain.port.in.SearchBranchUseCase;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
 import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
     private final OrderRepositoryPort orderRepository;
     private final SearchMedicationUseCase searchMedicationUseCase;
     private final UpdateStockUseCase updateStockUseCase;
+    private final SearchBranchUseCase searchBranchUseCase;
     private static final BigDecimal DEFAULT_MEDICATION_PRICE = BigDecimal.valueOf(25.00);
     
     /**
@@ -110,6 +113,23 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
             throw new BusinessException("branchId debe ser mayor a 0");
         }
         
+        // Obtener coordenadas y detalles de la sucursal (HU-09)
+        Double branchLat = null;
+        Double branchLng = null;
+        String branchName = null;
+        String branchAddress = null;
+        try {
+            Optional<Branch> branch = searchBranchUseCase.findBranchById(branchId);
+            if (branch.isPresent()) {
+                branchLat = branch.get().getLatitude();
+                branchLng = branch.get().getLongitude();
+                branchName = branch.get().getName();
+                branchAddress = branch.get().getAddress();
+            }
+        } catch (Exception e) {
+            log.warn("No se pudo obtener detalles de la sucursal {} al crear orden: {}", branchId, e.getMessage());
+        }
+
         // Crear nueva orden vacía
         LocalDateTime now = LocalDateTime.now();
         Order newOrder = Order.builder()
@@ -118,6 +138,10 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
                 .status(Order.OrderStatus.PENDING)
                 .addressLat(lat)
                 .addressLng(lng)
+                .branchLat(branchLat)
+                .branchLng(branchLng)
+                .branchName(branchName)
+                .branchAddress(branchAddress)
                 .totalPrice(BigDecimal.ZERO)
                 .createdAt(now)
                 .items(new ArrayList<>())
@@ -125,7 +149,7 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         
         try {
             Order savedOrder = orderRepository.save(newOrder);
-            log.info("Orden {} creada exitosamente para cliente {}", savedOrder.getId(), affiliateId);
+            log.info("Orden {} creada exitosamente para cliente {} con sucursal {}", savedOrder.getId(), affiliateId, branchName);
             return savedOrder;
         } catch (Exception e) {
             log.error("Error al guardar la orden en la BD: {}", e.getMessage(), e);
@@ -197,6 +221,10 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
                 .commune(request.getCommune())
                 .addressLat(request.getLatitude())
                 .addressLng(request.getLongitude())
+                .branchLat(cart.getBranchLat())
+                .branchLng(cart.getBranchLng())
+                .branchName(cart.getBranchName())
+                .branchAddress(cart.getBranchAddress())
                 .createdAt(cart.getCreatedAt())
                 .items(cart.getItems())
                 .build();
@@ -229,6 +257,14 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
         return savedOrder;
     }
     
+    public List<Order> findByStatus(Order.OrderStatus status) {
+        return orderRepository.findByStatus(status);
+    }
+
+    public List<Order> findByAffiliateId(Long affiliateId) {
+        return orderRepository.findByAffiliateId(affiliateId);
+    }
+
     // ────── Private Helper Methods ──────
     
     private void validateCartInput(Long affiliateId, Long branchId, Long medicationId, int quantity) {
@@ -249,9 +285,30 @@ public class OrderService implements CreateOrderUseCase, ConfirmOrderUseCase {
     private Order createNewCart(Long affiliateId, Long branchId) {
         log.debug("Creando nuevo carrito para cliente: {}", affiliateId);
         
+        Double branchLat = null;
+        Double branchLng = null;
+        String branchName = null;
+        String branchAddress = null;
+        
+        try {
+            Optional<Branch> branch = searchBranchUseCase.findBranchById(branchId);
+            if (branch.isPresent()) {
+                branchLat = branch.get().getLatitude();
+                branchLng = branch.get().getLongitude();
+                branchName = branch.get().getName();
+                branchAddress = branch.get().getAddress();
+            }
+        } catch (Exception e) {
+            log.warn("No se pudo obtener detalles de la sucursal {}: {}", branchId, e.getMessage());
+        }
+
         return Order.builder()
                 .affiliateId(affiliateId)
                 .branchId(branchId)
+                .branchLat(branchLat)
+                .branchLng(branchLng)
+                .branchName(branchName)
+                .branchAddress(branchAddress)
                 .status(Order.OrderStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .totalPrice(BigDecimal.ZERO)

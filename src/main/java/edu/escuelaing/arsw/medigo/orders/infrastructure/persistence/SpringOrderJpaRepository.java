@@ -20,4 +20,7 @@ public interface SpringOrderJpaRepository extends JpaRepository<OrderEntity, Lon
     
     @Query("SELECT o FROM OrderEntity o WHERE o.affiliateId = :affiliateId AND o.branchId = :branchId AND o.status = 'PENDING' ORDER BY o.createdAt DESC")
     List<OrderEntity> findPendingByAffiliateAndBranch(@Param("affiliateId") Long affiliateId, @Param("branchId") Long branchId);
+
+    @Query("SELECT o FROM OrderEntity o WHERE o.status = :status ORDER BY o.createdAt DESC")
+    List<OrderEntity> findByStatus(@Param("status") String status);
 }

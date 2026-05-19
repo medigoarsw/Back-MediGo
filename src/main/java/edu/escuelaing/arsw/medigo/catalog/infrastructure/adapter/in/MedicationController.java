@@ -1,5 +1,7 @@
 package edu.escuelaing.arsw.medigo.catalog.infrastructure.adapter.in;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import edu.escuelaing.arsw.medigo.catalog.domain.model.Medication;
 import edu.escuelaing.arsw.medigo.catalog.domain.model.BranchStock;
 import edu.escuelaing.arsw.medigo.catalog.domain.dto.StockWithMedicationInfo;
@@ -18,12 +20,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -62,6 +64,7 @@ public class MedicationController {
     })
     public ResponseEntity<InventoryListResponse> listInventory(
             @RequestParam(required = false) Long branchId,
+            @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "El término de búsqueda contiene caracteres no permitidos")
             @RequestParam(required = false) String q,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int limit) {
@@ -204,6 +207,7 @@ public class MedicationController {
                 example = "paracetamol",
                 required = true
             )
+            @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "El nombre solo puede contener letras y números")
             @RequestParam String name) {
 
         log.info("Búsqueda de medicamentos por nombre: {}", name);
@@ -477,6 +481,7 @@ public class MedicationController {
             description = "No autorizado: solo administradores pueden crear medicamentos"
         )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MedicationResponse> create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                 description = "Datos del medicamento a crear",
@@ -529,6 +534,7 @@ public class MedicationController {
             description = "Medicamento no encontrado"
         )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateStock(
             @Parameter(
                 name = "medicationId",

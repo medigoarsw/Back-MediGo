@@ -1,8 +1,19 @@
 package edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery;
 import edu.escuelaing.arsw.medigo.logistics.domain.port.in.*;
+import edu.escuelaing.arsw.medigo.logistics.domain.port.out.DeliveryRepositoryPort;
 import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.in.dto.DeliveryResponse;
+import edu.escuelaing.arsw.medigo.logistics.infrastructure.adapter.out.SpringDeliveryJpaRepository;
+import edu.escuelaing.arsw.medigo.orders.domain.port.out.OrderRepositoryPort;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.BusinessException;
+import edu.escuelaing.arsw.medigo.shared.infrastructure.exception.ResourceNotFoundException;
+import edu.escuelaing.arsw.medigo.users.infrastructure.adapter.out.UserJpaRepository;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.repository.BranchSpringDataRepository;
+import edu.escuelaing.arsw.medigo.catalog.infrastructure.entity.BranchEntity;
+import edu.escuelaing.arsw.medigo.orders.domain.model.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/logistics")
@@ -25,18 +37,55 @@ import java.util.List;
 @Slf4j
 public class LogisticsController {
     private final UpdateLocationUseCase updateLocationUseCase;
-    private final AssignDeliveryUseCase assignDeliveryUseCase;  // Contiene completeDelivery para HU-10
-    private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;  // HU-11
+    private final AssignDeliveryUseCase assignDeliveryUseCase;
+    private final GetActiveDeliveriesUseCase getActiveDeliveriesUseCase;
+    private final OrderRepositoryPort orderRepository;
+    private final DeliveryRepositoryPort deliveryRepository;
+    private final SpringDeliveryJpaRepository springDeliveryRepo;
+    private final UserJpaRepository userRepo;
+    private final DriverLocationStore locationStore;
+    private final BranchSpringDataRepository branchRepo;
 
-    @PutMapping("/deliveries/{id}/location")
-    public ResponseEntity<?> updateLocation(@PathVariable Long id, @RequestBody Object req) {
-        return ResponseEntity.ok().build();
+    @PostMapping("/deliveries/{id}/location")
+    public ResponseEntity<?> updateLocation(@PathVariable String id, @RequestBody Map<String, Object> payload) {
+        try {
+            double lat = Double.parseDouble(payload.get("lat").toString());
+            double lng = Double.parseDouble(payload.get("lng").toString());
+            Long ts = payload.get("ts") != null ? Long.parseLong(payload.get("ts").toString()) : System.currentTimeMillis();
+            
+            Long deliveryPersonId = null;
+            Object dpIdObj = payload.get("deliveryPersonId");
+            if (dpIdObj != null && !dpIdObj.toString().equals("null") && !dpIdObj.toString().isEmpty()) {
+                deliveryPersonId = Long.parseLong(dpIdObj.toString());
+            }
+
+            // Si el id empieza por 'u', es un repartidor libre (el id es el deliveryPersonId con prefijo)
+            if (id.startsWith("u")) {
+                Long personId = Long.parseLong(id.substring(1));
+                locationStore.update(personId, null, lat, lng);
+                log.debug("Updated location for available driver: {}", personId);
+            } else {
+                // Es una entrega real
+                Long deliveryId = Long.parseLong(id);
+                updateLocationUseCase.updateLocation(new edu.escuelaing.arsw.medigo.logistics.domain.model.LocationUpdate(deliveryId, lat, lng, ts));
+                
+                if (deliveryPersonId != null) {
+                    locationStore.update(deliveryPersonId, deliveryId, lat, lng);
+                }
+            }
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error updating location for ID {}: {}", id, e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
      * HU-10: Confirma la entrega de un pedido
      * Actualiza el estado de la entrega a DELIVERED y del pedido a ENTREGADO
      */
+    @PreAuthorize("hasRole('DELIVERY')")
     @PutMapping("/deliveries/{id}/complete")
     @Operation(
         summary = "Confirmar entrega (Repartidor)",
@@ -70,7 +119,7 @@ public class LogisticsController {
             description = "Entrega no encontrada"
         )
     })
-    public ResponseEntity<DeliveryResponse> completeDelivery(
+    public ResponseEntity<?> completeDelivery(
             @Parameter(
                 name = "id",
                 description = "ID de la entrega a confirmar",
@@ -81,24 +130,30 @@ public class LogisticsController {
 
         log.info("HU-10: Recibida solicitud para confirmar entrega con ID: {}", id);
 
-        Delivery delivery = assignDeliveryUseCase.completeDelivery(id);
+        try {
+            Delivery delivery = assignDeliveryUseCase.completeDelivery(id);
 
-        DeliveryResponse response = DeliveryResponse.builder()
-                .id(delivery.getId())
-                .orderId(delivery.getOrderId())
-                .deliveryPersonId(delivery.getDeliveryPersonId())
-                .status(delivery.getStatus())
-                .assignedAt(delivery.getAssignedAt())
-                .build();
+            DeliveryResponse response = mapToResponse(delivery);
 
-        log.info("HU-10: Entrega {} confirmada exitosamente", id);
-        return ResponseEntity.ok(response);
+            log.info("HU-10: Entrega {} confirmada exitosamente a las {}", id, delivery.getDeliveredAt());
+            return ResponseEntity.ok(response);
+
+        } catch (ResourceNotFoundException e) {
+            log.warn("HU-10: Entrega no encontrada: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            log.warn("HU-10: Error de negocio al confirmar entrega: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 
     /**
      * HU-11: Obtiene todas las entregas activas del repartidor
      * Las entregas activas son aquellas no entregadas (ASSIGNED, IN_ROUTE, PENDING_SHIPPING)
      */
+    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/active")
     @Operation(
         summary = "Obtener entregas activas (Repartidor)",
@@ -155,13 +210,7 @@ public class LogisticsController {
         List<Delivery> activeDeliveries = getActiveDeliveriesUseCase.getActiveDeliveries(deliveryPersonId);
 
         List<DeliveryResponse> responses = activeDeliveries.stream()
-                .map(delivery -> DeliveryResponse.builder()
-                        .id(delivery.getId())
-                        .orderId(delivery.getOrderId())
-                        .deliveryPersonId(delivery.getDeliveryPersonId())
-                        .status(delivery.getStatus())
-                        .assignedAt(delivery.getAssignedAt())
-                        .build())
+                .map(this::mapToResponse)
                 .toList();
 
         log.info("HU-11: Se encontraron {} entregas activas", responses.size());
@@ -172,6 +221,7 @@ public class LogisticsController {
      * HU-11: Obtiene una entrega específica si pertenece al repartidor
      * Valida la propiedad y muestra el modal de confirmación con detalles de la entrega
      */
+    @PreAuthorize("hasRole('DELIVERY')")
     @GetMapping("/deliveries/{id}")
     @Operation(
         summary = "Obtener detalle de una entrega (Repartidor)",
@@ -229,20 +279,243 @@ public class LogisticsController {
 
         Delivery delivery = getActiveDeliveriesUseCase.getDeliveryIfOwner(id, deliveryPersonId);
 
-        DeliveryResponse response = DeliveryResponse.builder()
-                .id(delivery.getId())
-                .orderId(delivery.getOrderId())
-                .deliveryPersonId(delivery.getDeliveryPersonId())
-                .status(delivery.getStatus())
-                .assignedAt(delivery.getAssignedAt())
-                .build();
+        DeliveryResponse response = mapToResponse(delivery);
 
         log.info("HU-11: Retornando detalle de entrega {}", id);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('DELIVERY')")
+    @GetMapping({"/deliveries/history", "/deliveries/history/trips"})
+    @Operation(summary = "Historial de entregas del repartidor")
+    public ResponseEntity<List<DeliveryResponse>> getDeliveryHistory(
+            @RequestParam Long deliveryPersonId,
+            @RequestParam(required = false) String range) {
+        log.info("Solicitando historial de entregas para repartidor: {}, rango: {}", deliveryPersonId, range);
+        
+        // TODO: Implementar búsqueda real en deliveryRepository filtrando por status=DELIVERED
+        return ResponseEntity.ok(List.of());
+    }
+
+    /**
+     * HU-10 (Escenario 2): El afiliado consulta el estado de su pedido.
+     * Retorna el estado actual del pedido y la fecha de entrega (si está DELIVERED).
+     */
+    @GetMapping("/orders/{orderId}/status")
+    @Operation(
+        summary = "Estado del pedido (Afiliado)",
+        description = "HU-10: El cliente consulta el estado de su pedido para saber si fue entregado."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estado del pedido retornado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
+    public ResponseEntity<?> getOrderStatus(
+            @Parameter(name = "orderId", description = "ID del pedido", required = true)
+            @PathVariable Long orderId) {
+        log.info("HU-10: Consultando estado del pedido {}", orderId);
+        return orderRepository.findById(orderId)
+                .map(order -> {
+                    // Incluir deliveryId si existe para que el afiliado pueda suscribirse al WebSocket
+                    Long deliveryId = deliveryRepository.findByOrderId(orderId)
+                            .map(edu.escuelaing.arsw.medigo.logistics.domain.model.Delivery::getId)
+                            .orElse(null);
+                    java.util.Map<String, Object> body = new java.util.HashMap<>();
+                    body.put("orderId", order.getId());
+                    body.put("status", order.getStatus().name());
+                    body.put("deliveredAt", order.getDeliveredAt() != null ? order.getDeliveredAt().toString() : "");
+                    body.put("deliveryId", deliveryId);
+                    return ResponseEntity.ok(body);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasRole('DELIVERY')")
+    @GetMapping({"/deliveries/history/summary", "/deliveries/history/summary/stats"})
+    public ResponseEntity<?> getDeliveryHistorySummary(
+            @RequestParam Long deliveryPersonId,
+            @RequestParam(required = false) String range) {
+        log.info("Solicitando resumen de historial para repartidor: {}, rango: {}", deliveryPersonId, range);
+        
+        // TODO: Implementar agregación real de estadísticas
+        return ResponseEntity.ok(java.util.Map.of(
+                "totalTrips", 0,
+                "tripsGrowthPct", 0,
+                "averageRating", 5.0,
+                "monthlyEarnings", 0,
+                "currency", "COP"
+        ));
+    }
+
+    @PostMapping("/driver/emergency")
+    public ResponseEntity<?> reportEmergency(@RequestBody(required = false) Object body) {
+        log.info("Soporte de emergencia reportado: {}", body);
+        return ResponseEntity.ok(java.util.Map.of("message", "Reporte de emergencia recibido"));
+    }
+
     @PostMapping("/deliveries/assign")
-    public ResponseEntity<?> assign(@RequestBody Object req) {
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Auto-asignar repartidor a un pedido")
+    public ResponseEntity<?> assign(@RequestBody AssignRequest req) {
+        log.info("Asignando repartidor {} al pedido {}", req.deliveryPersonId(), req.orderId());
+        try {
+            Delivery delivery = assignDeliveryUseCase.assignDelivery(req.orderId(), req.deliveryPersonId());
+            DeliveryResponse response = mapToResponse(delivery);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error al asignar repartidor", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error interno al asignar pedido"));
+        }
+    }
+
+    private DeliveryResponse mapToResponse(Delivery delivery) {
+        DeliveryResponse.DeliveryResponseBuilder builder = DeliveryResponse.builder()
+                .id(delivery.getId())
+                .orderId(delivery.getOrderId())
+                .deliveryPersonId(delivery.getDeliveryPersonId())
+                .status(delivery.getStatus())
+                .assignedAt(delivery.getAssignedAt())
+                .deliveredAt(delivery.getDeliveredAt());
+
+        // Enriquecer con datos de la sucursal y destino del usuario
+        orderRepository.findById(delivery.getOrderId()).ifPresent(order -> {
+            builder.userLat(order.getAddressLat())
+                   .userLng(order.getAddressLng());
+
+            if (order.getBranchId() != null) {
+                branchRepo.findById(order.getBranchId()).ifPresent(branch -> {
+                    builder.branchName(branch.getName())
+                           .branchAddress(branch.getAddress())
+                           .branchLat(branch.getLatitude())
+                           .branchLng(branch.getLongitude());
+                });
+            }
+        });
+
+        return builder.build();
+    }
+
+    record AssignRequest(Long orderId, Long deliveryPersonId) {}
+
+    @PutMapping("/deliveries/{id}/pickup")
+    @Operation(summary = "Marcar recogida en sucursal (IN_ROUTE)")
+    public ResponseEntity<?> markPickup(@PathVariable Long id) {
+        log.info("Marcando entrega {} como IN_ROUTE", id);
+        try {
+            Delivery delivery = assignDeliveryUseCase.markInRoute(id);
+            DeliveryResponse response = mapToResponse(delivery);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboard(
+            @RequestParam(required = false) Long orderId) {
+        log.info("Dashboard requested, orderId={}", orderId);
+
+        // Repartidores activos = los que enviaron GPS en los últimos 60s
+        java.util.Collection<DriverLocationStore.DriverPosition> activePositions =
+                locationStore.getActiveDrivers();
+
+        // Obtener el orderId del afiliado para identificar al repartidor asignado
+        Long assignedDeliveryPersonId = null;
+        Long assignedDeliveryId = null;
+        if (orderId != null) {
+            var deliveryOpt = springDeliveryRepo.findByOrderId(orderId);
+            if (deliveryOpt.isPresent()) {
+                assignedDeliveryPersonId = deliveryOpt.get().getDeliveryPersonId();
+                assignedDeliveryId = deliveryOpt.get().getId();
+            }
+        }
+        final Long finalAssignedPersonId = assignedDeliveryPersonId;
+
+        List<java.util.Map<String, Object>> drivers = activePositions.stream()
+                .map(pos -> {
+                    String driverName = userRepo.findById(pos.deliveryPersonId())
+                            .map(edu.escuelaing.arsw.medigo.users.infrastructure.entity.UserEntity::getName)
+                            .orElse("Repartidor " + pos.deliveryPersonId());
+
+                    boolean isAssignedToMe = pos.deliveryPersonId().equals(finalAssignedPersonId);
+
+                    // Estado: si tiene entrega activa en DB → BUSY, si no → AVAILABLE
+                    String dbStatus = "AVAILABLE";
+                    Long deliveryOrderId = null;
+                    var deliveryOpt = springDeliveryRepo.findById(pos.deliveryId() != null ? pos.deliveryId() : -1L);
+                    if (deliveryOpt.isPresent()) {
+                        String s = deliveryOpt.get().getStatus();
+                        deliveryOrderId = deliveryOpt.get().getOrderId();
+                        if ("IN_ROUTE".equals(s) || "ASSIGNED".equals(s)) dbStatus = "BUSY";
+                    }
+
+                    String status = isAssignedToMe ? "ASSIGNED_TO_ME" : dbStatus;
+
+                    log.info("Dashboard driver: deliveryPersonId={} deliveryId={} deliveryOrderId={} requestedOrderId={} isAssignedToMe={} status={}",
+                            pos.deliveryPersonId(), pos.deliveryId(), deliveryOrderId, orderId, isAssignedToMe, status);
+
+                    java.util.Map<String, Object> driver = new java.util.HashMap<>();
+                    driver.put("id", pos.deliveryPersonId());
+                    driver.put("deliveryId", pos.deliveryId());
+                    driver.put("orderId", deliveryOrderId);
+                    driver.put("name", driverName);
+                    driver.put("status", status);
+                    driver.put("lat", pos.lat());
+                    driver.put("lng", pos.lng());
+                    return driver;
+                })
+                .toList();
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("drivers", drivers);
+        response.put("activeDeliveries", drivers.size());
+        response.put("completedToday", 0);
+        response.put("pendingAssignments", 0);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/debug/delivery/{id}")
+    public ResponseEntity<?> debugDelivery(@PathVariable Long id) {
+        return springDeliveryRepo.findById(id)
+                .map(d -> {
+                    java.util.Map<String, Object> info = new java.util.HashMap<>();
+                    info.put("id", d.getId());
+                    info.put("orderId", d.getOrderId());
+                    info.put("deliveryPersonId", d.getDeliveryPersonId());
+                    info.put("status", d.getStatus());
+                    info.put("assignedAt", d.getAssignedAt());
+                    return ResponseEntity.ok(info);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/debug/deliveries/active")
+    public ResponseEntity<?> debugActiveDeliveries() {
+        List<edu.escuelaing.arsw.medigo.logistics.infrastructure.entity.DeliveryEntity> all =
+                springDeliveryRepo.findAll().stream()
+                        .filter(d -> "ASSIGNED".equals(d.getStatus()) || "IN_ROUTE".equals(d.getStatus()))
+                        .toList();
+        List<java.util.Map<String, Object>> result = all.stream().map(d -> {
+            java.util.Map<String, Object> info = new java.util.HashMap<>();
+            info.put("id", d.getId());
+            info.put("orderId", d.getOrderId());
+            info.put("deliveryPersonId", d.getDeliveryPersonId());
+            info.put("status", d.getStatus());
+            return info;
+        }).toList();
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/assignments")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> assignCourier(@RequestBody Object body) {
+        log.info("Courier assignment requested");
+        return ResponseEntity.ok(java.util.Map.of("message", "Request received"));
     }
 }

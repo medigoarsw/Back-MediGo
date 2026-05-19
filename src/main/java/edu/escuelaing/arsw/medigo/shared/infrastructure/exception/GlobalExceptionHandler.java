@@ -2,6 +2,7 @@ package edu.escuelaing.arsw.medigo.shared.infrastructure.exception;
 
 import edu.escuelaing.arsw.medigo.auction.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -139,6 +140,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
+    }
+
+    /**
+     * Maneja violaciones de restricciones de integridad referencial (FK, UNIQUE, etc.)
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, WebRequest request) {
+
+        String detail = ex.getMostSpecificCause().getMessage();
+        log.warn("DataIntegrityViolationException: {}", detail);
+
+        String userMessage = "Violación de integridad de datos.";
+        if (detail != null && detail.contains("medication_id")) {
+            userMessage = "El medicamento especificado no existe.";
+        } else if (detail != null && detail.contains("branch_id")) {
+            userMessage = "La sede especificada no existe.";
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(buildError(HttpStatus.CONFLICT, userMessage,
+                        "DATA_INTEGRITY_VIOLATION", request));
     }
 
     /**

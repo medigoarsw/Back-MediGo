@@ -26,4 +26,5 @@ public class SignUpRequestDto {
     
     @NotBlank(message = "El rol es requerido")
     private String role;
+
 }

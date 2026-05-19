@@ -12,4 +12,24 @@ public class Medication {
     private String description;
     private String unit;
     private BigDecimal price;  // Precio del medicamento (HU-07)
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
 }

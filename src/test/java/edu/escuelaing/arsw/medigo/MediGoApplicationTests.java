@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import edu.escuelaing.arsw.medigo.TestWebSocketConfig;
@@ -16,6 +17,9 @@ class MediGoApplicationTests {
 
     @MockBean
     StringRedisTemplate stringRedisTemplate;
+
+    @MockBean
+    SimpMessagingTemplate messagingTemplate;
 
     @Test
     void contextLoads() {
